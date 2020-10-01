@@ -21,9 +21,9 @@ class Generator
     public function generate(): array
     {
         foreach ($this->routes as $route) {
-
+//
 //            $routeName = $route->getName();
-//            if (!$routeName || !(preg_match('/containers/', $routeName))) {
+//            if (!$routeName || !(preg_match('/custom-field\.plain/', $routeName))) {
 //                continue;
 //            }
 
@@ -42,15 +42,18 @@ class Generator
             return;
         }
 
-        $this->schemaBuilder->initExtractor($route->controllerName());
-        $this->schemaBuilder->generateComponents();
-        $this->schemaBuilder->addUriPath($routePath);
-
         $reflection = new ReflectionClass($route->controllerName());
         $classDocBlock = $reflection->getDocComment();
         $operations = $route->operations();
 
         $parameters = $route->hasPathParameters() ? $route->getPathParameters() : [];
+
+        // This must come after getting parameters or it won't catch whether the path parameter is required or not
+        $routePath = str_replace('?', '', $routePath);
+
+        $this->schemaBuilder->initExtractor($route->controllerName());
+        $this->schemaBuilder->generateComponents();
+        $this->schemaBuilder->addUriPath($routePath);
 
         foreach ($operations as $operation) {
 
@@ -59,6 +62,5 @@ class Generator
             $this->schemaBuilder->generateParameters($routePath, $operation, $parameters);
             $this->schemaBuilder->generateResponses($routePath, $operation);
         }
-
     }
 }

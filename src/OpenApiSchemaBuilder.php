@@ -77,9 +77,6 @@ class OpenApiSchemaBuilder
 
     public function generateOperations(string $operation, DocBlock $methodDocBlock, string $path)
     {
-        $namespacedModel = $this->extractor->oneWordNamespacedModel();
-        $tagName = $this->extractor->groupTag;
-
 //                foreach ($methodDocBlock->getTags() as $tag) {
 //                    echo print_r($tag->getName(), true) . "\n";
 //                }
@@ -89,7 +86,7 @@ class OpenApiSchemaBuilder
                 'summary'     => $methodDocBlock->getShortDescription(),
                 'description' => $methodDocBlock->getLongDescription()->getContents(),
                 'tags'        => [
-                    $tagName
+                    $this->extractor->groupTag
                 ],
             ],
         ];
@@ -105,17 +102,21 @@ class OpenApiSchemaBuilder
 
         $parameterBlock = ['parameters' => []];
 
+        $type = 'integer'; // Assume the default path parameter is integer
+
         // TODO: guess with multi parameters
-        $keyName = (new $this->extractor->model)->getRouteKeyName();
-        $type = $this->extractor->getTypeForColumn($keyName);
+        if ($this->extractor->model) {
+            $keyName = (new $this->extractor->model)->getRouteKeyName();
+            $type = $this->extractor->getTypeForColumn($keyName);
+        }
 
         foreach ($parameters as $parameter) {
 
             $parameterBlock['parameters'][] = [
-                'name'        => $parameter,
+                'name'        => $parameter['name'],
                 'in'          => 'path',
                 'description' => 'desc',
-                'required'    => true,
+                'required'    => true, // $parameter['required'] ? true : false, // OpenAPI path parameter is always required :/
                 'schema'      => [
                     'type' => $type,
 //                        'format' => 'map something',
@@ -132,10 +133,14 @@ class OpenApiSchemaBuilder
             'responses' => [
                 '200' => [
                     'description' => 'Successful response',
-                    'content'     => $this->generateJsonResponse()
                 ],
             ],
         ];
+
+        // TODO: keep it like this until other auto-try request is done
+        if ($this->extractor->model) {
+            $responseBlock['responses']['200']['content'] = $this->generateJsonResponse();
+        }
 
         $this->document['paths'][$path][$operation] = array_merge($this->document['paths'][$path][$operation], $responseBlock);
     }

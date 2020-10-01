@@ -83,7 +83,7 @@ class RouteWrapper
         return preg_match('/{.*}/', $this->path());
     }
 
-    public function getPathParameters()
+    public function getPathParameters(): array
     {
         preg_match_all('/{(.*?)}/', $this->path(), $matches);
 
@@ -91,6 +91,17 @@ class RouteWrapper
             throw new Exception("Regex match failed for {$this->path()}");
         }
 
-        return $matches[1];
+        $parameters = [];
+        foreach ($matches[1] as $match) {
+
+            $required = preg_match('/\?/', $match);
+
+            $parameters[] = [
+                'name'     => str_replace('?', '', $match),
+                'required' => $required,
+            ];
+        }
+
+        return $parameters;
     }
 }

@@ -126,6 +126,5 @@ class Extractor
         $modelColumns = $this->modelColumns();
 
         return array_key_exists($column, $modelColumns) ? $modelColumns[$column] : 'string';
-
     }
 }
