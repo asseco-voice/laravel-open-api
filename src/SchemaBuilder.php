@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Config;
 use Mpociot\Reflection\DocBlock;
 use ReflectionClass;
 
-class OpenApiSchemaBuilder
+class SchemaBuilder
 {
     public array     $document;
     public Extractor $extractor;

@@ -8,9 +8,9 @@ use Illuminate\Routing\Router;
 class Generator
 {
     protected RouteCollection    $routes;
-    private OpenApiSchemaBuilder $schemaBuilder;
+    private SchemaBuilder $schemaBuilder;
 
-    public function __construct(Router $router, OpenApiSchemaBuilder $schemaBuilder)
+    public function __construct(Router $router, SchemaBuilder $schemaBuilder)
     {
         $this->routes = $router->getRoutes();
         $this->schemaBuilder = $schemaBuilder;
