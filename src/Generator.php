@@ -57,7 +57,6 @@ class Generator
             $methodDocBlock = new DocBlock($reflection->getMethod($route->controllerMethod())->getDocComment());
             $this->schemaBuilder->generateOperations($operation, $methodDocBlock, $routePath);
             $this->schemaBuilder->generateParameters($routePath, $operation, $parameters);
-            echo "$routePath $operation\n";
             $this->schemaBuilder->generateResponses($routePath, $operation);
         }
 
