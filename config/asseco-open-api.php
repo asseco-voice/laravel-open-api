@@ -44,13 +44,16 @@ return [
         ],
     ],
 
-    'routes' => [
-        'exclude' => [
-//            'random.*', 'route.*', 'name.*'
+    'exclude' => [
+        // Partial match. Using 'index' will match '*index*'.
+        'route_name'      => [
+            'horizon'
         ],
-
-        'global_headers' => '',
+        // Exact match by controller full namespace
+        'controller_name' => [
+            'Clockwork\Support\Laravel\ClockworkController'
+        ],
     ],
 
-
+    'global_headers' => '',
 ];
