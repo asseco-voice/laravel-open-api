@@ -11,6 +11,8 @@ For custom inputs/outputs, options will be provided.
 
 **Still in early development, expect issues :)**
 
+**Stay tuned**
+
 ## Installation
 
 Install the package through composer. It is automatically registered
@@ -27,5 +29,13 @@ Models database schema is being cached for performance (1d TTL),
 if you modify a migration be sure to run ``php artisan voice:open-api --bust-cache``
 which will force re-caching. 
 
+## Config
 
-Stay tuned 
+Publish the configuration with 
+``php artisan vendor:publish --provider="Voice\OpenApi\OpenApiServiceProvider"``.
+
+Configuration requires your minimal engagement, however there are some things which
+package can't assume. 
+
+If you have models outside of ``App`` namespace, be sure to include full namespace
+to these as well so that package can automatically get the model attributes. 
