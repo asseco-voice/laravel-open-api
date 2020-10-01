@@ -48,7 +48,7 @@ class Extractor
         // Unsetting first element because it is always empty.
         unset($split[0]);
 
-        return implode(' ', $split);
+        return Str::plural(implode(' ', $split));
     }
 
     protected function guessModel(): ?string
@@ -81,7 +81,6 @@ class Extractor
         $cacheKey = self::CACHE_PREFIX . $this->model;
 
         if (Cache::has($cacheKey) && !Config::get('asseco-open-api.bust_cache')) {
-            echo "caching...\n";
             return Cache::get($cacheKey);
         }
 

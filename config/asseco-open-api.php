@@ -47,11 +47,11 @@ return [
     ],
 
     'routes' => [
-        'include' => '',
-        'exclude' => '',
-        'regex_match' => '',
+        'exclude' => [
+//            'random.*', 'route.*', 'name.*'
+        ],
+
         'global_headers' => '',
-        'opcije za call rute (vidi response_calls)' => '',
     ],
 
 

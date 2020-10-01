@@ -2,12 +2,16 @@
 
 namespace Voice\OpenApi;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Mpociot\Reflection\DocBlock;
 
 class OpenApiSchemaBuilder
 {
-    public array $document;
+    public const CACHE_PREFIX = 'open_api_extractor_';
+
+    public array     $document;
+    public Extractor $extractor;
 
     public function __construct()
     {
@@ -17,8 +21,25 @@ class OpenApiSchemaBuilder
         $this->document['components']['schemas'] = [];
     }
 
-    public function generateComponents(string $namespacedModel, array $modelColumns): void
+    public function initExtractor(string $controllerName)
     {
+        $cacheKey = self::CACHE_PREFIX . $controllerName;
+
+        if (Cache::has($cacheKey) && !Config::get('asseco-open-api.bust_cache')) {
+            return Cache::get($cacheKey);
+        }
+
+        $this->extractor = new Extractor($controllerName);
+        Cache::put($cacheKey, $this->extractor, 60 * 60 * 24);
+
+        return $this->extractor;
+    }
+
+    public function generateComponents(): void
+    {
+        $namespacedModel = $this->extractor->oneWordNamespacedModel();
+        $modelColumns = $this->extractor->modelColumns();
+
         if (empty($modelColumns) || array_key_exists($namespacedModel, $this->document['components']['schemas'])) {
             return;
         }
@@ -26,12 +47,12 @@ class OpenApiSchemaBuilder
         $this->document['components']['schemas'] = array_merge($this->document['components']['schemas'], [
             $namespacedModel => [
                 'type'       => 'object',
-                'properties' => $this->getProperties($modelColumns),
+                'properties' => $this->generateProperties($modelColumns),
             ]
         ]);
     }
 
-    private function getProperties(array $modelColumns): array
+    private function generateProperties(array $modelColumns): array
     {
         $properties = [];
         foreach ($modelColumns as $column => $type) {
@@ -54,48 +75,59 @@ class OpenApiSchemaBuilder
         }
     }
 
-    public function generateDoc(string $method, DocBlock $methodDocBlock, string $tagName, string $modelName, string $path)
+    public function generateOperations(string $operation, DocBlock $methodDocBlock, string $path)
     {
+        $namespacedModel = $this->extractor->oneWordNamespacedModel();
+        $tagName = $this->extractor->groupTag;
+
 //                foreach ($methodDocBlock->getTags() as $tag) {
 //                    echo print_r($tag->getName(), true) . "\n";
 //                }
 
-        $methodBlock = $this->generateMethodBlock($method, $methodDocBlock, $tagName, $modelName);
-
-        $this->document['paths'][$path] = array_merge_recursive($this->document['paths'][$path], $methodBlock);
-    }
-
-    protected function generateMethodBlock(string $method, DocBlock $methodDocBlock, string $tagName, string $modelName): array
-    {
-        $methodBlock = [
-            $method => [
+        $operationBlock = [
+            $operation => [
                 'summary'     => $methodDocBlock->getShortDescription(),
                 'description' => $methodDocBlock->getLongDescription()->getContents(),
                 'tags'        => [
                     $tagName
                 ],
+                'parameters'  => [$this->generateParameters($namespacedModel, 'test')],
                 'responses'   => [
                     '200' => [
-                        'description' => 'Some desc',
-                        'content'     => [
-                            'application/json' => [
-//                                'schema' => [
-//                                    'type' => 'array',
-//                                    'items' => [
-//                                        'type' => 'string',
-//                                    ],
-//                                ],
-
-                                'schema' => [
-                                    '$ref' => "#/components/schemas/$modelName"
-                                ],
-                            ],
-                        ],
+//                      'description' => 'Some desc',
+                        'content' => $this->generateJsonResponse($namespacedModel)
                     ],
+                ],
+            ],
+        ];
+
+        $this->document['paths'][$path] = array_merge_recursive($this->document['paths'][$path], $operationBlock);
+    }
+
+    protected function generateParameters(string $modelName, $type): array
+    {
+//        $parameterName = (new $modelName)->getRouteKeyName();
+
+        return [
+//            'name'        => $parameterName,
+            'in'          => 'path',
+            'description' => 'desc',
+            'required'    => 'true',
+            'schema'      => [
+                'type' => $type,
+//                    'format' => 'map something',
+            ],
+        ];
+    }
+
+    protected function generateJsonResponse($modelName): array
+    {
+        return [
+            'application/json' => [
+                'schema' => [
+                    '$ref' => "#/components/schemas/$modelName"
                 ],
             ]
         ];
-
-        return $methodBlock;
     }
 }
