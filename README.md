@@ -38,4 +38,5 @@ Configuration requires your minimal engagement, however there are some things wh
 package can't assume. 
 
 If you have models outside of ``App`` namespace, be sure to include full namespace
-to these as well so that package can automatically get the model attributes. 
+to ``namespaces`` config key as well so that package can automatically get the 
+model attributes. 
