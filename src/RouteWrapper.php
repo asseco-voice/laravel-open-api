@@ -25,7 +25,8 @@ class RouteWrapper
 
     public function path(): string
     {
-        return "/{$this->route->uri()}";
+        // Removing '?' because OpenAPI standard doesn't support optional path parameters.
+        return str_replace('?', '', "/{$this->route->uri()}");
     }
 
     public function action(): array

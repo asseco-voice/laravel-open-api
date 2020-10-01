@@ -4,8 +4,6 @@ namespace Voice\OpenApi;
 
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
-use Mpociot\Reflection\DocBlock;
-use ReflectionClass;
 
 class Generator
 {
@@ -42,25 +40,9 @@ class Generator
             return;
         }
 
-        $reflection = new ReflectionClass($route->controllerName());
-        $classDocBlock = $reflection->getDocComment();
         $operations = $route->operations();
-
         $parameters = $route->hasPathParameters() ? $route->getPathParameters() : [];
 
-        // This must come after getting parameters or it won't catch whether the path parameter is required or not
-        $routePath = str_replace('?', '', $routePath);
-
-        $this->schemaBuilder->initExtractor($route->controllerName());
-        $this->schemaBuilder->generateComponents();
-        $this->schemaBuilder->addUriPath($routePath);
-
-        foreach ($operations as $operation) {
-
-            $methodDocBlock = new DocBlock($reflection->getMethod($route->controllerMethod())->getDocComment());
-            $this->schemaBuilder->generateOperations($operation, $methodDocBlock, $routePath);
-            $this->schemaBuilder->generateParameters($routePath, $operation, $parameters);
-            $this->schemaBuilder->generateResponses($routePath, $operation);
-        }
+        $this->schemaBuilder->generate($route->controllerName(), $route->controllerMethod(), $routePath, $operations, $parameters);
     }
 }

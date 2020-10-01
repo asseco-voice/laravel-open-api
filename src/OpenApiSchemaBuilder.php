@@ -2,14 +2,12 @@
 
 namespace Voice\OpenApi;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Mpociot\Reflection\DocBlock;
+use ReflectionClass;
 
 class OpenApiSchemaBuilder
 {
-    public const CACHE_PREFIX = 'open_api_extractor_';
-
     public array     $document;
     public Extractor $extractor;
 
@@ -21,18 +19,22 @@ class OpenApiSchemaBuilder
         $this->document['components']['schemas'] = [];
     }
 
-    public function initExtractor(string $controllerName)
+    public function generate(string $controllerName, string $controllerMethod, string $routePath, array $operations, array $parameters): void
     {
-        $cacheKey = self::CACHE_PREFIX . $controllerName;
-
-        if (Cache::has($cacheKey) && !Config::get('asseco-open-api.bust_cache')) {
-            return Cache::get($cacheKey);
-        }
+        $reflection = new ReflectionClass($controllerName);
+        $classDocBlock = $reflection->getDocComment();
 
         $this->extractor = new Extractor($controllerName);
-        Cache::put($cacheKey, $this->extractor, 60 * 60 * 24);
+        $this->generateComponents();
+        $this->addUriPath($routePath);
 
-        return $this->extractor;
+        foreach ($operations as $operation) {
+
+            $methodDocBlock = new DocBlock($reflection->getMethod($controllerMethod)->getDocComment());
+            $this->generateOperations($operation, $methodDocBlock, $routePath);
+            $this->generateParameters($routePath, $operation, $parameters);
+            $this->generateResponses($routePath, $operation);
+        }
     }
 
     public function generateComponents(): void
