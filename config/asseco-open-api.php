@@ -20,6 +20,11 @@ return [
     'bust_cache' => false,
 
     /**
+     * Get additional command output (for debugging purposes). Command flag, not to be used manually.
+     */
+    'verbose' => false,
+
+    /**
      * Name of generated file
      */
     'file_name'  => 'open-api.yaml',

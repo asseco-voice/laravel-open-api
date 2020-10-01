@@ -12,12 +12,14 @@ class Generator
     protected RouteCollection $routes;
     protected SchemaBuilder   $schemaBuilder;
     protected array           $excludeRules;
+    protected bool            $verbose;
 
     public function __construct(Router $router, SchemaBuilder $schemaBuilder)
     {
         $this->routes = $router->getRoutes();
         $this->schemaBuilder = $schemaBuilder;
         $this->excludeRules = Config::get('asseco-open-api.exclude');
+        $this->verbose = Config::get('asseco-open-api.verbose');
     }
 
     public function generate(): array
@@ -44,7 +46,7 @@ class Generator
         $routePath = $route->path();
 
         if ($route->isClosure()) {
-            echo "Skipping {$routePath}, closure routes not supported.\n";
+            if ($this->verbose) echo "Skipping {$routePath}, closure routes not supported.\n";
             return;
         }
 
@@ -60,7 +62,7 @@ class Generator
 
         foreach ($byName as $name) {
             if ($route->getName() && (preg_match('/' . $name . '/', $route->getName()))) {
-                echo "Excluding route by name: '{$route->getName()}'\n";
+                if ($this->verbose) echo "Excluding route by name: '{$route->getName()}'\n";
                 return true;
             }
         }
@@ -71,7 +73,7 @@ class Generator
             $controllerClass = get_class($route->getController());
 
             if ($controller === $controllerClass) {
-                echo "Excluding route by controller: '{$controllerClass}'\n";
+                if ($this->verbose) echo "Excluding route by controller: '{$controllerClass}'\n";
                 return true;
             }
         }

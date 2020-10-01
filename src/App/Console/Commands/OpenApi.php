@@ -16,7 +16,8 @@ class OpenApi extends Command
      *
      * @var string
      */
-    protected $signature = 'voice:open-api {--b|bust-cache : Override using cache, will re-cache with new values}';
+    protected $signature = 'voice:open-api 
+                                    {--b|bust-cache : Override using cache, will re-cache with new values}';
 
     /**
      * The console command description.
@@ -33,6 +34,7 @@ class OpenApi extends Command
     public function handle()
     {
         Config::set('asseco-open-api.bust_cache', $this->option('bust-cache'));
+        Config::set('asseco-open-api.verbose', $this->option('verbose'));
 
         /**
          * @var $generator Generator
