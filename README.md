@@ -2,7 +2,14 @@
 
 This package provides painless OpenApi YAML generation from existing routes. 
 
-// Still in dev, expect issues :) //
+The idea is to have as little work to do as possible in order to generate the 
+API documentation, so the package will try to assume a lot of things such as
+models from controller names, parameters based on actual tables, outputs based
+on fake requests done etc. 
+
+For custom inputs/outputs, options will be provided.
+
+**Still in early development, expect issues :)**
 
 ## Installation
 
