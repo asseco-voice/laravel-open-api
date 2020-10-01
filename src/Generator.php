@@ -22,10 +22,10 @@ class Generator
     {
         foreach ($this->routes as $route) {
 
-            $routeName = $route->getName();
-            if (!$routeName || !(preg_match('/containers/', $routeName))) {
-                continue;
-            }
+//            $routeName = $route->getName();
+//            if (!$routeName || !(preg_match('/containers/', $routeName))) {
+//                continue;
+//            }
 
             $this->generateRouteDocumentation(new RouteWrapper($route));
         }
