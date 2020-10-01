@@ -5,31 +5,6 @@ use Illuminate\Support\Facades\Config;
 return [
 
     /**
-     * List of namespaces to search by for possible external models which are not in
-     * standard Laravel namespace.
-     */
-    'namespaces' => [
-        'App\\',
-        'Voice\\Containers\\App\\',
-        'Voice\\CustomFields\\App\\',
-    ],
-
-    /**
-     * Force re-caching. Used as a part of the command flag, not to be used manually.
-     */
-    'bust_cache' => false,
-
-    /**
-     * Get additional command output (for debugging purposes). Command flag, not to be used manually.
-     */
-    'verbose' => false,
-
-    /**
-     * Name of generated file
-     */
-    'file_name'  => 'open-api.yaml',
-
-    /**
      * General OpenApi properties to generate
      */
     'general'    => [
@@ -49,6 +24,24 @@ return [
         ],
     ],
 
+    /**
+     * List of namespaces to search by for possible external models which are not in
+     * standard Laravel namespace.
+     */
+    'namespaces' => [
+        'App\\',
+        'Voice\\Containers\\App\\',
+        'Voice\\CustomFields\\App\\',
+    ],
+
+    /**
+     * Name of generated file
+     */
+    'file_name'  => 'open-api.yaml',
+
+    /**
+     * Rules for excluding certain rules
+     */
     'exclude' => [
         // Partial match. Using 'index' will match '*index*'.
         'route_name'      => [
@@ -61,4 +54,14 @@ return [
     ],
 
     'global_headers' => '',
+
+    /**
+     * Force re-caching. Used as a part of the command flag, not to be used manually.
+     */
+    'bust_cache' => false,
+
+    /**
+     * Get additional command output (for debugging purposes). Command flag, not to be used manually.
+     */
+    'verbose' => false,
 ];
