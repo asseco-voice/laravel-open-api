@@ -16,4 +16,7 @@ as a Laravel service provider.
 Running the command ``php artisan voice:open-api`` will generate a new YAML
 file at ``storage/app/open-api.yaml`` location.
 
+Process heavy actions are being cached, if you change something and wish to 
+bust the cache, just run ``php artisan voice:open-api --bust-cache``
+
 Stay tuned 
