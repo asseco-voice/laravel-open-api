@@ -35,22 +35,31 @@ class Generator
 
     protected function generateRouteDocumentation(RouteWrapper $route): void
     {
+        $routePath = $route->path();
+
         if ($route->isClosure()) {
-            echo "Skipping {$route->uri()}, closure routes not supported.\n";
+            echo "Skipping {$routePath}, closure routes not supported.\n";
             return;
         }
 
         $this->schemaBuilder->initExtractor($route->controllerName());
         $this->schemaBuilder->generateComponents();
-        $this->schemaBuilder->addUriPath($route->uri());
+        $this->schemaBuilder->addUriPath($routePath);
 
         $reflection = new ReflectionClass($route->controllerName());
         $classDocBlock = $reflection->getDocComment();
-        $requestMethods = $route->requestMethods();
+        $operations = $route->operations();
 
-        foreach ($requestMethods as $requestMethod) {
+        $parameters = $route->hasPathParameters() ? $route->getPathParameters() : [];
+
+        foreach ($operations as $operation) {
+
             $methodDocBlock = new DocBlock($reflection->getMethod($route->controllerMethod())->getDocComment());
-            $this->schemaBuilder->generateOperations($requestMethod, $methodDocBlock, $route->uri());
+            $this->schemaBuilder->generateOperations($operation, $methodDocBlock, $routePath);
+            $this->schemaBuilder->generateParameters($routePath, $operation, $parameters);
+            echo "$routePath $operation\n";
+            $this->schemaBuilder->generateResponses($routePath, $operation);
         }
+
     }
 }

@@ -91,41 +91,63 @@ class OpenApiSchemaBuilder
                 'tags'        => [
                     $tagName
                 ],
-                'parameters'  => [$this->generateParameters($namespacedModel, 'test')],
-                'responses'   => [
-                    '200' => [
-//                      'description' => 'Some desc',
-                        'content' => $this->generateJsonResponse($namespacedModel)
-                    ],
-                ],
             ],
         ];
 
         $this->document['paths'][$path] = array_merge_recursive($this->document['paths'][$path], $operationBlock);
     }
 
-    protected function generateParameters(string $modelName, $type): array
+    public function generateParameters(string $path, string $operation, array $parameters)
     {
-//        $parameterName = (new $modelName)->getRouteKeyName();
+        if (empty($parameters)) {
+            return;
+        }
 
-        return [
-//            'name'        => $parameterName,
-            'in'          => 'path',
-            'description' => 'desc',
-            'required'    => 'true',
-            'schema'      => [
-                'type' => $type,
-//                    'format' => 'map something',
-            ],
-        ];
+        $parameterBlock = ['parameters' => []];
+
+        // TODO: guess with multi parameters
+        $keyName = (new $this->extractor->model)->getRouteKeyName();
+        $type = $this->extractor->getTypeForColumn($keyName);
+
+        foreach ($parameters as $parameter) {
+
+            $parameterBlock['parameters'][] = [
+                'name'        => $parameter,
+                'in'          => 'path',
+                'description' => 'desc',
+                'required'    => true,
+                'schema'      => [
+                    'type' => $type,
+//                        'format' => 'map something',
+                ],
+            ];
+        }
+
+        $this->document['paths'][$path][$operation] = array_merge_recursive($this->document['paths'][$path][$operation], $parameterBlock);
     }
 
-    protected function generateJsonResponse($modelName): array
+    public function generateResponses(string $path, string $operation)
     {
+        $responseBlock = [
+            'responses' => [
+                '200' => [
+                    'description' => 'Successful response',
+                    'content'     => $this->generateJsonResponse()
+                ],
+            ],
+        ];
+
+        $this->document['paths'][$path][$operation] = array_merge($this->document['paths'][$path][$operation], $responseBlock);
+    }
+
+    protected function generateJsonResponse(): array
+    {
+        $namespacedModel = $this->extractor->oneWordNamespacedModel();
+
         return [
             'application/json' => [
                 'schema' => [
-                    '$ref' => "#/components/schemas/$modelName"
+                    '$ref' => "#/components/schemas/$namespacedModel"
                 ],
             ]
         ];

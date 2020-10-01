@@ -30,7 +30,6 @@ class Extractor
      * Parse possible model name from controller. At this point we still don't know
      * if this class exists or not.
      *
-     * @param string $fullControllerName
      * @return string
      */
     protected function getModelCandidate(): string
@@ -120,5 +119,13 @@ class Extractor
             default:
                 return $columnType;
         }
+    }
+
+    public function getTypeForColumn(string $column)
+    {
+        $modelColumns = $this->modelColumns();
+
+        return array_key_exists($column, $modelColumns) ? $modelColumns[$column] : 'string';
+
     }
 }

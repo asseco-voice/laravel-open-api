@@ -23,7 +23,7 @@ class RouteWrapper
         $this->route = $route;
     }
 
-    public function uri(): string
+    public function path(): string
     {
         return "/{$this->route->uri()}";
     }
@@ -71,10 +71,26 @@ class RouteWrapper
         return $this->action()['uses'] instanceof Closure;
     }
 
-    public function requestMethods(): array
+    public function operations(): array
     {
         return array_map(function ($method) {
             return strtolower($method);
         }, array_diff($this->route->methods(), ['HEAD']));
+    }
+
+    public function hasPathParameters(): bool
+    {
+        return preg_match('/{.*}/', $this->path());
+    }
+
+    public function getPathParameters()
+    {
+        preg_match_all('/{(.*?)}/', $this->path(), $matches);
+
+        if (count($matches) < 2) {
+            throw new Exception("Regex match failed for {$this->path()}");
+        }
+
+        return $matches[1];
     }
 }
