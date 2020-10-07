@@ -41,19 +41,4 @@ If you have models outside of ``App`` namespace, be sure to include full namespa
 to ``namespaces`` config key as well so that package can automatically get the 
 model attributes. 
 
-## Parent-child class relations (for dev purposes)
-
-```
-Document
-    Paths
-        Path
-            Operation
-                Parameters
-                    Parameter
-                    Parameter
-                Responses
-                    Response
-                    Response
-```
-
 
