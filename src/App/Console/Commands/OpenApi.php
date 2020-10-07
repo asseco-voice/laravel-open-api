@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Yaml\Yaml;
-use Voice\OpenApi\Generator;
+use Voice\OpenApi\RouteTraverser;
+use Voice\OpenApi\SchemaGenerator;
 
 class OpenApi extends Command
 {
@@ -37,9 +38,9 @@ class OpenApi extends Command
         Config::set('asseco-open-api.verbose', $this->option('verbose'));
 
         /**
-         * @var $generator Generator
+         * @var $generator SchemaGenerator
          */
-        $generator = App::make(Generator::class);
+        $generator = App::make(SchemaGenerator::class);
         $documentation = $generator->generate();
 
         $yaml = Yaml::dump($documentation, 10);
@@ -48,7 +49,7 @@ class OpenApi extends Command
 
         Storage::put($fileName, $yaml);
 
-        $this->info('YAML file generated successfully!');
+        $this->info('YML file generated successfully!');
         return 0;
     }
 }

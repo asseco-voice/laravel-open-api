@@ -1,24 +1,30 @@
 <?php
 
-
 namespace Voice\OpenApi;
-
 
 use Closure;
 use Exception;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Config;
+use Voice\OpenApi\Exceptions\OpenApiException;
 
 class RouteWrapper
 {
-    private Route    $route;
+    private Route $route;
     protected string $controllerName;
     protected string $controllerMethod;
+
+    protected array $excludeRules;
+    protected bool $verbose;
 
     public function __construct(Route $route)
     {
         if (!array_key_exists('uses', $route->getAction())) {
-            throw new Exception("Route {$route->getName()} is missing mandatory data.");
+            throw new OpenApiException("Route '{$route->getName()}' is missing mandatory data.");
         }
+
+        $this->excludeRules = Config::get('asseco-open-api.exclude');
+        $this->verbose = Config::get('asseco-open-api.verbose');
 
         $this->route = $route;
     }
@@ -67,11 +73,6 @@ class RouteWrapper
         return $exploded;
     }
 
-    public function isClosure(): bool
-    {
-        return $this->action()['uses'] instanceof Closure;
-    }
-
     public function operations(): array
     {
         return array_map(function ($method) {
@@ -79,13 +80,12 @@ class RouteWrapper
         }, array_diff($this->route->methods(), ['HEAD']));
     }
 
-    public function hasPathParameters(): bool
-    {
-        return preg_match('/{.*}/', $this->path());
-    }
-
     public function getPathParameters(): array
     {
+        if (!$this->hasPathParameters()) {
+            return [];
+        }
+
         preg_match_all('/{(.*?)}/', $this->path(), $matches);
 
         if (count($matches) < 2) {
@@ -104,5 +104,54 @@ class RouteWrapper
         }
 
         return $parameters;
+    }
+
+    protected function hasPathParameters(): bool
+    {
+        return preg_match('/{.*}/', $this->path());
+    }
+
+    public function shouldSkip(): bool
+    {
+        return $this->isClosure() || $this->excludedByName() || $this->excludedByController();
+    }
+
+    public function isClosure(): bool
+    {
+        $isClosure = $this->action()['uses'] instanceof Closure;
+
+        if ($isClosure && $this->verbose) echo "Skipping {$this->path()}, closure routes not supported.\n";
+
+        return $isClosure;
+    }
+
+    public function excludedByName(): bool
+    {
+        $byName = $this->excludeRules['route_name'];
+
+        foreach ($byName as $name) {
+            if ($this->route->getName() && (preg_match('/' . $name . '/', $this->route->getName()))) {
+                if ($this->verbose) echo "Excluding route by name: '{$this->route->getName()}'\n";
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function excludedByController(): bool
+    {
+        $byController = $this->excludeRules['controller_name'];
+
+        foreach ($byController as $controller) {
+            $controllerClass = get_class($this->route->getController());
+
+            if ($controller === $controllerClass) {
+                if ($this->verbose) echo "Excluding route by controller: '{$controllerClass}'\n";
+                return true;
+            }
+        }
+
+        return false;
     }
 }

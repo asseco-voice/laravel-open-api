@@ -22,7 +22,7 @@ as a Laravel service provider.
 
 ## Usage
 
-Running the command ``php artisan voice:open-api`` will generate a new YAML
+Running the command ``php artisan voice:open-api`` will generate a new `.yml`
 file at ``storage/app/open-api.yaml`` location.
 
 Models database schema is being cached for performance (1d TTL), 
@@ -40,3 +40,20 @@ package can't assume.
 If you have models outside of ``App`` namespace, be sure to include full namespace
 to ``namespaces`` config key as well so that package can automatically get the 
 model attributes. 
+
+## Parent-child class relations (for dev purposes)
+
+```
+Document
+    Paths
+        Path
+            Operation
+                Parameters
+                    Parameter
+                    Parameter
+                Responses
+                    Response
+                    Response
+```
+
+

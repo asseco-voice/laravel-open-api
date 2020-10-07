@@ -37,7 +37,7 @@ return [
     /**
      * Name of generated file
      */
-    'file_name'  => 'open-api.yaml',
+    'file_name'  => 'open-api.yml',
 
     /**
      * Rules for excluding certain rules
