@@ -1,6 +1,6 @@
 # Laravel OpenApi generator
 
-This package provides painless OpenApi YAML generation from existing routes. 
+This package provides painless OpenApi YML generation from existing routes. 
 
 The idea is to have as little work to do as possible in order to generate the 
 API documentation, so the package will try to assume a lot of things such as
@@ -23,7 +23,7 @@ as a Laravel service provider.
 ## Usage
 
 Running the command ``php artisan voice:open-api`` will generate a new `.yml`
-file at ``storage/app/open-api.yaml`` location.
+file at ``storage/app/open-api.yml`` location.
 
 Models database schema is being cached for performance (1d TTL), 
 if you modify a migration be sure to run ``php artisan voice:open-api --bust-cache``
