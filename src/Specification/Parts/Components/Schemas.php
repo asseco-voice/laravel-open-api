@@ -2,29 +2,34 @@
 
 namespace Voice\OpenApi\Specification\Parts\Components;
 
-use Voice\OpenApi\Specification\Parts\Models\Properties;
+use Voice\OpenApi\Specification\Parts\Components\Models\Schema;
 
 class Schemas implements Components
 {
-    protected string $name;
-    protected array $properties = [];
+    protected array $schemas = [];
 
-    public function __construct(string $name, ?Properties $properties = null)
+    public function generate($name, $modelColumns): void
     {
-        $this->name = $name;
+        $schema = new Schema($name);
 
-        if ($properties) {
-            $this->properties = $properties->toSchema();
+        $schema->generateProperties($modelColumns);
+
+        $this->append($schema);
+    }
+
+    public function append(Schema $schema): void
+    {
+        if (array_key_exists($schema->name, $this->schemas)) {
+            return;
         }
+
+        // + will overwrite same array keys.
+        // This is okay, schemas are unique.
+        $this->schemas = $schema->toSchema();
     }
 
     public function toSchema(): array
     {
-        $schema = array_merge(
-            ['type' => 'object'],
-            $this->properties,
-        );
-
-        return [$this->name => $schema];
+        return $this->schemas;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Voice\OpenApi\Specification;
+namespace Voice\OpenApi\Specification\Parts;
 
 use Voice\OpenApi\Contracts\Serializable;
 use Voice\OpenApi\Specification\Parts\Response;
@@ -8,6 +8,15 @@ use Voice\OpenApi\Specification\Parts\Response;
 class Responses implements Serializable
 {
     protected array $responses = [];
+
+    public function generateResponse($name)
+    {
+        $response = new Response('200', 'Successful request.', []);
+
+        $response->generateContent($name);
+
+        $this->append($response);
+    }
 
     public function append(Response $response)
     {

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Voice\OpenApi\Specification\Parts;
-
 
 use Voice\OpenApi\Contracts\Serializable;
 
@@ -18,6 +16,12 @@ class Response implements Serializable
         $this->statusCode = $statusCode;
         $this->description = $description;
         $this->options = $options;
+    }
+
+    public function generateContent($model)
+    {
+        $content = new ResponseContent($model);
+        $this->appendContent($content);
     }
 
     public function appendContent(ResponseContent $responseContent)

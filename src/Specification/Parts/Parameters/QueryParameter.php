@@ -4,7 +4,7 @@
 namespace Voice\OpenApi\Specification\Parts\Parameters;
 
 
-class Query implements Parameter
+class QueryParameter implements Parameter
 {
     public function __construct()
     {

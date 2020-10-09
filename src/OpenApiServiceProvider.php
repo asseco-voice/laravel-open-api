@@ -4,6 +4,7 @@ namespace Voice\OpenApi;
 
 use Illuminate\Support\ServiceProvider;
 use Voice\OpenApi\App\Console\Commands\OpenApi;
+use Voice\OpenApi\Specification\Document;
 
 class OpenApiServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,7 @@ class OpenApiServiceProvider extends ServiceProvider
     {
         $this->publishes([__DIR__ . '/../config/asseco-open-api.php' => config_path('asseco-open-api.php'),]);
 
+        $this->app->singleton(Document::class);
         $this->app->singleton(SchemaGenerator::class);
 
         if ($this->app->runningInConsole()) {

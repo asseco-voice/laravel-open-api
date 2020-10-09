@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Yaml\Yaml;
-use Voice\OpenApi\RouteTraverser;
 use Voice\OpenApi\SchemaGenerator;
 
 class OpenApi extends Command

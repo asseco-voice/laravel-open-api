@@ -89,7 +89,7 @@ class RouteWrapper
         preg_match_all('/{(.*?)}/', $this->path(), $matches);
 
         if (count($matches) < 2) {
-            throw new Exception("Regex match failed for {$this->path()}");
+            throw new OpenApiException("Regex match failed for {$this->path()}");
         }
 
         $parameters = [];

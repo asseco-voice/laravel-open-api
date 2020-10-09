@@ -4,48 +4,52 @@ namespace Voice\OpenApi;
 
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
+use Voice\OpenApi\Specification\Components;
 use Voice\OpenApi\Specification\Document;
-use Voice\OpenApi\Specification\Factories\ComponentsFactory;
-use Voice\OpenApi\Specification\Factories\PathsFactory;
-use Voice\OpenApi\Specification\Parts\Components\Schemas;
-use Voice\OpenApi\Specification\Parts\Models\Properties;
+use Voice\OpenApi\Specification\Parts\Components\Schema;
+use Voice\OpenApi\Specification\Paths;
 
 class SchemaGenerator
 {
-    protected RouteCollection $routes;
+    protected RouteCollection $routerRoutes;
     public Document $document;
     public Extractor $extractor;
 
-    public function __construct(Router $router)
+    public function __construct(Router $router, Document $document)
     {
-        $this->document = new Document();
-        $this->routes = $router->getRoutes();
+        $this->document = $document;
+        $this->routerRoutes = $router->getRoutes();
     }
 
     public function generate(): array
     {
-        $pathsFactory = new PathsFactory();
+        $this->traverseRoutes();
 
-        foreach ($this->routes as $route) {
+        return $this->document->toSchema();
+    }
+
+    protected function traverseRoutes()
+    {
+        $paths = new Paths();
+        $components = new Components();
+
+        foreach ($this->routerRoutes as $routerRoute) {
 
             // Testing purposes only
-//            $routeName = $route->getName();
+//            $routeName = $routerRoute->getName();
 //            if (!$routeName || !(preg_match('/authorization-rules\./', $routeName))) {
 //                continue;
 //            }
 
-            $routeWrapper = new RouteWrapper($route);
+            $route = new RouteWrapper($routerRoute);
 
-            if ($routeWrapper->shouldSkip()) {
+            if ($route->shouldSkip()) {
                 continue;
             }
 
-            $this->extractor = new Extractor($routeWrapper->controllerName());
+            $this->extractor = new Extractor($route->controllerName());
 
-            $pathsFactory->generate($routeWrapper, $this->extractor);
-
-            $properties = new Properties($this->extractor->modelColumns());
-
+            $paths->generatePath($route, $this->extractor);
 
             $model = $this->extractor->oneWordNamespacedModel();
 
@@ -53,16 +57,11 @@ class SchemaGenerator
                 continue;
             }
 
-            $schema = new Schemas($model, $properties);
-
-            $componentFactory = new ComponentsFactory($schema, $routeWrapper, $this->extractor);
-
-            $this->document->appendComponents($componentFactory->generate());
+            $components->generateComponents($model, $this->extractor->modelColumns());
         }
 
-        $this->document->appendPaths($pathsFactory->paths);
-
-        return $this->document->toSchema();
+        $this->document->appendPaths($paths);
+        $this->document->appendComponents($components);
     }
 
     public function getTags()

@@ -4,7 +4,6 @@ namespace Voice\OpenApi\Specification;
 
 use Illuminate\Support\Facades\Config;
 use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Specification\Parts\Components\Components;
 
 class Document implements Serializable
 {
@@ -16,8 +15,7 @@ class Document implements Serializable
         return array_merge(
             Config::get('asseco-open-api.general'),
             $this->paths,
-            ['components' =>
-                 ['schemas' => $this->components]],
+            $this->components,
         );
     }
 
@@ -26,9 +24,9 @@ class Document implements Serializable
         $this->paths = $paths->toSchema();
     }
 
-    public function appendComponents(Components $component)
+    public function appendComponents(Components $components)
     {
-        $this->components = array_merge($this->components, $component->toSchema());
+        $this->components = $components->toSchema();
     }
 
 }
