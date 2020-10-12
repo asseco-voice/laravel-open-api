@@ -13,6 +13,7 @@ class RequestBody implements Serializable
     public function generateContent($model): void
     {
         $content = new Content($model);
+
         $content->generateResponses(false);
 
         $this->append($content);

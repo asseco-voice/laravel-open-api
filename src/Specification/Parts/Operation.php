@@ -15,8 +15,8 @@ class Operation implements Serializable
     private DocBlock $methodDocBlock;
 
     protected string $operation;
-    protected array $responses;
-    protected array $options;
+    protected array $responses = [];
+    protected array $options = [];
     protected array $parameters = [];
     protected array $requestBody = [];
 
@@ -51,8 +51,12 @@ class Operation implements Serializable
         ], $options);
     }
 
-    public function generateRequestBody()
+    public function generateRequestBody(): void
     {
+        if (!$this->extractor->model) {
+            return;
+        }
+
         $requestBody = new RequestBody();
 
         $requestBody->generateContent($this->extractor->requestModelName());
@@ -60,16 +64,16 @@ class Operation implements Serializable
         $this->appendRequestBody($requestBody);
     }
 
-    public function generateResponses(bool $multiple)
+    public function generateResponses(bool $multiple): void
     {
         $responses = new Responses();
 
-        $responses->generateResponse($this->extractor->responseModelName(), $multiple);
+        $responses->generateResponse($this->extractor->model, $this->extractor->responseModelName(), $multiple);
 
         $this->appendResponses($responses);
     }
 
-    public function generateParameters(array $pathParameters)
+    public function generateParameters(array $pathParameters): void
     {
         if (!$pathParameters) {
             return;
@@ -82,17 +86,17 @@ class Operation implements Serializable
         $this->appendParameters($parameters);
     }
 
-    public function appendResponses(Responses $responses)
+    public function appendResponses(Responses $responses): void
     {
         $this->responses = $responses->toSchema();
     }
 
-    public function appendParameters(Parameters $parameters)
+    public function appendParameters(Parameters $parameters): void
     {
         $this->parameters = $parameters->toSchema();
     }
 
-    public function appendRequestBody(RequestBody $requestBody)
+    public function appendRequestBody(RequestBody $requestBody): void
     {
         $this->requestBody = $requestBody->toSchema();
     }

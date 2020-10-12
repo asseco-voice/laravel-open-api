@@ -3,17 +3,18 @@
 namespace Voice\OpenApi\Specification\Parts;
 
 use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Specification\Parts\Response;
 
 class Responses implements Serializable
 {
     protected array $responses = [];
 
-    public function generateResponse(string $model, bool $multiple): void
+    public function generateResponse(?string $model, string $responseModelName, bool $multiple): void
     {
         $response = new Response('200', 'Successful request.', []);
 
-        $response->generateContent($model, $multiple);
+        if ($model) {
+            $response->generateContent($responseModelName, $multiple);
+        }
 
         $this->append($response);
     }
