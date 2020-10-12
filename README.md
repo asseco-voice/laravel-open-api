@@ -25,12 +25,43 @@ as a Laravel service provider.
 Running the command ``php artisan voice:open-api`` will generate a new `.yml`
 file at ``storage/app/open-api.yml`` location.
 
-Command will read all routes, tag them automatically and generate as much data
-as it can without user intervention.
+What is covered out-of-the-box:
 
-Model names are inferred from controller name, so the command will do that
-successfully if controller is in ``ModelController`` format. For cases not
-covered by this convention, refer to [config](#config).
+- read all routes
+- inferring model name from controller name
+- group (tag) them automatically
+- get title and description from 
+- generate request and response parameters
+
+For cases not covered by this convention, refer to [config](#config).
+
+### Example
+
+Given the controller:
+
+```
+class UserController extends Controller
+{
+    /**
+     * Store a newly created resource in storage.    
+     *
+     * Create new User object and store it in DB.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $user = User::query()->create($request->all());
+
+        return response()->json($user);
+    }
+
+    ...
+```
+
+- command will infer ``User`` as being the main model for the controller
+- title: ``Store a newly created resource in storage.`` 
+- description: ``Create new User object and store it in DB.``
+- request data: ``User`` model table attributes without `id`, `created_at`, `updated_at` attributes
+- response data: complete ``User`` model table attributes
 
 ## Cache
 
