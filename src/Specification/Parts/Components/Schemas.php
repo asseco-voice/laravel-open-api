@@ -2,13 +2,46 @@
 
 namespace Voice\OpenApi\Specification\Parts\Components;
 
+use Voice\OpenApi\Extractor;
 use Voice\OpenApi\Specification\Parts\Components\Models\Schema;
 
 class Schemas implements Components
 {
     protected array $schemas = [];
 
-    public function generate($name, $modelColumns): void
+    public function generate(Extractor $extractor): void
+    {
+        $modelColumns = $extractor->modelColumns();
+
+        $this->generateRequestSchema($extractor->requestModelName(), $modelColumns);
+        $this->generateResponseSchema($extractor->responseModelName(), $modelColumns);
+    }
+
+    public function toSchema(): array
+    {
+        return $this->schemas;
+    }
+
+    protected function generateRequestSchema($name, $modelColumns): void
+    {
+        $columns = $this->cleanup($modelColumns);
+
+        $this->generateSchema($name, $columns);
+    }
+
+    protected function cleanup($modelColumns)
+    {
+        return array_filter($modelColumns, function ($column) {
+            return !in_array($column, ['id', 'created_at', 'updated_at']);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    protected function generateResponseSchema($name, $modelColumns): void
+    {
+        $this->generateSchema($name, $modelColumns);
+    }
+
+    protected function generateSchema($name, $modelColumns): void
     {
         $schema = new Schema();
         $schema->name = $name;
@@ -25,11 +58,7 @@ class Schemas implements Components
 
         // + will overwrite same array keys.
         // This is okay, schemas are unique.
-        $this->schemas = $schema->toSchema();
+        $this->schemas += $schema->toSchema();
     }
 
-    public function toSchema(): array
-    {
-        return $this->schemas;
-    }
 }

@@ -66,9 +66,19 @@ class Extractor
         return null;
     }
 
-    public function oneWordNamespacedModel(): string
+    public function fullModelName(): string
     {
         return str_replace(['\\', ' '], '', $this->model);
+    }
+
+    public function requestModelName()
+    {
+        return 'Request__' . $this->fullModelName();
+    }
+
+    public function responseModelName()
+    {
+        return 'Response__' . $this->fullModelName();
     }
 
     public function modelColumns(): array

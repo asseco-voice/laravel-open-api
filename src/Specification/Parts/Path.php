@@ -39,7 +39,7 @@ class Path implements Serializable
     public function generateOperation()
     {
         $routeOperations = $this->route->operations();
-        $parameters = $this->route->getPathParameters();
+        $pathParameters = $this->route->getPathParameters();
 
         $reflection = new ReflectionClass($this->route->controllerName());
         $methodDocBlock = new DocBlock($reflection->getMethod($this->route->controllerMethod())->getDocComment());
@@ -48,10 +48,14 @@ class Path implements Serializable
 
             $operation = new Operation($this->extractor, $methodDocBlock, $routeOperation);
 
-            $multiple = $routeOperation === 'get' && !$parameters;
+            $multiple = $routeOperation === 'get' && !$pathParameters;
 
             $operation->generateResponses($multiple);
-            $operation->generateParameters($parameters);
+            $operation->generateParameters($pathParameters);
+
+            if (in_array($routeOperation, ['post', 'put'])) {
+                $operation->generateRequestBody();
+            }
 
             $this->append($operation);
         }

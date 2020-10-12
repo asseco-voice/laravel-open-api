@@ -7,7 +7,7 @@ use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\Specification\Parts\Responses\JsonResponse;
 use Voice\OpenApi\Specification\Parts\Responses\Response as ResponseInterface;
 
-class ResponseContent implements Serializable
+class Content implements Serializable
 {
     private string $model;
 

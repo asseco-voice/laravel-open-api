@@ -18,6 +18,7 @@ class Operation implements Serializable
     protected array $responses;
     protected array $options;
     protected array $parameters = [];
+    protected array $requestBody = [];
 
     /**
      * Operation constructor.
@@ -50,11 +51,20 @@ class Operation implements Serializable
         ], $options);
     }
 
+    public function generateRequestBody()
+    {
+        $requestBody = new RequestBody();
+
+        $requestBody->generateContent($this->extractor->requestModelName());
+
+        $this->appendRequestBody($requestBody);
+    }
+
     public function generateResponses(bool $multiple)
     {
         $responses = new Responses();
 
-        $responses->generateResponse($this->extractor->oneWordNamespacedModel(), $multiple);
+        $responses->generateResponse($this->extractor->responseModelName(), $multiple);
 
         $this->appendResponses($responses);
     }
@@ -82,12 +92,18 @@ class Operation implements Serializable
         $this->parameters = $parameters->toSchema();
     }
 
+    public function appendRequestBody(RequestBody $requestBody)
+    {
+        $this->requestBody = $requestBody->toSchema();
+    }
+
     public function toSchema(): array
     {
         $schema = array_merge_recursive(
             $this->options,
             $this->parameters,
-            $this->responses
+            $this->requestBody,
+            $this->responses,
         );
 
         return [$this->operation => $schema];

@@ -51,13 +51,9 @@ class SchemaGenerator
 
             $paths->generatePath($route, $this->extractor);
 
-            $model = $this->extractor->oneWordNamespacedModel();
-
-            if (!$model) {
-                continue;
+            if ($this->extractor->model) {
+                $components->generateComponents($this->extractor);
             }
-
-            $components->generateComponents($model, $this->extractor->modelColumns());
         }
 
         $this->document->appendPaths($paths);

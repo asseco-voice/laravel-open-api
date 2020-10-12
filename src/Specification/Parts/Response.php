@@ -20,13 +20,13 @@ class Response implements Serializable
 
     public function generateContent($model, bool $multiple)
     {
-        $content = new ResponseContent($model);
+        $content = new Content($model);
         $content->generateResponses($multiple);
 
         $this->appendContent($content);
     }
 
-    public function appendContent(ResponseContent $responseContent)
+    public function appendContent(Content $responseContent)
     {
         $this->content = array_merge_recursive($this->content, $responseContent->toSchema());
     }
