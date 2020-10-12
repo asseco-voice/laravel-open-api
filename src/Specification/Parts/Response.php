@@ -18,9 +18,11 @@ class Response implements Serializable
         $this->options = $options;
     }
 
-    public function generateContent($model)
+    public function generateContent($model, bool $multiple)
     {
         $content = new ResponseContent($model);
+        $content->generateResponses($multiple);
+
         $this->appendContent($content);
     }
 

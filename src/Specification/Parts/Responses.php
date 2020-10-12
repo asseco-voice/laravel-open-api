@@ -9,11 +9,11 @@ class Responses implements Serializable
 {
     protected array $responses = [];
 
-    public function generateResponse($name)
+    public function generateResponse(string $model, bool $multiple): void
     {
         $response = new Response('200', 'Successful request.', []);
 
-        $response->generateContent($name);
+        $response->generateContent($model, $multiple);
 
         $this->append($response);
     }

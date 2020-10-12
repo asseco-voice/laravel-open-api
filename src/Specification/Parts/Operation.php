@@ -50,17 +50,21 @@ class Operation implements Serializable
         ], $options);
     }
 
-    public function generateResponses()
+    public function generateResponses(bool $multiple)
     {
         $responses = new Responses();
 
-        $responses->generateResponse($this->extractor->oneWordNamespacedModel());
+        $responses->generateResponse($this->extractor->oneWordNamespacedModel(), $multiple);
 
         $this->appendResponses($responses);
     }
 
-    public function generateParameters($pathParameters)
+    public function generateParameters(array $pathParameters)
     {
+        if (!$pathParameters) {
+            return;
+        }
+
         $parameters = new Parameters($this->extractor);
 
         $parameters->generateParameters($pathParameters);

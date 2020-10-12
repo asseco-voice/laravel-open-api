@@ -48,7 +48,9 @@ class Path implements Serializable
 
             $operation = new Operation($this->extractor, $methodDocBlock, $routeOperation);
 
-            $operation->generateResponses();
+            $multiple = $routeOperation === 'get' && !$parameters;
+
+            $operation->generateResponses($multiple);
             $operation->generateParameters($parameters);
 
             $this->append($operation);

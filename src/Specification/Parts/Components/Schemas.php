@@ -10,8 +10,8 @@ class Schemas implements Components
 
     public function generate($name, $modelColumns): void
     {
-        $schema = new Schema($name);
-
+        $schema = new Schema();
+        $schema->name = $name;
         $schema->generateProperties($modelColumns);
 
         $this->append($schema);
