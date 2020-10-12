@@ -25,6 +25,15 @@ as a Laravel service provider.
 Running the command ``php artisan voice:open-api`` will generate a new `.yml`
 file at ``storage/app/open-api.yml`` location.
 
+Command will read all routes, tag them automatically and generate as much data
+as it can without user intervention.
+
+Model names are inferred from controller name, so the command will do that
+successfully if controller is in ``ModelController`` format. For cases not
+covered by this convention, refer to [config](#config).
+
+## Cache
+
 Models database schema is being cached for performance (1d TTL), 
 if you modify a migration be sure to run ``php artisan voice:open-api --bust-cache``
 which will force re-caching. 
@@ -37,8 +46,9 @@ Publish the configuration with
 Configuration requires your minimal engagement, however there are some things which
 package can't assume. 
 
-If you have models outside of ``App`` namespace, be sure to include full namespace
+- For models outside of ``App`` namespace, be sure to include full namespace
 to ``namespaces`` config key as well so that package can automatically get the 
 model attributes. 
-
+- For controllers not named after their models (in ``ModelController`` format)
+remap in ``controllerModelMapping`` config key.
 
