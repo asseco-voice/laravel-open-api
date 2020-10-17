@@ -4,6 +4,8 @@ namespace Voice\OpenApi\Specification;
 
 use Illuminate\Support\Facades\Config;
 use Voice\OpenApi\Contracts\Serializable;
+use Voice\OpenApi\Specification\Components\Components;
+use Voice\OpenApi\Specification\Paths\Paths;
 
 class Document implements Serializable
 {

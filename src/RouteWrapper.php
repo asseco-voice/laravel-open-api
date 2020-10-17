@@ -7,6 +7,8 @@ use Exception;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Config;
 use Voice\OpenApi\Exceptions\OpenApiException;
+use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
+use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
 class RouteWrapper
 {
@@ -94,19 +96,20 @@ class RouteWrapper
 
         $parameters = [];
         foreach ($matches[1] as $match) {
+            $name = str_replace('?', '', $match);
+            $type = new IntegerType();
+            $description = 'Path parameter';
 
-            $required = preg_match('/\?/', $match);
+            $parameter = new PathParameter($name, $type);
+            $parameter->addDescription($description);
 
-            $parameters[] = [
-                'name'     => str_replace('?', '', $match),
-                'required' => $required,
-            ];
+            $parameters[] = $parameter;
         }
 
         return $parameters;
     }
 
-    protected function hasPathParameters(): bool
+    public function hasPathParameters(): bool
     {
         return preg_match('/{.*}/', $this->path());
     }

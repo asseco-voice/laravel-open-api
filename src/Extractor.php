@@ -3,33 +3,117 @@
 namespace Voice\OpenApi;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
+use Voice\OpenApi\Specification\Components\Parts\Schemas;
+use Voice\OpenApi\Specification\Paths\Operations\Operation;
+use Voice\OpenApi\Specification\Paths\Path;
 
 class Extractor
 {
-    public const CACHE_PREFIX = 'open_api_db_schema_';
+    protected const DEFAULT_NAMESPACE = 'App';
 
+    public ?Model $model;
+    public Path $path;
+
+    public ?Schemas $requestSchemas = null;
+    public ?Schemas $responseSchemas = null;
+
+    protected RouteWrapper $route;
     protected string $controller;
+    protected string $method;
     protected string $candidate;
-    public string    $groupTag;
-    public ?string   $model;
+    protected string $namespace;
 
-    public function __construct(string $controller)
+    /**
+     * Extractor constructor.
+     * @param RouteWrapper $route
+     * @throws Exceptions\OpenApiException
+     * @throws \ReflectionException
+     */
+    public function __construct(RouteWrapper $route)
     {
-        $this->controller = $controller;
-
+        $this->route = $route;
+        $this->controller = $route->controllerName();
+        $this->method = $route->controllerMethod();
+        $this->namespace = $this->guessNamespace();
         $this->candidate = $this->getModelCandidate();
-        $this->groupTag = $this->getGroupTag();
-        $this->model = $this->guessModel(); // ili candidate ako nema modela?
+        $this->path = new Path($route->path());
+    }
+
+    public function extract()
+    {
+        $reflectionExtractor = new ReflectionExtractor($this->controller, $this->method);
+
+        $this->model = $reflectionExtractor->getModel($this->namespace, $this->candidate);
+        $pathParameters = $reflectionExtractor->getPathParameters($this->route->getPathParameters());
+        $methodData = $reflectionExtractor->getMethodData($this->candidate);
+
+        $this->requestSchemas = new Schemas();
+        $this->responseSchemas = new Schemas();
+
+        $routeOperations = $this->route->operations();
+
+        foreach ($routeOperations as $routeOperation) {
+
+            $operation = new Operation($methodData, $routeOperation);
+
+            $responseGenerator = new ResponseGenerator($reflectionExtractor, $this->prependModelName("Response"));
+            $responseSchema = $responseGenerator->getSchema($this->model);
+            $this->responseSchemas->append($responseSchema);
+
+            $responses = $responseGenerator->generate($routeOperation, $this->route->hasPathParameters());
+
+            $operation->appendResponses($responses);
+
+
+            $requestGenerator = new RequestGenerator($reflectionExtractor);
+            $requestSchema = $requestGenerator->getSchema($this->prependModelName("Request"), $this->model);
+
+            if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
+
+                $this->requestSchemas->append($requestSchema);
+
+                $requestBody = $requestGenerator->getBody($requestSchema);
+                $operation->appendRequestBody($requestBody);
+
+            }
+
+            if ($pathParameters->parameters) {
+                $operation->appendParameters($pathParameters);
+            }
+
+            $this->path->append($operation);
+        }
     }
 
     /**
-     * Parse possible model name from controller. At this point we still don't know
-     * if this class exists or not.
+     * Try to guess model namespace from controller, assuming App part of the
+     * namespace exist.
      *
+     * I.e.
+     *
+     * My\Namespace\App\Http\Controllers\MyController will return My\Namespace\App\
+     *
+     * My\Non\Laravel\Namespace\MyController will return App\
+     *
+     * @param string $controller
+     * @return string
+     */
+    public function guessNamespace(): string
+    {
+        $split = preg_split('|' . self::DEFAULT_NAMESPACE . '|', $this->controller);
+
+        if (count($split) < 2) {
+            return self::DEFAULT_NAMESPACE . '\\';
+        }
+
+        return $split[0] . self::DEFAULT_NAMESPACE . '\\';
+    }
+
+    /**
+     * Parse possible model name from controller.
+     * At this point we still don't know if this class exists or not.
+     *
+     * @param string $controller
      * @return string
      */
     protected function getModelCandidate(): string
@@ -40,101 +124,24 @@ class Extractor
         return str_replace('Controller', '', $controllerName);
     }
 
-    protected function getGroupTag(): string
+    public function concatModelName(): string
     {
-        // Split words by uppercase letter.
-        $split = preg_split('/(?=[A-Z])/', $this->candidate);
-        // Unsetting first element because it is always empty.
-        unset($split[0]);
+        $controller = str_replace([$this->namespace, 'Http\\Controllers\\', '\\', ' '], '', $this->controller);
+        $namespace = str_replace(['\\', ' '], '', $this->namespace);
 
-        return Str::plural(implode(' ', $split));
-    }
+        $prefix = "{$this->method}_{$namespace}_{$controller}_";
 
-    protected function guessModel(): ?string
-    {
-        $namespaces = Config::get('asseco-open-api.namespaces');
-
-        foreach ($namespaces as $namespace) {
-
-            $classCandidate = $namespace . $this->candidate;
-
-            if (class_exists($classCandidate)) {
-                return $classCandidate;
-            }
-        }
-
-        return null;
-    }
-
-    public function fullModelName(): string
-    {
-        return str_replace(['\\', ' '], '', $this->model);
-    }
-
-    public function requestModelName()
-    {
-        return 'Request__' . $this->fullModelName();
-    }
-
-    public function responseModelName()
-    {
-        return 'Response__' . $this->fullModelName();
-    }
-
-    public function modelColumns(): array
-    {
         if (!$this->model) {
-            return [];
+            return $prefix . $this->candidate;
         }
 
-        $cacheKey = self::CACHE_PREFIX . $this->model;
+        $model = str_replace(['\\', ' '], '', get_class($this->model));
 
-        if (Cache::has($cacheKey) && !Config::get('asseco-open-api.bust_cache')) {
-            return Cache::get($cacheKey);
-        }
-
-        /**
-         * @var $model Model
-         */
-        $model = new $this->model;
-
-        $table = $model->getTable();
-        $columns = Schema::getColumnListing($table);
-        $modelColumns = [];
-
-        try { // having 'enum' in table definition will throw Doctrine error because it is not defined in their types.
-            foreach ($columns as $column) {
-                $modelColumns[$column] = $this->remapColumnTypes(Schema::getColumnType($table, $column));
-            }
-        } catch (\Exception $e) {
-            // what then...?
-        }
-
-        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
-
-        return $modelColumns;
+        return $prefix . str_replace($namespace, '', $model);
     }
 
-    protected function remapColumnTypes($columnType)
+    public function prependModelName(string $prefix)
     {
-        switch ($columnType) {
-            case 'bigint':
-                return 'integer';
-            case 'datetime':
-            case 'date':
-            case 'text':
-                return 'string';
-            case 'float':
-                return 'number';
-            default:
-                return $columnType;
-        }
-    }
-
-    public function getTypeForColumn(string $column)
-    {
-        $modelColumns = $this->modelColumns();
-
-        return array_key_exists($column, $modelColumns) ? $modelColumns[$column] : 'string';
+        return "{$prefix}_{$this->concatModelName()}";
     }
 }

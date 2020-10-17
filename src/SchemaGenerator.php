@@ -4,16 +4,14 @@ namespace Voice\OpenApi;
 
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
-use Voice\OpenApi\Specification\Components;
+use Voice\OpenApi\Specification\Components\Components;
 use Voice\OpenApi\Specification\Document;
-use Voice\OpenApi\Specification\Parts\Components\Schema;
-use Voice\OpenApi\Specification\Paths;
+use Voice\OpenApi\Specification\Paths\Paths;
 
 class SchemaGenerator
 {
     protected RouteCollection $routerRoutes;
     public Document $document;
-    public Extractor $extractor;
 
     public function __construct(Router $router, Document $document)
     {
@@ -37,7 +35,7 @@ class SchemaGenerator
 
             // Testing purposes only
 //            $routeName = $routerRoute->getName();
-//            if (!$routeName || !(preg_match('/authorization-rules\./', $routeName))) {
+//            if (!$routeName || !(preg_match('/containers\./', $routeName))) {
 //                continue;
 //            }
 
@@ -47,23 +45,19 @@ class SchemaGenerator
                 continue;
             }
 
-            $this->extractor = new Extractor($route->controllerName());
+            $extractor = new Extractor($route);
+            $extractor->extract();
 
-            $paths->generatePath($route, $this->extractor);
+            $paths->append($extractor->path);
 
-            if ($this->extractor->model) {
-                $components->generateComponents($this->extractor);
+            if ($extractor->requestSchemas) {
+                $components->append($extractor->requestSchemas);
             }
+
+            $components->append($extractor->responseSchemas);
         }
 
         $this->document->appendPaths($paths);
         $this->document->appendComponents($components);
-    }
-
-    public function getTags()
-    {
-//        foreach ($methodDocBlock->getTags() as $tag) {
-//            echo print_r($tag->getName(), true) . "\n";
-//        }
     }
 }

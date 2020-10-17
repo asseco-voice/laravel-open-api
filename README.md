@@ -4,14 +4,10 @@ This package provides painless OpenApi YML generation from existing routes.
 
 The idea is to have as little work to do as possible in order to generate the 
 API documentation, so the package will try to assume a lot of things such as
-models from controller names, parameters based on actual tables, outputs based
-on fake requests done etc. 
+models from controller names, request and response parameter based on actual
+tables etc. 
 
 For custom inputs/outputs, options will be provided.
-
-**Still in early development, expect issues :)**
-
-**Stay tuned**
 
 ## Installation
 
@@ -33,9 +29,14 @@ What is covered out-of-the-box:
 - get title and description from 
 - generate request and response parameters
 
-For cases not covered by this convention, refer to [config](#config).
+For cases not covered by this convention, refer to [overriding defaults section](#overriding-defaults).
 
-### Example
+For additional tweaking, refer to [config](#config).
+
+Depending on number of routes, first run may take a few seconds as it is requesting a DB schema for
+each model it can find. This is cached, so every subsequent run will run much faster. 
+
+### Simple out-of-the-box example
 
 Given the controller:
 
@@ -63,6 +64,133 @@ class UserController extends Controller
 - request data: ``User`` model table attributes without `id`, `created_at`, `updated_at` attributes
 - response data: complete ``User`` model table attributes
 
+## Overriding defaults
+
+Custom cases are handled through controller and method annotations in doc blocks:
+
+```
+/**
+ * My controller doc block
+ *
+ * @annotation random annotation
+ */
+class MyController extends Controller
+{
+    /**
+     * My method doc block
+     *
+     * @annotation another random annotation
+     */
+    public function index()
+    {
+        ...
+    }
+
+   ...
+}
+```
+
+### Groups (tags)
+
+When talking about 'groups', we are actually talking about OpenApi 'tags'. 
+
+By default, command will take the controller name, remove ``Controller`` from it
+and split `PascalCase` with spaces (i.e. `SysUserController` results in `Sys User` group name).
+
+- ``@group`` within a controller doc block will override default group. 
+- ``@group`` within a method doc block will override default group and controller group
+making it an operator with the highest precedence.
+
+It is possible to stack multiple group annotations.
+
+### Models
+
+Model is used to try to automatically generate inputs and outputs for standard Laravel
+CRUD functions.
+
+**Input (request):** model DB schema with either only fillable properties or except guarded.
+Fillable properties have precedence, guarded will be ignored if fillable exists.
+
+**Output (response):** complete model DB schema without hidden fields. 
+
+It is completely valid to have no model associated. In this case, no automatic actions
+will be performed which require an existing model class.
+
+By default, model name is extracted from controller name. To change this behavior,
+you have few options:
+
+- Map a specific controller to a specific model. See [config](#config) for details.
+- Include ``@model`` tag within a controller:
+   - Specifying namespaced model will use that model ``@model My\Namespaced\Model`` 
+   - Not specifying the namespace will use controller's namespace ``@model Model``
+   
+Controller tag has higher precedence over configuration mapping. If both exist, and
+controller tag fails, configuration will try to fetch the model as well. Failing on
+both fronts will result in model being ``null``.
+
+It is possible to exclude part of the model for the request:
+
+- ``@exclude attribute1 attribute2`` is a space separated list of specified model attributes
+which will not be included in request data.  
+
+### Path parameters
+
+By default, path parameter(s) will be set as integer (assuming most of the path parameters are 
+model IDs). 
+
+Override them by including the following in the method doc block:
+
+- ``@path`` will override what is fetched by default. You must provide it in the following
+convention ``@path name type description`` where:
+   - ``name`` - parameter name.
+   - ``type`` - [OpenApi data type](https://swagger.io/docs/specification/data-models/data-types/).
+   - ``description`` - text which will be set as parameter description (not required, 
+   empty by default, so it can be omitted). 
+   
+Examples:
+
+```
+@path name type
+@path name type Some description
+```
+
+It is not possible to set path parameter ``required`` property. It is automatically set to true because
+OpenApi doesn't support optional path parameters (even though Laravel does).
+
+### Request/response parameters
+
+By default, request/response parameter(s) will be [extracted from model](#models).
+
+Override them by including ``@request`` or/and `@response` in the method doc block.
+
+Example for ``@request``, working the same for `@response`:
+
+- ``@request`` will override what is fetched by default. You must provide it in the following
+convention ``@request name type required description`` where:
+   - ``name`` - parameter name.
+   - ``type`` - [OpenApi data type](https://swagger.io/docs/specification/data-models/data-types/).
+   - ``required`` - boolean `true/false` value indicating whether the parameter is required 
+   (if omitted, will be set to `true`)
+   - ``description`` - text which will be set as parameter description (if omitted, will be set to
+    empty string)
+   
+Examples:
+
+```
+@request name type
+@request name type true
+@request name type false Some description
+```
+
+For multiple parameters it is also possible to adopt a different convention:
+
+```
+@request
+name type required description
+name type required description
+name type required description
+```
+
 ## Cache
 
 Models database schema is being cached for performance (1d TTL), 
@@ -81,5 +209,8 @@ package can't assume.
 to ``namespaces`` config key as well so that package can automatically get the 
 model attributes. 
 - For controllers not named after their models (in ``ModelController`` format)
-remap in ``controllerModelMapping`` config key.
+remap in ``controller_model_mapping`` config key.
 
+## Extending functionalities
+
+// TBA
