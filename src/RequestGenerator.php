@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Voice\OpenApi\Specification\Paths\Operations\RequestBody;
 use Voice\OpenApi\Specification\Shared\Content\Content;
 use Voice\OpenApi\Specification\Shared\Content\JsonSchema;
-use Voice\OpenApi\Specification\Shared\Schema;
+use Voice\OpenApi\Specification\Shared\ReferencedSchema;
+use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class RequestGenerator
 {
@@ -17,27 +18,22 @@ class RequestGenerator
         $this->reflectionExtractor = $reflectionExtractor;
     }
 
-    public function getSchema(string $requestModelName, ?Model $model): ?Schema
+    public function createSchema(string $requestModelName, ?Model $model): ?StandardSchema
     {
         $requestColumns = $this->getRequestColumns($model);
 
-        if (empty($requestColumns)) {
-            return null;
-        }
+        $schema = new StandardSchema($requestModelName);
+        $schema->generateProperties($requestColumns);
 
-        $requestSchema = new Schema($requestModelName);
-        $requestSchema->generateProperties($requestColumns);
-        $requestSchema->model = $requestModelName;
-
-        return $requestSchema;
+        return $schema;
     }
 
-    public function getBody(Schema $requestSchema): RequestBody
+    public function getBody(string $requestModelName): RequestBody
     {
-        $requestSchema->referenced = true;
+        $schema = new ReferencedSchema($requestModelName);
 
         $jsonRequestSchema = new JsonSchema();
-        $jsonRequestSchema->append($requestSchema);
+        $jsonRequestSchema->append($schema);
 
         $requestContent = new Content();
         $requestContent->append($jsonRequestSchema);

@@ -12,13 +12,17 @@ class PathParameterExtractor extends AbstractTagExtractor
 {
     protected const PATH_PARAMETER_TAG_NAME = 'path';
 
-    public function __invoke(DocBlock $methodDocBlock, array $pathParameters): Parameters
+    public function __invoke(DocBlock $methodDocBlock, array $pathParameters): ?Parameters
     {
         $methodParameters = $this->getTags($methodDocBlock, self::PATH_PARAMETER_TAG_NAME);
 
         $parameters = new Parameters();
 
         if (!$methodParameters) {
+            if(!$pathParameters){
+                return null;
+            }
+
             foreach ($pathParameters as $pathParameter) {
                 $parameters->append($pathParameter);
             }

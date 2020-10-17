@@ -5,6 +5,8 @@ namespace Voice\OpenApi;
 use Illuminate\Database\Eloquent\Model;
 use Voice\OpenApi\Specification\Components\Parts\Schemas;
 use Voice\OpenApi\Specification\Paths\Operations\Operation;
+use Voice\OpenApi\Specification\Paths\Operations\RequestBody;
+use Voice\OpenApi\Specification\Paths\Operations\Responses;
 use Voice\OpenApi\Specification\Paths\Path;
 
 class Extractor
@@ -56,28 +58,16 @@ class Extractor
 
             $operation = new Operation($methodData, $routeOperation);
 
-            $responseGenerator = new ResponseGenerator($reflectionExtractor, $this->prependModelName("Response"));
-            $responseSchema = $responseGenerator->getSchema($this->model);
-            $this->responseSchemas->append($responseSchema);
-
-            $responses = $responseGenerator->generate($routeOperation, $this->route->hasPathParameters());
-
+            $responses = $this->generateResponses($reflectionExtractor, $routeOperation);
             $operation->appendResponses($responses);
 
+            $requestBody = $this->generateRequest($reflectionExtractor, $routeOperation);
 
-            $requestGenerator = new RequestGenerator($reflectionExtractor);
-            $requestSchema = $requestGenerator->getSchema($this->prependModelName("Request"), $this->model);
-
-            if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
-
-                $this->requestSchemas->append($requestSchema);
-
-                $requestBody = $requestGenerator->getBody($requestSchema);
+            if ($requestBody) {
                 $operation->appendRequestBody($requestBody);
-
             }
 
-            if ($pathParameters->parameters) {
+            if ($pathParameters) {
                 $operation->appendParameters($pathParameters);
             }
 
@@ -143,5 +133,34 @@ class Extractor
     public function prependModelName(string $prefix)
     {
         return "{$prefix}_{$this->concatModelName()}";
+    }
+
+    protected function generateResponses(ReflectionExtractor $reflectionExtractor, $routeOperation): Responses
+    {
+        $responseGenerator = new ResponseGenerator($reflectionExtractor);
+
+        $responseModelName = $this->prependModelName("Response");
+
+        $responseSchema = $responseGenerator->createSchema($responseModelName, $this->model);
+        $this->responseSchemas->append($responseSchema);
+
+        return $responseGenerator->generate($responseModelName, $routeOperation, $this->route->hasPathParameters());
+    }
+
+    protected function generateRequest(ReflectionExtractor $reflectionExtractor, $routeOperation): ?RequestBody
+    {
+        $requestGenerator = new RequestGenerator($reflectionExtractor);
+        $requestModelName = $this->prependModelName("Request");
+
+        $requestSchema = $requestGenerator->createSchema($requestModelName, $this->model);
+
+        if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
+
+            $this->requestSchemas->append($requestSchema);
+
+            return $requestGenerator->getBody($requestModelName);
+        }
+
+        return null;
     }
 }

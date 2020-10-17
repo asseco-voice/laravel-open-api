@@ -7,26 +7,26 @@ use Voice\OpenApi\Specification\Paths\Operations\Response;
 use Voice\OpenApi\Specification\Paths\Operations\Responses;
 use Voice\OpenApi\Specification\Shared\Content\Content;
 use Voice\OpenApi\Specification\Shared\Content\JsonSchema;
-use Voice\OpenApi\Specification\Shared\Schema;
+use Voice\OpenApi\Specification\Shared\ReferencedSchema;
+use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class ResponseGenerator
 {
     protected ReflectionExtractor $reflectionExtractor;
-    protected Schema $schema;
+    protected StandardSchema $schema;
 
-    public function __construct(ReflectionExtractor $reflectionExtractor, string $modelName)
+    public function __construct(ReflectionExtractor $reflectionExtractor)
     {
         $this->reflectionExtractor = $reflectionExtractor;
-        $this->schema = new Schema($modelName);
     }
 
-    public function generate(string $routeOperation, bool $routeHasPathParameters): Responses
+    public function generate(string $modelName, string $routeOperation, bool $routeHasPathParameters): Responses
     {
-        $this->schema->referenced = true;
-        $this->schema->multiple = $this->isMultiple($routeOperation, $routeHasPathParameters);
+        $schema = new ReferencedSchema($modelName);
+        $schema->multiple = $this->isMultiple($routeOperation, $routeHasPathParameters);
 
         $jsonResponseSchema = new JsonSchema();
-        $jsonResponseSchema->append($this->schema);
+        $jsonResponseSchema->append($schema);
 
         $responseContent = new Content();
         $responseContent->append($jsonResponseSchema);
@@ -42,13 +42,14 @@ class ResponseGenerator
         return $responses;
     }
 
-    public function getSchema(?Model $model): Schema
+    public function createSchema(string $modelName, ?Model $model): StandardSchema
     {
         $responseColumns = $this->getResponseColumns($model);
 
-        $this->schema->generateProperties($responseColumns);
+        $schema = new StandardSchema($modelName);
+        $schema->generateProperties($responseColumns);
 
-        return $this->schema;
+        return $schema;
     }
 
     protected function getResponseColumns(?Model $model): array
@@ -68,7 +69,7 @@ class ResponseGenerator
         return [];
     }
 
-    private function extractResponseData(Model $model, array $columns): array
+    protected function extractResponseData(Model $model, array $columns): array
     {
         $hidden = $model->getHidden();
 

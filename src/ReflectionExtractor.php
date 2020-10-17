@@ -15,6 +15,7 @@ use Voice\OpenApi\Extractors\MultipleExtractor;
 use Voice\OpenApi\Extractors\PathParameterExtractor;
 use Voice\OpenApi\Extractors\RequestBodyExtractor;
 use Voice\OpenApi\Extractors\ResponseBodyExtractor;
+use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 
 class ReflectionExtractor
 {
@@ -90,7 +91,7 @@ class ReflectionExtractor
         return (new ExceptExtractor())($this->methodDocBlock);
     }
 
-    public function getPathParameters(array $routeParameters)
+    public function getPathParameters(array $routeParameters): ?Parameters
     {
         return (new PathParameterExtractor())($this->methodDocBlock, $routeParameters);
     }
