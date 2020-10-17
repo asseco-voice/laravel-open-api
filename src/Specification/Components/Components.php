@@ -4,7 +4,6 @@ namespace Voice\OpenApi\Specification\Components;
 
 use Voice\OpenApi\Contracts\Serializable;
 use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Extractor;
 use Voice\OpenApi\Specification\Components\Parts\Components as ComponentsInterface;
 use Voice\OpenApi\Specification\Components\Parts\Schemas;
 use Voice\OpenApi\Traits\MergesArrays;
@@ -23,20 +22,6 @@ class Components implements Serializable
     {
         foreach ($this->registered as $componentKey => $componentClass) {
             $this->initializeComponentKey($componentKey);
-        }
-    }
-
-    public function generateComponents(Extractor $extractor): void
-    {
-        foreach ($this->registered as $componentKey => $componentClass) {
-            $component = $this->initializeComponent($componentClass);
-
-//            if ($this->modelAlreadyResolved($name, $componentKey)) {
-//                continue;
-//            }
-
-            $component->generate($extractor);
-            $this->append($component);
         }
     }
 

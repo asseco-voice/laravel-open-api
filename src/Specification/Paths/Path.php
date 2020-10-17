@@ -3,7 +3,6 @@
 namespace Voice\OpenApi\Specification\Paths;
 
 use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Extractor;
 use Voice\OpenApi\Specification\Paths\Operations\Operation;
 
 class Path implements Serializable
@@ -11,7 +10,6 @@ class Path implements Serializable
     protected array $operations = [];
 
     private string $route;
-    private Extractor $extractor;
 
     public function __construct(string $route)
     {

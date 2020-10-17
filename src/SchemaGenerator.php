@@ -5,7 +5,10 @@ namespace Voice\OpenApi;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 use Voice\OpenApi\Specification\Components\Components;
+use Voice\OpenApi\Specification\Components\Parts\Schemas;
 use Voice\OpenApi\Specification\Document;
+use Voice\OpenApi\Specification\Paths\Operations\Operation;
+use Voice\OpenApi\Specification\Paths\Path;
 use Voice\OpenApi\Specification\Paths\Paths;
 
 class SchemaGenerator
@@ -45,16 +48,71 @@ class SchemaGenerator
                 continue;
             }
 
-            $extractor = new Extractor($route);
-            $extractor->extract();
+            $controller = $route->controllerName();
+            $method = $route->controllerMethod();
 
-            $paths->append($extractor->path);
+            $nameExtractor = new NameExtractor($controller, $method);
 
-            if ($extractor->requestSchemas) {
-                $components->append($extractor->requestSchemas);
+            $reflectionExtractor = new ReflectionExtractor($controller, $method);
+
+            $model = $reflectionExtractor->getModel($nameExtractor->namespace, $nameExtractor->candidate);
+
+            $pathParameters = $reflectionExtractor->getPathParameters($route->getPathParameters());
+            $methodData = $reflectionExtractor->getMethodData($nameExtractor->candidate);
+
+            $path = new Path($route->path());
+
+            $requestSchemas = new Schemas();
+            $responseSchemas = new Schemas();
+
+            $routeOperations = $route->operations();
+
+            foreach ($routeOperations as $routeOperation) {
+
+                $operation = new Operation($methodData, $routeOperation);
+
+                $responseGenerator = new ResponseGenerator($reflectionExtractor);
+                $responseModelName = $nameExtractor->prependModelName("Response", $model);
+
+                $responseSchema = $responseGenerator->createSchema($responseModelName, $model);
+                $responseSchemas->append($responseSchema);
+
+                $responses = $responseGenerator->generate($responseModelName, $routeOperation, $route->hasPathParameters());
+
+                $operation->appendResponses($responses);
+
+
+                $requestGenerator = new RequestGenerator($reflectionExtractor);
+                $requestModelName = $nameExtractor->prependModelName("Request", $model);
+
+                $requestSchema = $requestGenerator->createSchema($requestModelName, $model);
+
+                if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
+
+                    $requestSchemas->append($requestSchema);
+
+                    $requestBody = $requestGenerator->getBody($requestModelName);
+                }
+
+                if (isset($requestBody)) {
+                    $operation->appendRequestBody($requestBody);
+                }
+
+                if ($pathParameters) {
+                    $operation->appendParameters($pathParameters);
+                }
+
+                $path->append($operation);
             }
 
-            $components->append($extractor->responseSchemas);
+
+            $paths->append($path);
+
+            if ($requestSchemas) {
+                $components->append($requestSchemas);
+            }
+
+            $components->append($responseSchemas);
         }
 
         $this->document->appendPaths($paths);

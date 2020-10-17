@@ -4,11 +4,9 @@ namespace Voice\OpenApi\Specification\Shared\Content;
 
 use Voice\OpenApi\Contracts\Serializable;
 use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Extractor;
 
 class Content implements Serializable
 {
-    protected Extractor $extractor;
     protected array $content = [];
 
     protected array $registered = [
@@ -19,16 +17,6 @@ class Content implements Serializable
     {
         foreach ($this->registered as $contentKey => $contentClass) {
             $this->initializeComponentKey($contentKey);
-        }
-    }
-
-    public function generate(bool $multiple)
-    {
-        foreach ($this->registered as $contentKey => $contentClass) {
-            $content = $this->initializeContent($contentClass);
-
-            $content->generate($this->extractor, true, $multiple);
-            $this->append($content);
         }
     }
 
