@@ -91,6 +91,11 @@ class Extractor
         return (new ExceptExtractor())($this->methodDocBlock);
     }
 
+    /**
+     * @param array $routeParameters
+     * @return Parameters|null
+     * @throws Exceptions\OpenApiException
+     */
     public function getPathParameters(array $routeParameters): ?Parameters
     {
         return (new PathParameterExtractor())($this->methodDocBlock, $routeParameters);

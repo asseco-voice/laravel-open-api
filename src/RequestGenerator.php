@@ -61,7 +61,6 @@ class RequestGenerator
             return $this->extractRequestData($model, $modelColumns->modelColumns(), $except);
         }
 
-
         return [];
     }
 

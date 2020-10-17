@@ -10,19 +10,6 @@ class ModelExtractor extends AbstractTagExtractor
 {
     protected const MODEL_TAG_NAME = 'model';
 
-    /**
-     * Return model class by precedence.
-     *
-     * 1. Return from config mapping
-     * 2. If no mapping is present try to return candidate
-     * 3. Return null if nothing is found
-     *
-     * @param DocBlock $controllerDocBlock
-     * @param string $controller
-     * @param string $namespace
-     * @param string $candidate
-     * @return string|null
-     */
     public function __invoke(DocBlock $controllerDocBlock, string $controller, string $namespace, string $candidate): ?Model
     {
         $model = $this->getModelFromDocBlock($controllerDocBlock, $namespace);

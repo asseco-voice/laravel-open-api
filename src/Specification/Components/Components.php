@@ -33,8 +33,12 @@ class Components implements Serializable
      * @param Component $component
      * @throws OpenApiException
      */
-    public function append(Component $component): void
+    public function append(?Component $component): void
     {
+        if(!$component){
+            return;
+        }
+
         $componentClass = get_class($component);
 
         if (!in_array($componentClass, $this->registered)) {

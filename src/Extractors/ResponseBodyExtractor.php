@@ -10,18 +10,6 @@ class ResponseBodyExtractor extends AbstractTagExtractor
 {
     protected const RESPONSE_PARAMETER_TAG_NAME = 'response';
 
-    /**
-     * Get group tags by precedence.
-     *
-     * 1. return method groups
-     * 2. if they don't exist return controller groups
-     * 3. if they don't exist return guessed group
-     *
-     * @param DocBlock $methodDocBlock
-     * @param array $pathParameters
-     * @return array
-     * @throws OpenApiException
-     */
     public function __invoke(DocBlock $methodDocBlock): array
     {
         $responseTags = $this->getTags($methodDocBlock, self::RESPONSE_PARAMETER_TAG_NAME);

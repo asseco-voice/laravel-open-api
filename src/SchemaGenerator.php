@@ -102,15 +102,13 @@ class SchemaGenerator
                 $operation->appendResponses($responses);
 
                 $responseSchemas->append($responseSchema);
+
                 $path->append($operation);
             }
 
             $paths->append($path);
 
-            if ($requestSchemas) {
-                $components->append($requestSchemas);
-            }
-
+            $components->append($requestSchemas);
             $components->append($responseSchemas);
         }
 

@@ -10,18 +10,6 @@ class RequestBodyExtractor extends AbstractTagExtractor
 {
     protected const REQUEST_PARAMETER_TAG_NAME = 'request';
 
-    /**
-     * Get group tags by precedence.
-     *
-     * 1. return method groups
-     * 2. if they don't exist return controller groups
-     * 3. if they don't exist return guessed group
-     *
-     * @param DocBlock $methodDocBlock
-     * @param array $pathParameters
-     * @return array
-     * @throws OpenApiException
-     */
     public function __invoke(DocBlock $methodDocBlock): array
     {
         $methodParameters = $this->getTags($methodDocBlock, self::REQUEST_PARAMETER_TAG_NAME);
