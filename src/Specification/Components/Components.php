@@ -4,14 +4,11 @@ namespace Voice\OpenApi\Specification\Components;
 
 use Voice\OpenApi\Contracts\Serializable;
 use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Specification\Components\Parts\Components as ComponentsInterface;
+use Voice\OpenApi\Specification\Components\Parts\Component;
 use Voice\OpenApi\Specification\Components\Parts\Schemas;
-use Voice\OpenApi\Traits\MergesArrays;
 
 class Components implements Serializable
 {
-    use MergesArrays;
-
     protected array $components = [];
 
     protected array $registered = [
@@ -25,17 +22,6 @@ class Components implements Serializable
         }
     }
 
-    protected function initializeComponent(string $componentClass): ComponentsInterface
-    {
-        $component = new $componentClass();
-
-        if (!$component instanceof ComponentsInterface) {
-            throw new OpenApiException("Component '$componentClass' doesn't implement Components interface.");
-        }
-
-        return $component;
-    }
-
     protected function initializeComponentKey(string $componentKey): void
     {
         if (!array_key_exists($componentKey, $this->components)) {
@@ -43,12 +29,7 @@ class Components implements Serializable
         }
     }
 
-    protected function modelAlreadyResolved(string $name, string $componentKey): bool
-    {
-        return in_array($name, $this->components[$componentKey]);
-    }
-
-    public function append(ComponentsInterface $component): void
+    public function append(Component $component): void
     {
         $componentClass = get_class($component);
 

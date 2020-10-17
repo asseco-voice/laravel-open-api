@@ -6,7 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use ReflectionException;
 use Symfony\Component\Yaml\Yaml;
+use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\SchemaGenerator;
 
 class OpenApi extends Command
@@ -27,9 +29,9 @@ class OpenApi extends Command
     protected $description = 'Generate OpenApi yaml file from app routes.';
 
     /**
-     * Execute the console command.
-     *
      * @return int
+     * @throws ReflectionException
+     * @throws OpenApiException
      */
     public function handle()
     {

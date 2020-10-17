@@ -3,12 +3,9 @@
 namespace Voice\OpenApi\Specification\Paths;
 
 use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Traits\MergesArrays;
 
 class Paths implements Serializable
 {
-    use MergesArrays;
-
     protected array $paths = [];
 
     public function append(Path $path)

@@ -4,7 +4,7 @@ namespace Voice\OpenApi\Specification\Components\Parts;
 
 use Voice\OpenApi\Contracts\Serializable;
 
-interface Components extends Serializable
+interface Component extends Serializable
 {
 
 }

@@ -4,6 +4,7 @@ namespace Voice\OpenApi;
 
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
+use ReflectionException;
 use Voice\OpenApi\Specification\Components\Components;
 use Voice\OpenApi\Specification\Components\Parts\Schemas;
 use Voice\OpenApi\Specification\Document;
@@ -22,14 +23,27 @@ class SchemaGenerator
         $this->routerRoutes = $router->getRoutes();
     }
 
+    /**
+     * @return array
+     * @throws Exceptions\OpenApiException
+     * @throws ReflectionException
+     */
     public function generate(): array
     {
-        $this->traverseRoutes();
+        [$paths, $components] = $this->traverseRoutes();
+
+        $this->document->appendPaths($paths);
+        $this->document->appendComponents($components);
 
         return $this->document->toSchema();
     }
 
-    protected function traverseRoutes()
+    /**
+     * @return array
+     * @throws Exceptions\OpenApiException
+     * @throws ReflectionException
+     */
+    protected function traverseRoutes(): array
     {
         $paths = new Paths();
         $components = new Components();
@@ -114,7 +128,6 @@ class SchemaGenerator
             $components->append($responseSchemas);
         }
 
-        $this->document->appendPaths($paths);
-        $this->document->appendComponents($components);
+        return [$paths, $components];
     }
 }

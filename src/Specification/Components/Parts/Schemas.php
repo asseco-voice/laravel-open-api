@@ -4,7 +4,7 @@ namespace Voice\OpenApi\Specification\Components\Parts;
 
 use Voice\OpenApi\Specification\Shared\StandardSchema;
 
-class Schemas implements Components
+class Schemas implements Component
 {
     protected array $schemas = [];
 
