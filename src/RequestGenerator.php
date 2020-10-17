@@ -11,10 +11,10 @@ use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class RequestGenerator
 {
-    private Extractor $reflectionExtractor;
+    private TagExtractor $reflectionExtractor;
     private string $schemaName;
 
-    public function __construct(Extractor $reflectionExtractor, string $schemaName)
+    public function __construct(TagExtractor $reflectionExtractor, string $schemaName)
     {
         $this->reflectionExtractor = $reflectionExtractor;
         $this->schemaName = $schemaName;

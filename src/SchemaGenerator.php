@@ -70,7 +70,7 @@ class SchemaGenerator
             $namespace = (new NamespaceGuesser())($controller);
             $candidate = (new CandidateGuesser())($controller);
 
-            $extractor = new Extractor($controller, $method);
+            $extractor = new TagExtractor($controller, $method);
             $model = $extractor->getModel($namespace, $candidate);
             $methodData = $extractor->getMethodData($candidate);
             $pathParameters = $extractor->getPathParameters($route->getPathParameters());
@@ -140,7 +140,7 @@ class SchemaGenerator
         return str_replace(['\\', ' '], '', $input);
     }
 
-    protected function generateResponses(Extractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model): array
+    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model): array
     {
         $responseGenerator = new ResponseGenerator($extractor, "Response_" . $schemaName);
 
