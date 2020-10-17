@@ -33,8 +33,12 @@ class Operation implements Serializable
         $this->methodData = $methodData;
     }
 
-    public function appendParameters(Parameters $parameters): void
+    public function appendParameters(?Parameters $parameters): void
     {
+        if (!$parameters) {
+            return;
+        }
+
         $this->parameters = $parameters->toSchema();
     }
 
@@ -43,8 +47,12 @@ class Operation implements Serializable
         $this->responses = $responses->toSchema();
     }
 
-    public function appendRequestBody(RequestBody $requestBody): void
+    public function appendRequestBody(?RequestBody $requestBody): void
     {
+        if (!$requestBody) {
+            return;
+        }
+
         $this->requestBody = $requestBody->toSchema();
     }
 

@@ -67,58 +67,41 @@ class SchemaGenerator
 
             $controller = $route->controllerName();
             $method = $route->controllerMethod();
-            $namespace = $this->guessNamespace($controller);
-            $candidate = $this->guessCandidate($controller);
+            $namespace = (new NamespaceGuesser())($controller);
+            $candidate = (new CandidateGuesser())($controller);
 
             $extractor = new Extractor($controller, $method);
-
             $model = $extractor->getModel($namespace, $candidate);
-
-            $pathParameters = $extractor->getPathParameters($route->getPathParameters());
             $methodData = $extractor->getMethodData($candidate);
-
-            $path = new Path($route->path());
-
-            $requestSchemas = new Schemas();
-            $responseSchemas = new Schemas();
+            $pathParameters = $extractor->getPathParameters($route->getPathParameters());
 
             $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
 
-            $routeOperations = $route->operations();
+            $path = new Path($route->path());
+            $requestSchemas = new Schemas();
+            $responseSchemas = new Schemas();
 
-            foreach ($routeOperations as $routeOperation) {
+            foreach ($route->operations() as $routeOperation) {
 
                 $operation = new Operation($methodData, $routeOperation);
 
-                $responseGenerator = new ResponseGenerator($extractor);
-                $responseModelName = "Response" . $schemaName;
-                $responseSchema = $responseGenerator->createSchema($responseModelName, $model);
+                [$responseSchema, $responses] =
+                    $this->generateResponses($extractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model);
 
-                $responseSchemas->append($responseSchema);
-
-                $responses = $responseGenerator->generate($responseModelName, $routeOperation, $route->hasPathParameters());
-
-                $operation->appendResponses($responses);
-
-
-                $requestGenerator = new RequestGenerator($extractor);
-                $requestModelName = "Request" . $schemaName;
-                $requestSchema = $requestGenerator->createSchema($requestModelName, $model);
+                $requestGenerator = new RequestGenerator($extractor, "Request_" . $schemaName);
+                $requestSchema = $requestGenerator->createSchema($model);
 
                 $requestBody = null;
                 if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
                     $requestSchemas->append($requestSchema);
-                    $requestBody = $requestGenerator->getBody($requestModelName);
+                    $requestBody = $requestGenerator->getBody();
                 }
 
-                if ($requestBody) {
-                    $operation->appendRequestBody($requestBody);
-                }
+                $operation->appendRequestBody($requestBody);
+                $operation->appendParameters($pathParameters);
+                $operation->appendResponses($responses);
 
-                if ($pathParameters) {
-                    $operation->appendParameters($pathParameters);
-                }
-
+                $responseSchemas->append($responseSchema);
                 $path->append($operation);
             }
 
@@ -134,22 +117,12 @@ class SchemaGenerator
         return [$paths, $components];
     }
 
-    protected function guessNamespace(string $controller): string
-    {
-        return (new NamespaceGuesser())($controller);
-    }
-
-    protected function guessCandidate(string $controller)
-    {
-        return (new CandidateGuesser())($controller);
-    }
-
     public function schemaName(string $namespace, string $controller, string $method, string $candidate, ?Model $model): string
     {
         $joinedNamespace = $this->removeSlashes($namespace);
         $joinedController = $this->removeSlashes($controller);
 
-        $finalController = str_replace([$joinedNamespace, 'Http\\Controllers\\'], '', $joinedController);
+        $finalController = str_replace([$joinedNamespace, 'HttpControllers'], '', $joinedController);
 
         $prefix = "{$method}_{$joinedNamespace}_{$finalController}_";
 
@@ -167,5 +140,15 @@ class SchemaGenerator
     protected function removeSlashes(string $input)
     {
         return str_replace(['\\', ' '], '', $input);
+    }
+
+    protected function generateResponses(Extractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model): array
+    {
+        $responseGenerator = new ResponseGenerator($extractor, "Response_" . $schemaName);
+
+        $responseSchema = $responseGenerator->createSchema($model);
+        $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters);
+
+        return [$responseSchema, $responses];
     }
 }

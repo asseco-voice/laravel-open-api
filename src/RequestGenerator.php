@@ -12,25 +12,27 @@ use Voice\OpenApi\Specification\Shared\StandardSchema;
 class RequestGenerator
 {
     private Extractor $reflectionExtractor;
+    private string $schemaName;
 
-    public function __construct(Extractor $reflectionExtractor)
+    public function __construct(Extractor $reflectionExtractor, string $schemaName)
     {
         $this->reflectionExtractor = $reflectionExtractor;
+        $this->schemaName = $schemaName;
     }
 
-    public function createSchema(string $requestModelName, ?Model $model): ?StandardSchema
+    public function createSchema(?Model $model): ?StandardSchema
     {
         $requestColumns = $this->getRequestColumns($model);
 
-        $schema = new StandardSchema($requestModelName);
+        $schema = new StandardSchema($this->schemaName);
         $schema->generateProperties($requestColumns);
 
         return $schema;
     }
 
-    public function getBody(string $requestModelName): RequestBody
+    public function getBody(): RequestBody
     {
-        $schema = new ReferencedSchema($requestModelName);
+        $schema = new ReferencedSchema($this->schemaName);
 
         $jsonRequestSchema = new JsonSchema();
         $jsonRequestSchema->append($schema);

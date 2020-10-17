@@ -14,15 +14,17 @@ class ResponseGenerator
 {
     protected Extractor $reflectionExtractor;
     protected StandardSchema $schema;
+    private string $schemaName;
 
-    public function __construct(Extractor $reflectionExtractor)
+    public function __construct(Extractor $reflectionExtractor, string $schemaName)
     {
         $this->reflectionExtractor = $reflectionExtractor;
+        $this->schemaName = $schemaName;
     }
 
-    public function generate(string $modelName, string $routeOperation, bool $routeHasPathParameters): Responses
+    public function generate(string $routeOperation, bool $routeHasPathParameters): Responses
     {
-        $schema = new ReferencedSchema($modelName);
+        $schema = new ReferencedSchema($this->schemaName);
         $schema->multiple = $this->isMultiple($routeOperation, $routeHasPathParameters);
 
         $jsonResponseSchema = new JsonSchema();
@@ -42,11 +44,11 @@ class ResponseGenerator
         return $responses;
     }
 
-    public function createSchema(string $modelName, ?Model $model): StandardSchema
+    public function createSchema(?Model $model): StandardSchema
     {
         $responseColumns = $this->getResponseColumns($model);
 
-        $schema = new StandardSchema($modelName);
+        $schema = new StandardSchema($this->schemaName);
         $schema->generateProperties($responseColumns);
 
         return $schema;
