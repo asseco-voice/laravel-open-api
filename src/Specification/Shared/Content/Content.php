@@ -20,17 +20,6 @@ class Content implements Serializable
         }
     }
 
-    protected function initializeContent(string $contentClass): ContentSchema
-    {
-        $content = new $contentClass();
-
-        if (!$content instanceof ContentSchema) {
-            throw new OpenApiException("Response '$contentClass' doesn't implement Response interface.");
-        }
-
-        return $content;
-    }
-
     protected function initializeComponentKey(string $contentKey): void
     {
         if (!array_key_exists($contentKey, $this->content)) {
@@ -38,6 +27,10 @@ class Content implements Serializable
         }
     }
 
+    /**
+     * @param ContentSchema $content
+     * @throws OpenApiException
+     */
     public function append(ContentSchema $content): void
     {
         $contentClass = get_class($content);

@@ -3,7 +3,6 @@
 namespace Voice\OpenApi;
 
 use Closure;
-use Exception;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Config;
 use Voice\OpenApi\Exceptions\OpenApiException;
@@ -19,6 +18,11 @@ class RouteWrapper
     protected array $excludeRules;
     protected bool $verbose;
 
+    /**
+     * RouteWrapper constructor.
+     * @param Route $route
+     * @throws OpenApiException
+     */
     public function __construct(Route $route)
     {
         if (!array_key_exists('uses', $route->getAction())) {
@@ -42,7 +46,11 @@ class RouteWrapper
         return $this->route->getAction();
     }
 
-    public function controllerName()
+    /**
+     * @return string
+     * @throws OpenApiException
+     */
+    public function controllerName(): string
     {
         if (isset($this->controllerName)) {
             return $this->controllerName;
@@ -53,7 +61,11 @@ class RouteWrapper
         return $this->controllerName;
     }
 
-    public function controllerMethod()
+    /**
+     * @return string
+     * @throws OpenApiException
+     */
+    public function controllerMethod(): string
     {
         if (isset($this->controllerMethod)) {
             return $this->controllerMethod;
@@ -64,12 +76,16 @@ class RouteWrapper
         return $this->controllerMethod;
     }
 
-    protected function explodeAction()
+    /**
+     * @return array
+     * @throws OpenApiException
+     */
+    protected function explodeAction(): array
     {
         $exploded = explode('@', $this->action()['uses']);
 
         if (sizeof($exploded) < 2) {
-            throw new Exception("Exploding {$this->route->getName()} route controller@action resulted in error.");
+            throw new OpenApiException("Exploding {$this->route->getName()} route controller@action resulted in error.");
         }
 
         return $exploded;
@@ -82,6 +98,10 @@ class RouteWrapper
         }, array_diff($this->route->methods(), ['HEAD']));
     }
 
+    /**
+     * @return array
+     * @throws OpenApiException
+     */
     public function getPathParameters(): array
     {
         if (!$this->hasPathParameters()) {

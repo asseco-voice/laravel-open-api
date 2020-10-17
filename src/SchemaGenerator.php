@@ -118,7 +118,6 @@ class SchemaGenerator
                 $path->append($operation);
             }
 
-
             $paths->append($path);
 
             if ($requestSchemas) {

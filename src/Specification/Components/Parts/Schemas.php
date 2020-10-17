@@ -2,7 +2,7 @@
 
 namespace Voice\OpenApi\Specification\Components\Parts;
 
-use Voice\OpenApi\Specification\Shared\StandardSchema;
+use Voice\OpenApi\Specification\Shared\Schema;
 
 class Schemas implements Component
 {
@@ -13,14 +13,8 @@ class Schemas implements Component
         return $this->schemas;
     }
 
-    public function append(StandardSchema $schema, bool $referenced = false): void
+    public function append(Schema $schema): void
     {
-        if (array_key_exists($schema->name, $this->schemas)) {
-            return;
-        }
-
-        $schema->referenced = $referenced;
-
         // + will overwrite same array keys.
         // This is okay, schemas are unique.
         $this->schemas += $schema->toSchema();

@@ -10,12 +10,11 @@ class Operation implements Serializable
 {
     protected const OPERATIONS = ['get', 'post', 'put', 'patch', 'delete'];
 
+    protected array $methodData;
     protected string $operation;
-    protected array $responses = [];
-    protected array $options = [];
-    protected array $parameters = [];
     protected array $requestBody = [];
-    private array $methodData;
+    protected array $responses = [];
+    protected array $parameters = [];
 
     /**
      * Operation constructor.
@@ -24,7 +23,7 @@ class Operation implements Serializable
      * @param array $options
      * @throws OpenApiException
      */
-    public function __construct(array $methodData, string $operation, array $options = [])
+    public function __construct(array $methodData, string $operation)
     {
         if (!in_array($operation, self::OPERATIONS)) {
             throw new OpenApiException("Operation '$operation' unsupported.");
@@ -32,26 +31,11 @@ class Operation implements Serializable
 
         $this->operation = $operation;
         $this->methodData = $methodData;
-        $this->options = $this->generateOptions($options);
-    }
-
-    protected function generateOptions(array $options): array
-    {
-        return array_merge($this->methodData, $options);
     }
 
     public function appendParameters(Parameters $parameters): void
     {
         $this->parameters = $parameters->toSchema();
-    }
-
-    public function generateResponses(bool $multiple): void
-    {
-        $responses = new Responses();
-
-        $responses->generateResponse($multiple, '200', 'Successful request.');
-
-        $this->appendResponses($responses);
     }
 
     public function appendResponses(Responses $responses): void
@@ -67,7 +51,7 @@ class Operation implements Serializable
     public function toSchema(): array
     {
         $schema = array_merge_recursive(
-            $this->options,
+            $this->methodData,
             $this->parameters,
             $this->requestBody,
             $this->responses,

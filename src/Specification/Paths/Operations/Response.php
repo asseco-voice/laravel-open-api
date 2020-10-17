@@ -7,10 +7,10 @@ use Voice\OpenApi\Specification\Shared\Content\Content;
 
 class Response implements Serializable
 {
-    private string $statusCode;
-    private string $description;
-    private array $options;
-    private array $content = [];
+    protected string $statusCode;
+    protected string $description;
+    protected array $options;
+    protected array $content = [];
 
     public function __construct(string $statusCode, string $description, array $options = [])
     {
@@ -19,15 +19,7 @@ class Response implements Serializable
         $this->options = $options;
     }
 
-    public function generateContent(bool $multiple)
-    {
-        $content = new Content();
-        $content->generate($multiple);
-
-        $this->appendContent($content);
-    }
-
-    public function appendContent(Content $responseContent)
+    public function append(Content $responseContent)
     {
         $this->content = array_merge_recursive($this->content, $responseContent->toSchema());
     }

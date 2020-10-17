@@ -8,17 +8,6 @@ class Responses implements Serializable
 {
     protected array $responses = [];
 
-    public function generateResponse(bool $multiple, string $statusCode, string $description): void
-    {
-        $response = new Response($statusCode, $description);
-
-        if ($this->extractor->model) {
-            $response->generateContent($multiple);
-        }
-
-        $this->append($response);
-    }
-
     public function append(Response $response)
     {
         // + will overwrite same array keys.

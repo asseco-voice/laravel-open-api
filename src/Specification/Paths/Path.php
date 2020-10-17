@@ -27,26 +27,4 @@ class Path implements Serializable
     {
         return [$this->route => $this->operations];
     }
-
-    public function generateOperation()
-    {
-        $routeOperations = $this->route->operations();
-        $pathParameters = $this->route->getPathParameters();
-
-        foreach ($routeOperations as $routeOperation) {
-
-            $operation = new Operation($routeOperation);
-
-            $multiple = $routeOperation === 'get' && !$pathParameters;
-
-            $operation->generateParameters();
-            $operation->generateResponses($multiple);
-
-//            if (in_array($routeOperation, ['post', 'put'])) {
-//                $operation->generateRequestBody();
-//            }
-
-            $this->append($operation);
-        }
-    }
 }

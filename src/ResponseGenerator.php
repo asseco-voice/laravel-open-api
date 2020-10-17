@@ -34,7 +34,7 @@ class ResponseGenerator
         // Default, osim ako nije overridan preko metode
         // ovo mora biti foreachano
         $response = new Response('200', 'Successful response.');
-        $response->appendContent($responseContent);
+        $response->append($responseContent);
 
         $responses = new Responses();
         $responses->append($response);
