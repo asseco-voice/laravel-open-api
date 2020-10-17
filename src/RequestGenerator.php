@@ -11,9 +11,9 @@ use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class RequestGenerator
 {
-    private ReflectionExtractor $reflectionExtractor;
+    private Extractor $reflectionExtractor;
 
-    public function __construct(ReflectionExtractor $reflectionExtractor)
+    public function __construct(Extractor $reflectionExtractor)
     {
         $this->reflectionExtractor = $reflectionExtractor;
     }

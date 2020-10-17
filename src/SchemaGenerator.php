@@ -2,9 +2,12 @@
 
 namespace Voice\OpenApi;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 use ReflectionException;
+use Voice\OpenApi\Guessers\CandidateGuesser;
+use Voice\OpenApi\Guessers\NamespaceGuesser;
 use Voice\OpenApi\Specification\Components\Components;
 use Voice\OpenApi\Specification\Components\Parts\Schemas;
 use Voice\OpenApi\Specification\Document;
@@ -64,20 +67,22 @@ class SchemaGenerator
 
             $controller = $route->controllerName();
             $method = $route->controllerMethod();
+            $namespace = $this->guessNamespace($controller);
+            $candidate = $this->guessCandidate($controller);
 
-            $nameExtractor = new NameExtractor($controller, $method);
+            $extractor = new Extractor($controller, $method);
 
-            $reflectionExtractor = new ReflectionExtractor($controller, $method);
+            $model = $extractor->getModel($namespace, $candidate);
 
-            $model = $reflectionExtractor->getModel($nameExtractor->namespace, $nameExtractor->candidate);
-
-            $pathParameters = $reflectionExtractor->getPathParameters($route->getPathParameters());
-            $methodData = $reflectionExtractor->getMethodData($nameExtractor->candidate);
+            $pathParameters = $extractor->getPathParameters($route->getPathParameters());
+            $methodData = $extractor->getMethodData($candidate);
 
             $path = new Path($route->path());
 
             $requestSchemas = new Schemas();
             $responseSchemas = new Schemas();
+
+            $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
 
             $routeOperations = $route->operations();
 
@@ -85,10 +90,10 @@ class SchemaGenerator
 
                 $operation = new Operation($methodData, $routeOperation);
 
-                $responseGenerator = new ResponseGenerator($reflectionExtractor);
-                $responseModelName = $nameExtractor->prependModelName("Response", $model);
-
+                $responseGenerator = new ResponseGenerator($extractor);
+                $responseModelName = "Response" . $schemaName;
                 $responseSchema = $responseGenerator->createSchema($responseModelName, $model);
+
                 $responseSchemas->append($responseSchema);
 
                 $responses = $responseGenerator->generate($responseModelName, $routeOperation, $route->hasPathParameters());
@@ -96,9 +101,8 @@ class SchemaGenerator
                 $operation->appendResponses($responses);
 
 
-                $requestGenerator = new RequestGenerator($reflectionExtractor);
-                $requestModelName = $nameExtractor->prependModelName("Request", $model);
-
+                $requestGenerator = new RequestGenerator($extractor);
+                $requestModelName = "Request" . $schemaName;
                 $requestSchema = $requestGenerator->createSchema($requestModelName, $model);
 
                 $requestBody = null;
@@ -128,5 +132,40 @@ class SchemaGenerator
         }
 
         return [$paths, $components];
+    }
+
+    protected function guessNamespace(string $controller): string
+    {
+        return (new NamespaceGuesser())($controller);
+    }
+
+    protected function guessCandidate(string $controller)
+    {
+        return (new CandidateGuesser())($controller);
+    }
+
+    public function schemaName(string $namespace, string $controller, string $method, string $candidate, ?Model $model): string
+    {
+        $joinedNamespace = $this->removeSlashes($namespace);
+        $joinedController = $this->removeSlashes($controller);
+
+        $finalController = str_replace([$joinedNamespace, 'Http\\Controllers\\'], '', $joinedController);
+
+        $prefix = "{$method}_{$joinedNamespace}_{$finalController}_";
+
+        if (!$model) {
+            return $prefix . $candidate;
+        }
+
+        $joinedModel = $this->removeSlashes(get_class($model));
+
+        $modelName = str_replace(['\\', ' '], '', $joinedModel);
+
+        return $prefix . str_replace($joinedNamespace, '', $modelName);
+    }
+
+    protected function removeSlashes(string $input)
+    {
+        return str_replace(['\\', ' '], '', $input);
     }
 }

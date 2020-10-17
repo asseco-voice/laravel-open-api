@@ -17,7 +17,7 @@ use Voice\OpenApi\Extractors\RequestBodyExtractor;
 use Voice\OpenApi\Extractors\ResponseBodyExtractor;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 
-class ReflectionExtractor
+class Extractor
 {
     protected const CACHE_PREFIX_CONTROLLER = 'open_api_controller_';
 

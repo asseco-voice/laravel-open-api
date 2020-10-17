@@ -12,10 +12,10 @@ use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class ResponseGenerator
 {
-    protected ReflectionExtractor $reflectionExtractor;
+    protected Extractor $reflectionExtractor;
     protected StandardSchema $schema;
 
-    public function __construct(ReflectionExtractor $reflectionExtractor)
+    public function __construct(Extractor $reflectionExtractor)
     {
         $this->reflectionExtractor = $reflectionExtractor;
     }
