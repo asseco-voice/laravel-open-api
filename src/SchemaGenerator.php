@@ -87,14 +87,13 @@ class SchemaGenerator
 
                 $requestSchema = $requestGenerator->createSchema($requestModelName, $model);
 
+                $requestBody = null;
                 if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
-
                     $requestSchemas->append($requestSchema);
-
                     $requestBody = $requestGenerator->getBody($requestModelName);
                 }
 
-                if (isset($requestBody)) {
+                if ($requestBody) {
                     $operation->appendRequestBody($requestBody);
                 }
 
