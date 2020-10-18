@@ -13,8 +13,12 @@ class Schemas implements Component
         return $this->schemas;
     }
 
-    public function append(Schema $schema): void
+    public function append(?Schema $schema): void
     {
+        if (!$schema) {
+            return;
+        }
+
         // + will overwrite same array keys.
         // This is okay, schemas are unique.
         $this->schemas += $schema->toSchema();

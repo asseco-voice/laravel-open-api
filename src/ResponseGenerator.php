@@ -22,21 +22,22 @@ class ResponseGenerator
         $this->schemaName = $schemaName;
     }
 
-    public function generate(string $routeOperation, bool $routeHasPathParameters): Responses
+    public function generate(string $routeOperation, bool $routeHasPathParameters, bool $hasSchema): Responses
     {
-        $schema = new ReferencedSchema($this->schemaName);
-        $schema->multiple = $this->isMultiple($routeOperation, $routeHasPathParameters);
-
-        $jsonResponseSchema = new JsonSchema();
-        $jsonResponseSchema->append($schema);
-
-        $responseContent = new Content();
-        $responseContent->append($jsonResponseSchema);
-
-        // Default, osim ako nije overridan preko metode
-        // ovo mora biti foreachano
         $response = new Response('200', 'Successful response.');
-        $response->append($responseContent);
+
+        if ($hasSchema) {
+            $schema = new ReferencedSchema($this->schemaName);
+            $schema->multiple = $this->isMultiple($routeOperation, $routeHasPathParameters);
+
+            $jsonResponseSchema = new JsonSchema();
+            $jsonResponseSchema->append($schema);
+
+            $responseContent = new Content();
+            $responseContent->append($jsonResponseSchema);
+
+            $response->append($responseContent);
+        }
 
         $responses = new Responses();
         $responses->append($response);
@@ -44,9 +45,13 @@ class ResponseGenerator
         return $responses;
     }
 
-    public function createSchema(?Model $model): StandardSchema
+    public function createSchema(?Model $model): ?StandardSchema
     {
         $responseColumns = $this->getResponseColumns($model);
+
+        if (empty($responseColumns)) {
+            return null;
+        }
 
         $schema = new StandardSchema($this->schemaName);
         $schema->generateProperties($responseColumns);

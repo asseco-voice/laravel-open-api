@@ -54,10 +54,10 @@ class SchemaGenerator
         foreach ($this->routerRoutes as $routerRoute) {
 
             // Testing purposes only
-//            $routeName = $routerRoute->getName();
-//            if (!$routeName || !(preg_match('/containers\./', $routeName))) {
-//                continue;
-//            }
+            $routeName = $routerRoute->getName();
+            if (!$routeName || !(preg_match('/custom-field\.types/', $routeName))) {
+                continue;
+            }
 
             $route = new RouteWrapper($routerRoute);
 
@@ -176,7 +176,7 @@ class SchemaGenerator
         $responseGenerator = new ResponseGenerator($extractor, "Response_" . $schemaName);
 
         $responseSchema = $responseGenerator->createSchema($model);
-        $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters);
+        $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters, !empty($responseSchema));
 
         return [$responseSchema, $responses];
     }
