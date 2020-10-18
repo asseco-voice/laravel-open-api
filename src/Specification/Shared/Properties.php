@@ -30,13 +30,26 @@ class Properties implements Serializable
 
         foreach ($this->modelColumns as $column) {
 
-            $properties = array_merge_recursive($properties, [
+            $columnValues = [
                 $column->name => [
                     'type'        => $column->type,
                     'description' => $column->description,
                     //'format' => 'map something',
-                ]
-            ]);
+                ],
+            ];
+
+            if ($column->children) {
+                foreach ($column->children as $child) {
+
+                    $columnValues[$column->name] = array_merge_recursive($columnValues[$column->name], [
+                        'items' => [
+                            'type' => $child->type,
+                        ],
+                    ]);
+                }
+            }
+
+            $properties = array_merge_recursive($properties, $columnValues);
 
             if ($column->required) {
                 $required[] = $column->name;

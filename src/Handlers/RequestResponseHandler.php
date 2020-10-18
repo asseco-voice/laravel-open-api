@@ -19,6 +19,15 @@ class RequestResponseHandler extends AbstractHandler
             $exploded = explode(PHP_EOL, $tag);
 
             foreach ($exploded as $item) {
+
+                preg_match("|\[(.*)]|", $item, $arrayAttribute);
+
+                $child = null;
+                if (count($arrayAttribute) === 2) {
+                    $item = str_replace($arrayAttribute[0], '', $item);
+                    $child = new Column('', $arrayAttribute[1], true);
+                }
+
                 $split = explode(' ', $item, 4);
                 $count = count($split);
 
@@ -31,26 +40,16 @@ class RequestResponseHandler extends AbstractHandler
                 $required = ($count >= 3) ? $this->parseBooleanString($split[2]) : true;
                 $description = ($count >= 4) ? $split[3] : '';
 
-                $columns[] = new Column($name, $type, $required, $description);
+                $column = new Column($name, $type, $required, $description);
+
+                if ($child) {
+                    $column->append($child);
+                }
+
+                $columns[] = $column;
             }
         }
 
         return $columns;
-    }
-
-    /**
-     * @param string $required
-     * @return bool
-     * @throws OpenApiException
-     */
-    protected function parseBooleanString(string $required): bool
-    {
-        if ($required === 'true' || $required === '1') {
-            return true;
-        } elseif ($required === 'false' || $required === '0') {
-            return false;
-        } else {
-            throw new OpenApiException("Required property must be boolean.");
-        }
     }
 }

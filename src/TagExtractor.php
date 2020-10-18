@@ -13,9 +13,12 @@ use Voice\OpenApi\Parsers\ModelHandler;
 use Voice\OpenApi\Parsers\PathHandler;
 use Voice\OpenApi\Parsers\RequestResponseHandler;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
+use Voice\OpenApi\Traits\ParsesStringToBoolean;
 
 class TagExtractor
 {
+    use ParsesStringToBoolean;
+
     protected const CACHE_PREFIX_CONTROLLER = 'open_api_controller_';
 
     protected const MODEL = 'model';
@@ -140,9 +143,20 @@ class TagExtractor
         ];
     }
 
-    public function isResponseMultiple()
+    public function hasMultipleTag()
     {
         return !empty($this->getTags($this->methodDocBlock, self::MULTIPLE));
+    }
+
+    public function isResponseMultiple()
+    {
+        $multipleTag = $this->getTags($this->methodDocBlock, self::MULTIPLE);
+
+        if(!$multipleTag){
+            return false;
+        }
+
+        return $this->parseBooleanString($multipleTag[0]);
     }
 
     protected function getTags(DocBlock $docBlock, string $tagName): array

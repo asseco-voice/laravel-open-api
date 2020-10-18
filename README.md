@@ -191,6 +191,18 @@ name type required description
 name type required description
 ```
 
+Responses will by default be marked as multiple (indicating collection output, not a single model)
+when looking at ``GET`` request without path parameters.
+
+- including ``@multiple true/false`` in the method doc block will override those defaults 
+
+If the variable type is ``array``, you can provide additional property within the parenthesis to indicate
+of what type are the array values: 
+
+```
+@response attribute array [string] true Some description
+```
+
 ## Cache
 
 Models database schema is being cached for performance (1d TTL), 

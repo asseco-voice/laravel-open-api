@@ -89,13 +89,12 @@ class ResponseGenerator
         return $columns;
     }
 
-
     public function isMultiple(string $routeOperation, bool $routeHasPathParameters): bool
     {
-        $methodData = $this->reflectionExtractor->isResponseMultiple();
+        $hasMultipleTag = $this->reflectionExtractor->hasMultipleTag();
 
-        if ($methodData) {
-            return true;
+        if($hasMultipleTag){
+            return $this->reflectionExtractor->isResponseMultiple();
         }
 
         return $routeOperation === 'get' && !$routeHasPathParameters;
