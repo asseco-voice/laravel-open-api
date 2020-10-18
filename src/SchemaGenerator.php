@@ -54,10 +54,10 @@ class SchemaGenerator
         foreach ($this->routerRoutes as $routerRoute) {
 
             // Testing purposes only
-            $routeName = $routerRoute->getName();
-            if (!$routeName || !(preg_match('/custom-field\.types/', $routeName))) {
-                continue;
-            }
+//            $routeName = $routerRoute->getName();
+//            if (!$routeName || !(preg_match('/custom-field\.types/', $routeName))) {
+//                continue;
+//            }
 
             $route = new RouteWrapper($routerRoute);
 
