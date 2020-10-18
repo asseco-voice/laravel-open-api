@@ -196,11 +196,12 @@ when looking at ``GET`` request without path parameters.
 
 - including ``@multiple true/false`` in the method doc block will override those defaults 
 
-If the variable type is ``array``, you can provide additional property within the parenthesis to indicate
+If the variable type is ``array``, you can provide additional property within the parenthesis (be
+sure not to leave blank space between type and parenthesis) to indicate
 of what type are the array values: 
 
 ```
-@response attribute array [string] true Some description
+@response attribute array[string] true Some description
 ```
 
 ## Cache
