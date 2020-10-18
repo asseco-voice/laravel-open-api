@@ -5,15 +5,8 @@ namespace Voice\OpenApi\Parsers;
 use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\Specification\Shared\Column;
 
-class RequestResponseHandler
+class RequestResponseHandler extends AbstractHandler
 {
-    protected array $tags;
-
-    public function __construct(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
     public function parse(): array
     {
         if (!$this->tags) {

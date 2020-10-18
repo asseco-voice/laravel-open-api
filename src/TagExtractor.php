@@ -18,13 +18,13 @@ class TagExtractor
 {
     protected const CACHE_PREFIX_CONTROLLER = 'open_api_controller_';
 
-    protected const MULTIPLE = 'multiple';
-    protected const EXCEPT = 'except';
-    protected const GROUP = 'group';
     protected const MODEL = 'model';
     protected const REQUEST = 'request';
     protected const RESPONSE = 'response';
+    protected const GROUP = 'group';
     protected const PATH = 'path';
+    protected const MULTIPLE = 'multiple';
+    protected const EXCEPT = 'except';
 
     protected string $controller;
     protected string $method;

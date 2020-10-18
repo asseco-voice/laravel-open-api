@@ -7,15 +7,8 @@ use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
-class PathHandler
+class PathHandler extends AbstractHandler
 {
-    protected array $tags;
-
-    public function __construct(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
     public function parse(array $pathParameters): ?Parameters
     {
         $parameters = new Parameters();

@@ -65,46 +65,11 @@ class SchemaGenerator
                 continue;
             }
 
-            $controller = $route->controllerName();
-            $method = $route->controllerMethod();
-            $namespace = (new NamespaceGuesser())($controller);
-            $candidate = (new CandidateGuesser())($controller);
+            [$tagExtractor, $model, $methodData, $pathParameters, $schemaName] =
+                $this->initialize($route);
 
-            $extractor = new TagExtractor($controller, $method);
-            $model = $extractor->getModel($namespace, $candidate);
-            $methodData = $extractor->getMethodData($candidate);
-            $pathParameters = $extractor->getPathParameters($route->getPathParameters());
-
-            $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
-
-            $path = new Path($route->path());
-            $requestSchemas = new Schemas();
-            $responseSchemas = new Schemas();
-
-            foreach ($route->operations() as $routeOperation) {
-
-                $operation = new Operation($methodData, $routeOperation);
-
-                [$responseSchema, $responses] =
-                    $this->generateResponses($extractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model);
-
-                $requestGenerator = new RequestGenerator($extractor, "Request_" . $schemaName);
-                $requestSchema = $requestGenerator->createSchema($model);
-
-                $requestBody = null;
-                if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
-                    $requestSchemas->append($requestSchema);
-                    $requestBody = $requestGenerator->getBody();
-                }
-
-                $operation->appendRequestBody($requestBody);
-                $operation->appendParameters($pathParameters);
-                $operation->appendResponses($responses);
-
-                $responseSchemas->append($responseSchema);
-
-                $path->append($operation);
-            }
+            [$path, $requestSchemas, $responseSchemas] =
+                $this->traverseOperations($route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters);
 
             $paths->append($path);
 
@@ -113,6 +78,72 @@ class SchemaGenerator
         }
 
         return [$paths, $components];
+    }
+
+    /**
+     * @param RouteWrapper $route
+     * @return array
+     * @throws Exceptions\OpenApiException
+     * @throws ReflectionException
+     */
+    protected function initialize(RouteWrapper $route): array
+    {
+        $controller = $route->controllerName();
+        $method = $route->controllerMethod();
+        $namespace = (new NamespaceGuesser())($controller);
+        $candidate = (new CandidateGuesser())($controller);
+
+        $tagExtractor = new TagExtractor($controller, $method);
+        $model = $tagExtractor->getModel($namespace, $candidate);
+        $methodData = $tagExtractor->getMethodData($candidate);
+        $pathParameters = $tagExtractor->getPathParameters($route->getPathParameters());
+
+        $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
+
+        return [$tagExtractor, $model, $methodData, $pathParameters, $schemaName];
+    }
+
+    /**
+     * @param RouteWrapper $route
+     * @param $methodData
+     * @param $tagExtractor
+     * @param $schemaName
+     * @param $model
+     * @param $pathParameters
+     * @return array
+     * @throws Exceptions\OpenApiException
+     */
+    protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters): array
+    {
+        $path = new Path($route->path());
+        $requestSchemas = new Schemas();
+        $responseSchemas = new Schemas();
+
+        foreach ($route->operations() as $routeOperation) {
+
+            $operation = new Operation($methodData, $routeOperation);
+
+            [$responseSchema, $responses] =
+                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model);
+
+            $requestGenerator = new RequestGenerator($tagExtractor, "Request_" . $schemaName);
+            $requestSchema = $requestGenerator->createSchema($model);
+
+            $requestBody = null;
+            if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {
+                $requestSchemas->append($requestSchema);
+                $requestBody = $requestGenerator->getBody();
+            }
+
+            $operation->appendRequestBody($requestBody);
+            $operation->appendParameters($pathParameters);
+            $operation->appendResponses($responses);
+
+            $responseSchemas->append($responseSchema);
+
+            $path->append($operation);
+        }
+        return array($path, $requestSchemas, $responseSchemas);
     }
 
     public function schemaName(string $namespace, string $controller, string $method, string $candidate, ?Model $model): string

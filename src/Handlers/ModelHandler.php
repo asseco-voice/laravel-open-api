@@ -5,15 +5,8 @@ namespace Voice\OpenApi\Parsers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
-class ModelHandler
+class ModelHandler extends AbstractHandler
 {
-    protected array $tags;
-
-    public function __construct(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
     public function parse(string $controller, string $namespace, string $candidate): ?Model
     {
         $model = $this->getModelFromDocBlock($namespace);
