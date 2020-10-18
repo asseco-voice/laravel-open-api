@@ -7,7 +7,7 @@ use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
-class PathParser
+class PathHandler
 {
     protected array $tags;
 

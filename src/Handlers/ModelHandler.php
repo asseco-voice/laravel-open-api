@@ -5,7 +5,7 @@ namespace Voice\OpenApi\Parsers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
 
-class ModelParser
+class ModelHandler
 {
     protected array $tags;
 

@@ -9,9 +9,9 @@ use Mpociot\Reflection\DocBlock\Tag;
 use ReflectionClass;
 use ReflectionException;
 use Voice\OpenApi\Guessers\GroupGuesser;
-use Voice\OpenApi\Parsers\ModelParser;
-use Voice\OpenApi\Parsers\PathParser;
-use Voice\OpenApi\Parsers\RequestResponseParser;
+use Voice\OpenApi\Parsers\ModelHandler;
+use Voice\OpenApi\Parsers\PathHandler;
+use Voice\OpenApi\Parsers\RequestResponseHandler;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 
 class TagExtractor
@@ -77,7 +77,7 @@ class TagExtractor
     {
         $modelTag = $this->getTags($this->controllerDocBlock, self::MODEL);
 
-        return (new ModelParser($modelTag))->parse($this->controller, $namespace, $candidate);
+        return (new ModelHandler($modelTag))->parse($this->controller, $namespace, $candidate);
     }
 
     /**
@@ -88,7 +88,7 @@ class TagExtractor
     {
         $tags = $this->getTags($this->methodDocBlock, self::REQUEST);
 
-        return (new RequestResponseParser($tags))->parse();
+        return (new RequestResponseHandler($tags))->parse();
     }
 
     /**
@@ -99,7 +99,7 @@ class TagExtractor
     {
         $tags = $this->getTags($this->methodDocBlock, self::RESPONSE);
 
-        return (new RequestResponseParser($tags))->parse();
+        return (new RequestResponseHandler($tags))->parse();
     }
 
     public function getExceptAttributes()
@@ -118,7 +118,7 @@ class TagExtractor
     {
         $pathTags = $this->getTags($this->methodDocBlock, self::PATH);
 
-        return (new PathParser($pathTags))->parse($routeParameters);
+        return (new PathHandler($pathTags))->parse($routeParameters);
     }
 
     public function getGroup(string $candidate)

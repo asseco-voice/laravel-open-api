@@ -5,7 +5,7 @@ namespace Voice\OpenApi\Parsers;
 use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\Specification\Shared\Column;
 
-class RequestResponseParser
+class RequestResponseHandler
 {
     protected array $tags;
 
