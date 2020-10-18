@@ -5,21 +5,26 @@ namespace Voice\OpenApi;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Mpociot\Reflection\DocBlock;
+use Mpociot\Reflection\DocBlock\Tag;
 use ReflectionClass;
 use ReflectionException;
-use Voice\OpenApi\Extractors\ExceptExtractor;
-use Voice\OpenApi\Extractors\GroupExtractor;
-use Voice\OpenApi\Extractors\MethodExtractor;
-use Voice\OpenApi\Extractors\ModelExtractor;
-use Voice\OpenApi\Extractors\MultipleExtractor;
-use Voice\OpenApi\Extractors\PathParameterExtractor;
-use Voice\OpenApi\Extractors\RequestBodyExtractor;
-use Voice\OpenApi\Extractors\ResponseBodyExtractor;
+use Voice\OpenApi\Guessers\GroupGuesser;
+use Voice\OpenApi\Parsers\ModelParser;
+use Voice\OpenApi\Parsers\PathParser;
+use Voice\OpenApi\Parsers\RequestResponseParser;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 
 class TagExtractor
 {
     protected const CACHE_PREFIX_CONTROLLER = 'open_api_controller_';
+
+    protected const MULTIPLE = 'multiple';
+    protected const EXCEPT = 'except';
+    protected const GROUP = 'group';
+    protected const MODEL = 'model';
+    protected const REQUEST = 'request';
+    protected const RESPONSE = 'response';
+    protected const PATH = 'path';
 
     protected string $controller;
     protected string $method;
@@ -58,6 +63,11 @@ class TagExtractor
         return $docBlock;
     }
 
+    /**
+     * @param ReflectionClass $reflection
+     * @return DocBlock
+     * @throws ReflectionException
+     */
     protected function getMethodDocBlock(ReflectionClass $reflection): DocBlock
     {
         return new DocBlock($reflection->getMethod($this->method)->getDocComment());
@@ -65,7 +75,9 @@ class TagExtractor
 
     public function getModel(string $namespace, string $candidate): ?Model
     {
-        return (new ModelExtractor())($this->controllerDocBlock, $this->controller, $namespace, $candidate);
+        $modelTag = $this->getTags($this->controllerDocBlock, self::MODEL);
+
+        return (new ModelParser($modelTag))->parse($this->controller, $namespace, $candidate);
     }
 
     /**
@@ -74,7 +86,9 @@ class TagExtractor
      */
     public function getRequest()
     {
-        return (new RequestBodyExtractor())($this->methodDocBlock);
+        $tags = $this->getTags($this->methodDocBlock, self::REQUEST);
+
+        return (new RequestResponseParser($tags))->parse();
     }
 
     /**
@@ -83,12 +97,16 @@ class TagExtractor
      */
     public function getResponse()
     {
-        return (new ResponseBodyExtractor())($this->methodDocBlock);
+        $tags = $this->getTags($this->methodDocBlock, self::RESPONSE);
+
+        return (new RequestResponseParser($tags))->parse();
     }
 
     public function getExceptAttributes()
     {
-        return (new ExceptExtractor())($this->methodDocBlock);
+        $responseTags = $this->getTags($this->methodDocBlock, self::EXCEPT);
+
+        return $responseTags ? explode(' ', $responseTags[0]) : [];
     }
 
     /**
@@ -98,23 +116,49 @@ class TagExtractor
      */
     public function getPathParameters(array $routeParameters): ?Parameters
     {
-        return (new PathParameterExtractor())($this->methodDocBlock, $routeParameters);
+        $pathTags = $this->getTags($this->methodDocBlock, self::PATH);
+
+        return (new PathParser($pathTags))->parse($routeParameters);
     }
 
     public function getGroup(string $candidate)
     {
-        return (new GroupExtractor())($this->methodDocBlock, $this->controllerDocBlock, $candidate);
+        $methodGroups = $this->getTags($this->methodDocBlock, self::GROUP);
+        $controllerGroups = $this->getTags($this->controllerDocBlock, self::GROUP);
+
+        return $methodGroups ?: $controllerGroups ?: [(new GroupGuesser())($candidate)];
     }
 
     public function getMethodData(string $candidate)
     {
         $groups = $this->getGroup($candidate);
 
-        return (new MethodExtractor())($this->methodDocBlock, $groups);
+        return [
+            'summary'     => $this->methodDocBlock->getShortDescription(),
+            'description' => $this->methodDocBlock->getLongDescription()->getContents(),
+            'tags'        => $groups,
+        ];
     }
 
-    public function getMultiple()
+    public function isResponseMultiple()
     {
-        return (new MultipleExtractor())($this->methodDocBlock);
+        return !empty($this->getTags($this->methodDocBlock, self::MULTIPLE));
+    }
+
+    protected function getTags(DocBlock $docBlock, string $tagName): array
+    {
+        $methodGroups = $docBlock->getTagsByName($tagName);
+
+        return $this->getTagContent($methodGroups);
+    }
+
+    protected function getTagContent(array $groups): array
+    {
+        return array_map(function ($group) {
+            /**
+             * @var Tag $group
+             */
+            return $group->getContent();
+        }, $groups);
     }
 }

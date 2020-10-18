@@ -1,18 +1,22 @@
 <?php
 
-namespace Voice\OpenApi\Extractors;
+namespace Voice\OpenApi\Parsers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
-use Mpociot\Reflection\DocBlock;
 
-class ModelExtractor extends AbstractTagExtractor
+class ModelParser
 {
-    protected const MODEL_TAG_NAME = 'model';
+    protected array $tags;
 
-    public function __invoke(DocBlock $controllerDocBlock, string $controller, string $namespace, string $candidate): ?Model
+    public function __construct(array $tags)
     {
-        $model = $this->getModelFromDocBlock($controllerDocBlock, $namespace);
+        $this->tags = $tags;
+    }
+
+    public function parse(string $controller, string $namespace, string $candidate): ?Model
+    {
+        $model = $this->getModelFromDocBlock($namespace);
 
         if (class_exists($model)) {
             return new $model;
@@ -32,15 +36,13 @@ class ModelExtractor extends AbstractTagExtractor
         return null;
     }
 
-    protected function getModelFromDocBlock(DocBlock $controllerDocBlock, string $namespace): ?string
+    protected function getModelFromDocBlock(string $namespace): ?string
     {
-        $tag = $this->getTags($controllerDocBlock, self::MODEL_TAG_NAME);
-
-        if (count($tag) === 0) {
+        if (count($this->tags) === 0) {
             return null;
         }
 
-        $model = $tag[0];
+        $model = $this->tags[0];
 
         if (!$this->modelNamespaced($model)) {
             return $namespace . $model;
@@ -53,4 +55,5 @@ class ModelExtractor extends AbstractTagExtractor
     {
         return count(explode('\\', $model)) > 1;
     }
+
 }

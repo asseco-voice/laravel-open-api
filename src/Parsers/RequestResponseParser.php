@@ -1,23 +1,27 @@
 <?php
 
-namespace Voice\OpenApi\Extractors;
+namespace Voice\OpenApi\Parsers;
 
-use Mpociot\Reflection\DocBlock;
 use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\Specification\Shared\Column;
 
-abstract class AbstractCommunicationExtractor extends AbstractTagExtractor
+class RequestResponseParser
 {
-    public function extract(DocBlock $methodDocBlock, string $tagName): array
-    {
-        $tags = $this->getTags($methodDocBlock, $tagName);
+    protected array $tags;
 
-        if (!$tags) {
+    public function __construct(array $tags)
+    {
+        $this->tags = $tags;
+    }
+
+    public function parse(): array
+    {
+        if (!$this->tags) {
             return [];
         }
 
         $columns = [];
-        foreach ($tags as $tag) {
+        foreach ($this->tags as $tag) {
 
             $exploded = explode(PHP_EOL, $tag);
 
@@ -31,7 +35,7 @@ abstract class AbstractCommunicationExtractor extends AbstractTagExtractor
 
                 $name = $split[0];
                 $type = $split[1];
-                $required = ($count >= 3) ? $this->parseRequired($split[2]) : true;
+                $required = ($count >= 3) ? $this->parseBooleanString($split[2]) : true;
                 $description = ($count >= 4) ? $split[3] : '';
 
                 $columns[] = new Column($name, $type, $required, $description);
@@ -46,7 +50,7 @@ abstract class AbstractCommunicationExtractor extends AbstractTagExtractor
      * @return bool
      * @throws OpenApiException
      */
-    protected function parseRequired(string $required): bool
+    protected function parseBooleanString(string $required): bool
     {
         if ($required === 'true' || $required === '1') {
             return true;

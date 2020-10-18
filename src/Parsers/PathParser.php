@@ -1,25 +1,27 @@
 <?php
 
-namespace Voice\OpenApi\Extractors;
+namespace Voice\OpenApi\Parsers;
 
-use Mpociot\Reflection\DocBlock;
 use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
-class PathParameterExtractor extends AbstractTagExtractor
+class PathParser
 {
-    protected const PATH_PARAMETER_TAG_NAME = 'path';
+    protected array $tags;
 
-    public function __invoke(DocBlock $methodDocBlock, array $pathParameters): ?Parameters
+    public function __construct(array $tags)
     {
-        $methodParameters = $this->getTags($methodDocBlock, self::PATH_PARAMETER_TAG_NAME);
+        $this->tags = $tags;
+    }
 
+    public function parse(array $pathParameters): ?Parameters
+    {
         $parameters = new Parameters();
 
-        if (!$methodParameters) {
-            if(!$pathParameters){
+        if (!$this->tags) {
+            if (!$pathParameters) {
                 return null;
             }
 
@@ -30,7 +32,7 @@ class PathParameterExtractor extends AbstractTagExtractor
             return $parameters;
         }
 
-        foreach ($methodParameters as $methodParameter) {
+        foreach ($this->tags as $methodParameter) {
             $split = explode(' ', $methodParameter, 3);
             $count = count($split);
 

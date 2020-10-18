@@ -87,7 +87,7 @@ class ResponseGenerator
 
     public function isMultiple(string $routeOperation, bool $routeHasPathParameters): bool
     {
-        $methodData = $this->reflectionExtractor->getMultiple();
+        $methodData = $this->reflectionExtractor->isResponseMultiple();
 
         if ($methodData) {
             return true;
