@@ -210,7 +210,3 @@ to ``namespaces`` config key as well so that package can automatically get the
 model attributes. 
 - For controllers not named after their models (in ``ModelController`` format)
 remap in ``controller_model_mapping`` config key.
-
-## Extending functionalities
-
-// TBA
