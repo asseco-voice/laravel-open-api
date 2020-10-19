@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\App\Console\Commands;
 
 use Illuminate\Console\Command;
