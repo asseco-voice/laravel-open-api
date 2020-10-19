@@ -161,7 +161,7 @@ class TagExtractor
     {
         $tags = $this->getTags($this->methodDocBlock, self::MULTIPLE);
 
-        if(!$tags){
+        if (!$tags) {
             return false;
         }
 

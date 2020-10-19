@@ -9,6 +9,11 @@ use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
 class PathHandler extends AbstractHandler
 {
+    /**
+     * @param array $pathParameters
+     * @return Parameters|null
+     * @throws OpenApiException
+     */
     public function handle(array $pathParameters): ?Parameters
     {
         $parameters = new Parameters();
@@ -29,20 +34,55 @@ class PathHandler extends AbstractHandler
             $split = explode(' ', $methodParameter, 3);
             $count = count($split);
 
-            if ($count < 2) {
-                throw new OpenApiException("Wrong number of path parameters provided");
-            }
+            $this->verifyParameters($count);
 
-            $name = $split[0];
-            $type = DataType::getMappedClass($split[1]);
-            $description = ($count >= 3) ? $split[2] : '';
+            [$name, $type, $description] = $this->parseTag($split, $count);
 
-            $parameter = new PathParameter($name, $type);
-            $parameter->addDescription($description);
+            $parameter = $this->createParameter($name, $type, $description);
 
             $parameters->append($parameter);
         }
 
         return $parameters;
+    }
+
+    /**
+     * @param int $count
+     * @throws OpenApiException
+     */
+    private function verifyParameters(int $count): void
+    {
+        if ($count < 2) {
+            throw new OpenApiException("Wrong number of path parameters provided");
+        }
+    }
+
+    /**
+     * @param bool $split
+     * @param int $count
+     * @return array
+     * @throws OpenApiException
+     */
+    private function parseTag(array $split, int $count): array
+    {
+        $name = $split[0];
+        $type = DataType::getMappedClass($split[1]);
+        $description = ($count >= 3) ? $split : '';
+
+        return [$name, $type, $description];
+    }
+
+    /**
+     * @param $name
+     * @param $type
+     * @param $description
+     * @return PathParameter
+     */
+    private function createParameter($name, $type, $description): PathParameter
+    {
+        $parameter = new PathParameter($name, $type);
+        $parameter->addDescription($description);
+
+        return $parameter;
     }
 }
