@@ -1,6 +1,6 @@
 <?php
 
-namespace Voice\OpenApi\Parsers;
+namespace Voice\OpenApi\Handlers;
 
 use Voice\OpenApi\Exceptions\OpenApiException;
 use Voice\OpenApi\Specification\Shared\Column;

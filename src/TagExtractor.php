@@ -9,10 +9,10 @@ use Mpociot\Reflection\DocBlock\Tag;
 use ReflectionClass;
 use ReflectionException;
 use Voice\OpenApi\Guessers\GroupGuesser;
-use Voice\OpenApi\Parsers\AppendHandler;
-use Voice\OpenApi\Parsers\ModelHandler;
-use Voice\OpenApi\Parsers\PathHandler;
-use Voice\OpenApi\Parsers\RequestResponseHandler;
+use Voice\OpenApi\Handlers\AppendHandler;
+use Voice\OpenApi\Handlers\ModelHandler;
+use Voice\OpenApi\Handlers\PathHandler;
+use Voice\OpenApi\Handlers\RequestResponseHandler;
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 use Voice\OpenApi\Traits\ParsesStringToBoolean;
 

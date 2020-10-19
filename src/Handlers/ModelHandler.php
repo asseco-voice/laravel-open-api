@@ -1,6 +1,6 @@
 <?php
 
-namespace Voice\OpenApi\Parsers;
+namespace Voice\OpenApi\Handlers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
