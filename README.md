@@ -19,7 +19,7 @@ as a Laravel service provider.
 ## Usage
 
 Running the command ``php artisan voice:open-api`` will generate a new `.yml`
-file at ``storage/app/open-api.yml`` location.
+file at ``project_root/open-api.yml``.
 
 What is covered out-of-the-box:
 
