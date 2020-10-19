@@ -67,7 +67,7 @@ class PathHandler extends AbstractHandler
     {
         $name = $split[0];
         $type = DataType::getMappedClass($split[1]);
-        $description = ($count >= 3) ? $split : '';
+        $description = ($count >= 3) ? $split[2] : '';
 
         return [$name, $type, $description];
     }
