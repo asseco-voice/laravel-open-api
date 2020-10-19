@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\Specification\Paths;
 
 use Voice\OpenApi\Contracts\Serializable;
@@ -16,7 +18,7 @@ class Path implements Serializable
         $this->route = $route;
     }
 
-    public function append(Operation $operation)
+    public function append(Operation $operation): void
     {
         // + will overwrite same array keys.
         // This is okay, operations are unique for a single route.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\Specification\Paths\Operations\Parameters;
 
 use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
@@ -18,7 +20,7 @@ class PathParameter implements Parameter
         $this->options = $options;
     }
 
-    public function addDescription(string $description)
+    public function addDescription(string $description): void
     {
         $this->description = $description;
     }

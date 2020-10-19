@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\Specification\Shared;
 
 use Voice\OpenApi\Contracts\Serializable;

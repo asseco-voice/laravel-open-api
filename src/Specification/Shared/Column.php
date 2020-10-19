@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\Specification\Shared;
 
 class Column
@@ -19,8 +21,12 @@ class Column
         $this->description = $description;
     }
 
-    public function append(self $child)
+    public function append(?self $child): void
     {
+        if(!$child){
+            return;
+        }
+
         $this->children[] = $child;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\Specification;
 
 use Illuminate\Support\Facades\Config;
@@ -21,12 +23,12 @@ class Document implements Serializable
         );
     }
 
-    public function appendPaths(Paths $paths)
+    public function appendPaths(Paths $paths): void
     {
         $this->paths = $paths->toSchema();
     }
 
-    public function appendComponents(Components $components)
+    public function appendComponents(Components $components): void
     {
         $this->components = $components->toSchema();
     }

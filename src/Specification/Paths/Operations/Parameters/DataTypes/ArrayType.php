@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes;
 
 class ArrayType extends DataType
