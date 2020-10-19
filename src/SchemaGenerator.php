@@ -55,7 +55,7 @@ class SchemaGenerator
 
             // Testing purposes only
 //            $routeName = $routerRoute->getName();
-//            if (!$routeName || !(preg_match('/custom-field\.types/', $routeName))) {
+//            if (!$routeName || !(preg_match('/custom-field\.remote\.store/', $routeName))) {
 //                continue;
 //            }
 
@@ -65,11 +65,11 @@ class SchemaGenerator
                 continue;
             }
 
-            [$tagExtractor, $model, $methodData, $pathParameters, $schemaName] =
+            [$tagExtractor, $model, $methodData, $pathParameters, $schemaName, $namespace] =
                 $this->initialize($route);
 
             [$path, $requestSchemas, $responseSchemas] =
-                $this->traverseOperations($route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters);
+                $this->traverseOperations($route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $namespace);
 
             $paths->append($path);
 
@@ -100,7 +100,7 @@ class SchemaGenerator
 
         $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
 
-        return [$tagExtractor, $model, $methodData, $pathParameters, $schemaName];
+        return [$tagExtractor, $model, $methodData, $pathParameters, $schemaName, $namespace];
     }
 
     /**
@@ -110,10 +110,11 @@ class SchemaGenerator
      * @param $schemaName
      * @param $model
      * @param $pathParameters
+     * @param string $namespace
      * @return array
      * @throws Exceptions\OpenApiException
      */
-    protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters): array
+    protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, string $namespace): array
     {
         $path = new Path($route->path());
         $requestSchemas = new Schemas();
@@ -127,7 +128,7 @@ class SchemaGenerator
                 $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model);
 
             $requestGenerator = new RequestGenerator($tagExtractor, "Request_" . $schemaName);
-            $requestSchema = $requestGenerator->createSchema($model);
+            $requestSchema = $requestGenerator->createSchema($namespace, $model);
 
             $requestBody = null;
             if ($requestSchema && in_array($routeOperation, ['post', 'put', 'patch'])) {

@@ -18,7 +18,7 @@ trait ParsesStringToBoolean
         } elseif ($required === 'false' || $required === '0') {
             return false;
         } else {
-            throw new OpenApiException("Required property must be boolean.");
+            throw new OpenApiException("Required property must be boolean, '$required' provided");
         }
     }
 }

@@ -4,6 +4,7 @@ namespace Voice\OpenApi;
 
 use Illuminate\Database\Eloquent\Model;
 use Voice\OpenApi\Specification\Paths\Operations\RequestBody;
+use Voice\OpenApi\Specification\Shared\Column;
 use Voice\OpenApi\Specification\Shared\Content\Content;
 use Voice\OpenApi\Specification\Shared\Content\JsonSchema;
 use Voice\OpenApi\Specification\Shared\ReferencedSchema;
@@ -11,18 +12,18 @@ use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class RequestGenerator
 {
-    private TagExtractor $reflectionExtractor;
+    private TagExtractor $tagExtractor;
     private string $schemaName;
 
-    public function __construct(TagExtractor $reflectionExtractor, string $schemaName)
+    public function __construct(TagExtractor $tagExtractor, string $schemaName)
     {
-        $this->reflectionExtractor = $reflectionExtractor;
+        $this->tagExtractor = $tagExtractor;
         $this->schemaName = $schemaName;
     }
 
-    public function createSchema(?Model $model): ?StandardSchema
+    public function createSchema(string $namespace, ?Model $model): ?StandardSchema
     {
-        $requestColumns = $this->getRequestColumns($model);
+        $requestColumns = $this->getRequestColumns($namespace, $model);
 
         $schema = new StandardSchema($this->schemaName);
         $schema->generateProperties($requestColumns);
@@ -46,25 +47,50 @@ class RequestGenerator
         return $requestBody;
     }
 
-    protected function getRequestColumns(?Model $model): array
+    protected function getRequestColumns(string $namespace, ?Model $model): array
     {
-        $methodRequestColumns = $this->reflectionExtractor->getRequest();
+        $methodRequestColumns = $this->tagExtractor->getRequest();
 
         if ($methodRequestColumns) {
             return $methodRequestColumns;
         }
 
+        $appendedColumns = $this->getColumnsToAppend($namespace);
+
         if ($model) {
             $modelColumns = new ModelColumns($model);
-            $except = $this->reflectionExtractor->getExceptAttributes();
 
-            return $this->extractRequestData($model, $modelColumns->modelColumns(), $except);
+            $except = $this->tagExtractor->getExceptAttributes();
+
+            return $this->extractRequestData($model, $modelColumns->modelColumns(), $except, $appendedColumns);
         }
 
         return [];
     }
 
-    private function extractRequestData(Model $model, array $columns, array $except): array
+    protected function getColumnsToAppend(string $namespace): array
+    {
+        $toAppend = $this->tagExtractor->getAppendAttributes($namespace);
+
+        $appendedColumns = [];
+
+        foreach ($toAppend as $item) {
+            $appendedColumn = new Column($item['key'], 'object', true);
+
+            $appendedModelColumns = new ModelColumns($item['model']);
+            $appendedModelRequestData = $this->extractRequestData($item['model'], $appendedModelColumns->modelColumns(), []);
+
+            foreach ($appendedModelRequestData as $child) {
+                $appendedColumn->append($child);
+            }
+
+            $appendedColumns[] = $appendedColumn;
+        }
+
+        return $appendedColumns;
+    }
+
+    private function extractRequestData(Model $model, array $columns, array $except, array $append = []): array
     {
         $fillable = $model->getFillable();
         $guarded = $model->getGuarded();
@@ -85,7 +111,12 @@ class RequestGenerator
             $columns = [];
         }
 
+        if ($append) {
+            foreach ($append as $item) {
+                $columns[] = $item;
+            }
+        }
+
         return $columns;
     }
-
 }

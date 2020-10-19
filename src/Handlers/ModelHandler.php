@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 
 class ModelHandler extends AbstractHandler
 {
-    public function parse(string $controller, string $namespace, string $candidate): ?Model
+    public function handle(string $controller, string $namespace, string $candidate): ?Model
     {
         $model = $this->getModelFromDocBlock($namespace);
 
@@ -43,10 +43,4 @@ class ModelHandler extends AbstractHandler
 
         return $model;
     }
-
-    protected function modelNamespaced($model): bool
-    {
-        return count(explode('\\', $model)) > 1;
-    }
-
 }

@@ -9,7 +9,7 @@ use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
 class PathHandler extends AbstractHandler
 {
-    public function parse(array $pathParameters): ?Parameters
+    public function handle(array $pathParameters): ?Parameters
     {
         $parameters = new Parameters();
 

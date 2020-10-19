@@ -191,6 +191,8 @@ name type required description
 name type required description
 ```
 
+#### Response specific
+
 Responses will by default be marked as multiple (indicating collection output, not a single model)
 when looking at ``GET`` request without path parameters.
 
@@ -202,6 +204,33 @@ of what type are the array values:
 
 ```
 @response attribute array[string] true Some description
+```
+
+#### Request specific
+
+You can include additional input models alongside original model with `@append key Class` in your method 
+doc block. This will append given ``Class`` properties on already existing model using the `key` as a key. 
+
+I.e. having original model ``User`` (with properties name, email) you want to append `Post` model (with properties
+title, description) to it as a list of inputs. 
+
+```
+@model User // <-- not needed if it is UserController or you already specified model on the controller
+
+@appends posts Post
+``` 
+
+This will result in following request:
+
+```
+{
+    "name": "string"
+    "email": "string"
+    "posts": {
+        "title": "string"
+        "description": "string"
+    }
+}
 ```
 
 ## Cache

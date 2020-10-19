@@ -39,14 +39,30 @@ class Properties implements Serializable
             ];
 
             if ($column->children) {
+
                 foreach ($column->children as $child) {
 
-                    $columnValues[$column->name] = array_merge_recursive($columnValues[$column->name], [
-                        'items' => [
-                            'type' => $child->type,
-                        ],
-                    ]);
+                    if ($column->type === 'object') {
+                        $columnValues[$column->name] = array_merge_recursive($columnValues[$column->name],
+                            [
+                                'properties' => [
+                                    $child->name => [
+                                        'type' => $child->type,
+                                    ]
+                                ],
+                            ]);
+
+                        continue;
+                    }
+
+                    $columnValues[$column->name] = array_merge_recursive($columnValues[$column->name],
+                        [
+                            'items' => [
+                                'type' => $child->type,
+                            ]
+                        ]);
                 }
+
             }
 
             $properties = array_merge_recursive($properties, $columnValues);

@@ -2,10 +2,9 @@
 
 namespace Voice\OpenApi;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\{Cache, Config, DB, Schema};
 use Voice\OpenApi\Specification\Shared\Column;
 
 class ModelColumns
@@ -30,14 +29,16 @@ class ModelColumns
         $columns = Schema::getColumnListing($table);
         $modelColumns = [];
 
-        try { // having 'enum' in table definition will throw Doctrine error because it is not defined in their types.
+        // having 'enum' in table definition will throw Doctrine error because it is not defined in their types.
+        // Registering it manually.
+        DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        try {
             foreach ($columns as $column) {
-
                 $type = $this->remapColumnTypes(Schema::getColumnType($table, $column));
                 $modelColumns[] = new Column($column, $type, true);
             }
-        } catch (\Exception $e) {
-            // what then...?
+        } catch (Exception $e) {
+            echo print_r($e->getMessage(), true) . "\n";
         }
 
         Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);

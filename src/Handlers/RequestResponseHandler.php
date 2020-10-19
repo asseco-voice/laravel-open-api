@@ -7,7 +7,7 @@ use Voice\OpenApi\Specification\Shared\Column;
 
 class RequestResponseHandler extends AbstractHandler
 {
-    public function parse(): array
+    public function handle(): array
     {
         if (!$this->tags) {
             return [];
@@ -37,7 +37,13 @@ class RequestResponseHandler extends AbstractHandler
 
                 $name = $split[0];
                 $type = $split[1];
-                $required = ($count >= 3) ? $this->parseBooleanString($split[2]) : true;
+
+                try {
+                    $required = ($count >= 3) ? $this->parseBooleanString($split[2]) : true;
+                } catch (OpenApiException $e) {
+                    throw new OpenApiException("Wrong parameters provided for $tag");
+                }
+
                 $description = ($count >= 4) ? $split[3] : '';
 
                 $column = new Column($name, $type, $required, $description);

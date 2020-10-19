@@ -14,4 +14,9 @@ abstract class AbstractHandler
     {
         $this->tags = $tags;
     }
+
+    protected function modelNamespaced($model): bool
+    {
+        return count(explode('\\', $model)) > 1;
+    }
 }

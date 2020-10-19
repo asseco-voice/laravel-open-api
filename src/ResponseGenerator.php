@@ -12,13 +12,13 @@ use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class ResponseGenerator
 {
-    protected TagExtractor $reflectionExtractor;
+    protected TagExtractor $tagExtractor;
     protected StandardSchema $schema;
     private string $schemaName;
 
-    public function __construct(TagExtractor $reflectionExtractor, string $schemaName)
+    public function __construct(TagExtractor $tagExtractor, string $schemaName)
     {
-        $this->reflectionExtractor = $reflectionExtractor;
+        $this->tagExtractor = $tagExtractor;
         $this->schemaName = $schemaName;
     }
 
@@ -61,7 +61,7 @@ class ResponseGenerator
 
     protected function getResponseColumns(?Model $model): array
     {
-        $methodResponseColumns = $this->reflectionExtractor->getResponse();
+        $methodResponseColumns = $this->tagExtractor->getResponse();
 
         if ($methodResponseColumns) {
             return $methodResponseColumns;
@@ -91,10 +91,10 @@ class ResponseGenerator
 
     public function isMultiple(string $routeOperation, bool $routeHasPathParameters): bool
     {
-        $hasMultipleTag = $this->reflectionExtractor->hasMultipleTag();
+        $hasMultipleTag = $this->tagExtractor->hasMultipleTag();
 
         if($hasMultipleTag){
-            return $this->reflectionExtractor->isResponseMultiple();
+            return $this->tagExtractor->isResponseMultiple();
         }
 
         return $routeOperation === 'get' && !$routeHasPathParameters;

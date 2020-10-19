@@ -9,6 +9,7 @@ use Mpociot\Reflection\DocBlock\Tag;
 use ReflectionClass;
 use ReflectionException;
 use Voice\OpenApi\Guessers\GroupGuesser;
+use Voice\OpenApi\Parsers\AppendHandler;
 use Voice\OpenApi\Parsers\ModelHandler;
 use Voice\OpenApi\Parsers\PathHandler;
 use Voice\OpenApi\Parsers\RequestResponseHandler;
@@ -28,6 +29,7 @@ class TagExtractor
     protected const PATH = 'path';
     protected const MULTIPLE = 'multiple';
     protected const EXCEPT = 'except';
+    protected const APPEND = 'append';
 
     protected string $controller;
     protected string $method;
@@ -78,9 +80,9 @@ class TagExtractor
 
     public function getModel(string $namespace, string $candidate): ?Model
     {
-        $modelTag = $this->getTags($this->controllerDocBlock, self::MODEL);
+        $tags = $this->getTags($this->controllerDocBlock, self::MODEL);
 
-        return (new ModelHandler($modelTag))->parse($this->controller, $namespace, $candidate);
+        return (new ModelHandler($tags))->handle($this->controller, $namespace, $candidate);
     }
 
     /**
@@ -91,7 +93,7 @@ class TagExtractor
     {
         $tags = $this->getTags($this->methodDocBlock, self::REQUEST);
 
-        return (new RequestResponseHandler($tags))->parse();
+        return (new RequestResponseHandler($tags))->handle();
     }
 
     /**
@@ -102,14 +104,21 @@ class TagExtractor
     {
         $tags = $this->getTags($this->methodDocBlock, self::RESPONSE);
 
-        return (new RequestResponseHandler($tags))->parse();
+        return (new RequestResponseHandler($tags))->handle();
     }
 
     public function getExceptAttributes()
     {
-        $responseTags = $this->getTags($this->methodDocBlock, self::EXCEPT);
+        $tags = $this->getTags($this->methodDocBlock, self::EXCEPT);
 
-        return $responseTags ? explode(' ', $responseTags[0]) : [];
+        return $tags ? explode(' ', $tags[0]) : [];
+    }
+
+    public function getAppendAttributes(string $namespace)
+    {
+        $tags = $this->getTags($this->methodDocBlock, self::APPEND);
+
+        return (new AppendHandler($tags))->handle($namespace);
     }
 
     /**
@@ -119,9 +128,9 @@ class TagExtractor
      */
     public function getPathParameters(array $routeParameters): ?Parameters
     {
-        $pathTags = $this->getTags($this->methodDocBlock, self::PATH);
+        $tags = $this->getTags($this->methodDocBlock, self::PATH);
 
-        return (new PathHandler($pathTags))->parse($routeParameters);
+        return (new PathHandler($tags))->handle($routeParameters);
     }
 
     public function getGroup(string $candidate)
@@ -150,20 +159,20 @@ class TagExtractor
 
     public function isResponseMultiple()
     {
-        $multipleTag = $this->getTags($this->methodDocBlock, self::MULTIPLE);
+        $tags = $this->getTags($this->methodDocBlock, self::MULTIPLE);
 
-        if(!$multipleTag){
+        if(!$tags){
             return false;
         }
 
-        return $this->parseBooleanString($multipleTag[0]);
+        return $this->parseBooleanString($tags[0]);
     }
 
     protected function getTags(DocBlock $docBlock, string $tagName): array
     {
-        $methodGroups = $docBlock->getTagsByName($tagName);
+        $tags = $docBlock->getTagsByName($tagName);
 
-        return $this->getTagContent($methodGroups);
+        return $this->getTagContent($tags);
     }
 
     protected function getTagContent(array $groups): array
