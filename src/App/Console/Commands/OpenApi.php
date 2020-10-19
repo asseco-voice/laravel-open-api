@@ -48,7 +48,9 @@ class OpenApi extends Command
 
         $fileName = Config::get('asseco-open-api.file_name');
 
-        Storage::put($fileName, $yaml);
+        $file = fopen($fileName, "w") or die("Unable to open file!");
+        fwrite($file, $yaml);
+        fclose($file);
 
         $this->info('YML file generated successfully!');
         return 0;
