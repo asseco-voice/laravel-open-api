@@ -11,7 +11,7 @@ use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\StringType
 return [
 
     /**
-     * General OpenApi properties to generate
+     * General OpenApi properties to generate.
      */
     'general'                  => [
         'openapi' => '3.0.0',
@@ -38,25 +38,25 @@ return [
      * ensure right controller-model mapping
      */
     'controller_model_mapping' => [
-//        SysUserController::class => User::class
+        //        SysUserController::class => User::class
     ],
 
     /**
-     * Name of generated file
+     * Name of generated file.
      */
     'file_name'                => 'open-api.yml',
 
     /**
-     * Rules for excluding certain rules
+     * Rules for excluding certain rules.
      */
     'exclude'                  => [
         // Partial match. Using 'index' will match '*index*'.
         'route_name'      => [
-            'horizon'
+            'horizon',
         ],
         // Exact match by controller full namespace
         'controller_name' => [
-            'Clockwork\Support\Laravel\ClockworkController'
+            'Clockwork\Support\Laravel\ClockworkController',
         ],
     ],
 

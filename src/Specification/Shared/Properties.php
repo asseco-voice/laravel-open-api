@@ -31,7 +31,6 @@ class Properties implements Serializable
         $required = [];
 
         foreach ($this->modelColumns as $column) {
-
             $columnValues = [
                 $column->name => [
                     'type'        => $column->type,
@@ -41,16 +40,14 @@ class Properties implements Serializable
             ];
 
             if ($column->children) {
-
                 foreach ($column->children as $child) {
-
                     if ($column->type === 'object') {
                         $columnValues[$column->name] = array_merge_recursive($columnValues[$column->name],
                             [
                                 'properties' => [
                                     $child->name => [
                                         'type' => $child->type,
-                                    ]
+                                    ],
                                 ],
                             ]);
 
@@ -61,10 +58,9 @@ class Properties implements Serializable
                         [
                             'items' => [
                                 'type' => $child->type,
-                            ]
+                            ],
                         ]);
                 }
-
             }
 
             $properties = array_merge_recursive($properties, $columnValues);
@@ -76,5 +72,4 @@ class Properties implements Serializable
 
         return [$properties, $required];
     }
-
 }

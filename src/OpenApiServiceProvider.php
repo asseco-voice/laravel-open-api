@@ -21,7 +21,7 @@ class OpenApiServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../config/asseco-open-api.php' => config_path('asseco-open-api.php'),]);
+        $this->publishes([__DIR__ . '/../config/asseco-open-api.php' => config_path('asseco-open-api.php')]);
 
         $this->app->singleton(Document::class);
         $this->app->singleton(SchemaGenerator::class);

@@ -7,7 +7,6 @@ namespace Voice\OpenApi\App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
 use ReflectionException;
 use Symfony\Component\Yaml\Yaml;
 use Voice\OpenApi\Exceptions\OpenApiException;
@@ -50,11 +49,12 @@ class OpenApi extends Command
 
         $fileName = Config::get('asseco-open-api.file_name');
 
-        $file = fopen($fileName, "w") or die("Unable to open file!");
+        $file = fopen($fileName, 'w') or exit('Unable to open file!');
         fwrite($file, $yaml);
         fclose($file);
 
         $this->info('YML file generated successfully!');
+
         return 0;
     }
 }

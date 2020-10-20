@@ -25,5 +25,4 @@ class Schemas implements Component
         // This is okay, schemas are unique.
         $this->schemas += $schema->toSchema();
     }
-
 }

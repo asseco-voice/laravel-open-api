@@ -4,7 +4,10 @@ namespace Voice\OpenApi;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\{Cache, Config, DB, Schema};
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Voice\OpenApi\Specification\Shared\Column;
 
 class ModelColumns

@@ -143,7 +143,9 @@ class RouteWrapper
     {
         $isClosure = $this->action()['uses'] instanceof Closure;
 
-        if ($isClosure && $this->verbose) echo "Skipping {$this->path()}, closure routes not supported.\n";
+        if ($isClosure && $this->verbose) {
+            echo "Skipping {$this->path()}, closure routes not supported.\n";
+        }
 
         return $isClosure;
     }
@@ -154,7 +156,10 @@ class RouteWrapper
 
         foreach ($byName as $name) {
             if ($this->route->getName() && (preg_match('/' . $name . '/', $this->route->getName()))) {
-                if ($this->verbose) echo "Excluding route by name: '{$this->route->getName()}'\n";
+                if ($this->verbose) {
+                    echo "Excluding route by name: '{$this->route->getName()}'\n";
+                }
+
                 return true;
             }
         }
@@ -170,7 +175,10 @@ class RouteWrapper
             $controllerClass = get_class($this->route->getController());
 
             if ($controller === $controllerClass) {
-                if ($this->verbose) echo "Excluding route by controller: '{$controllerClass}'\n";
+                if ($this->verbose) {
+                    echo "Excluding route by controller: '{$controllerClass}'\n";
+                }
+
                 return true;
             }
         }

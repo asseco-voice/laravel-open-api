@@ -53,7 +53,7 @@ class PathHandler extends AbstractHandler
     private function verifyParameters(int $count): void
     {
         if ($count < 2) {
-            throw new OpenApiException("Wrong number of path parameters provided");
+            throw new OpenApiException('Wrong number of path parameters provided');
         }
     }
 

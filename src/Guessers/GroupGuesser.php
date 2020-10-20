@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class GroupGuesser
 {
     /**
-     * Guess possible group name from given candidate
+     * Guess possible group name from given candidate.
      *
      * @param string $candidate
      * @return string

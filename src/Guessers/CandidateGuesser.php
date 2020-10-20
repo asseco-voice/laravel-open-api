@@ -7,7 +7,7 @@ namespace Voice\OpenApi\Guessers;
 class CandidateGuesser
 {
     /**
-     * Guess possible model name (candidate) from controller name
+     * Guess possible model name (candidate) from controller name.
      * @param $controller
      * @return string
      */
