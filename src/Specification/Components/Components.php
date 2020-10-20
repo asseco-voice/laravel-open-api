@@ -14,7 +14,7 @@ class Components implements Serializable
     protected array $components = [];
 
     protected array $registered = [
-        'schemas' => Schemas::class
+        'schemas' => Schemas::class,
     ];
 
     public function __construct()
@@ -37,14 +37,14 @@ class Components implements Serializable
      */
     public function append(?Component $component): void
     {
-        if(!$component){
+        if (!$component) {
             return;
         }
 
         $componentClass = get_class($component);
 
         if (!in_array($componentClass, $this->registered)) {
-            throw new OpenApiException("Class you are trying to append is not registered.");
+            throw new OpenApiException('Class you are trying to append is not registered.');
         }
 
         $key = array_search($componentClass, $this->registered);

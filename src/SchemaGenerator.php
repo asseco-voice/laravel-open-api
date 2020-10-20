@@ -121,13 +121,12 @@ class SchemaGenerator
         $responseSchemas = new Schemas();
 
         foreach ($route->operations() as $routeOperation) {
-
             $operation = new Operation($methodData, $routeOperation);
 
             [$responseSchema, $responses] =
                 $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model);
 
-            $requestGenerator = new RequestGenerator($tagExtractor, "Request_" . $schemaName);
+            $requestGenerator = new RequestGenerator($tagExtractor, 'Request_' . $schemaName);
             $requestSchema = $requestGenerator->createSchema($namespace, $model);
 
             $requestBody = null;
@@ -144,7 +143,8 @@ class SchemaGenerator
 
             $path->append($operation);
         }
-        return array($path, $requestSchemas, $responseSchemas);
+
+        return [$path, $requestSchemas, $responseSchemas];
     }
 
     public function schemaName(string $namespace, string $controller, string $method, string $candidate, ?Model $model): string
@@ -174,7 +174,7 @@ class SchemaGenerator
 
     protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model): array
     {
-        $responseGenerator = new ResponseGenerator($extractor, "Response_" . $schemaName);
+        $responseGenerator = new ResponseGenerator($extractor, 'Response_' . $schemaName);
 
         $responseSchema = $responseGenerator->createSchema($model);
         $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters, !empty($responseSchema));

@@ -93,11 +93,10 @@ class ResponseGenerator
     {
         $hasMultipleTag = $this->tagExtractor->hasMultipleTag();
 
-        if($hasMultipleTag){
+        if ($hasMultipleTag) {
             return $this->tagExtractor->isResponseMultiple();
         }
 
         return $routeOperation === 'get' && !$routeHasPathParameters;
     }
-
 }

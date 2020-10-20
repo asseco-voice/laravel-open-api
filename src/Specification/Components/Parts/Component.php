@@ -8,5 +8,4 @@ use Voice\OpenApi\Contracts\Serializable;
 
 interface Component extends Serializable
 {
-
 }

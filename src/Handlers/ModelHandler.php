@@ -23,6 +23,7 @@ class ModelHandler extends AbstractHandler
 
         if (class_exists($namespace . $candidate)) {
             $class = $namespace . $candidate;
+
             return new $class;
         }
 

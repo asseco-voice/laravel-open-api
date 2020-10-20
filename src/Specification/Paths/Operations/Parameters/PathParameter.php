@@ -38,5 +38,3 @@ class PathParameter implements Parameter
         return array_merge($schema, $this->options);
     }
 }
-
-

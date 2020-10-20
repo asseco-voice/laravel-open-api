@@ -16,11 +16,9 @@ class RequestResponseHandler extends AbstractHandler
         $columns = [];
 
         foreach ($this->tags as $tag) {
-
             $items = explode(PHP_EOL, $tag);
 
             foreach ($items as $item) {
-
                 [$item, $child] = $this->parseChildAttributes($item);
 
                 $split = explode(' ', $item, 4);
@@ -65,7 +63,7 @@ class RequestResponseHandler extends AbstractHandler
     private function verifyParameters(int $count): void
     {
         if ($count < 2) {
-            throw new OpenApiException("Wrong number of request parameters provided");
+            throw new OpenApiException('Wrong number of request parameters provided');
         }
     }
 

@@ -47,7 +47,7 @@ class AppendHandler extends AbstractHandler
     protected function verifyParameters(int $count): void
     {
         if ($count != 2) {
-            throw new OpenApiException("Append parameters need to have exactly 2 parts.");
+            throw new OpenApiException('Append parameters need to have exactly 2 parts.');
         }
     }
 

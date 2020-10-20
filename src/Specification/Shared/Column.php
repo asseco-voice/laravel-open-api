@@ -23,7 +23,7 @@ class Column
 
     public function append(?self $child): void
     {
-        if(!$child){
+        if (!$child) {
             return;
         }
 

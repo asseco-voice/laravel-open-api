@@ -9,7 +9,7 @@ class NamespaceGuesser
     protected const DEFAULT_NAMESPACE = 'App';
 
     /**
-     * Guess possible namespace from given controller
+     * Guess possible namespace from given controller.
      *
      * @param string $controller
      * @return string

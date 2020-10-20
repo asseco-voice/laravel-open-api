@@ -13,7 +13,7 @@ abstract class Schema implements Serializable
     public array $properties = [];
 
     /**
-     * Set to true to indicate an array of objects
+     * Set to true to indicate an array of objects.
      */
     public bool $multiple = false;
 
@@ -44,7 +44,7 @@ abstract class Schema implements Serializable
     {
         return [
             'type'  => 'array',
-            'items' => $items
+            'items' => $items,
         ];
     }
 }

@@ -32,5 +32,4 @@ class Document implements Serializable
     {
         $this->components = $components->toSchema();
     }
-
 }

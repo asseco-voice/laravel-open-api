@@ -12,7 +12,7 @@ class Content implements Serializable
     protected array $content = [];
 
     protected array $registered = [
-        'application/json' => JsonSchema::class
+        'application/json' => JsonSchema::class,
     ];
 
     public function __construct()
@@ -38,7 +38,7 @@ class Content implements Serializable
         $contentClass = get_class($content);
 
         if (!in_array($contentClass, $this->registered)) {
-            throw new OpenApiException("Class you are trying to append is not registered.");
+            throw new OpenApiException('Class you are trying to append is not registered.');
         }
 
         $key = array_search($contentClass, $this->registered);
