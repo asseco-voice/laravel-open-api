@@ -9,8 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.4",
-        "illuminate/support": "^8.0",
-        "illuminate/routing": "^8.0",
+        "laravel/framework": "^8.0",
         "symfony/yaml": "^5.1",
         "mpociot/reflection-docblock": "^1.0"
     },

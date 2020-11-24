@@ -15,7 +15,7 @@ class ModelHandler extends AbstractHandler
             return new $model;
         }
 
-        $mapping = Config::get('asseco-open-api.controller_model_mapping');
+        $mapping = config('asseco-open-api.controller_model_mapping');
 
         if (array_key_exists($controller, $mapping)) {
             return new $mapping[$controller];

@@ -17,7 +17,7 @@ class Document implements Serializable
     public function toSchema(): array
     {
         return array_merge(
-            Config::get('asseco-open-api.general'),
+            config('asseco-open-api.general'),
             $this->paths,
             $this->components,
         );

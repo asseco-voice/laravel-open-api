@@ -29,8 +29,8 @@ class RouteWrapper
             throw new OpenApiException("Route '{$route->getName()}' is missing mandatory data.");
         }
 
-        $this->excludeRules = Config::get('asseco-open-api.exclude');
-        $this->verbose = Config::get('asseco-open-api.verbose');
+        $this->excludeRules = config('asseco-open-api.exclude');
+        $this->verbose = config('asseco-open-api.verbose');
 
         $this->route = $route;
     }

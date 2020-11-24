@@ -24,7 +24,7 @@ abstract class DataType implements Serializable
      */
     public static function getMappedClass(string $type): self
     {
-        $supported = Config::get('asseco-open-api.data_types');
+        $supported = config('asseco-open-api.data_types');
 
         if (!array_key_exists($type, $supported)) {
             throw new OpenApiException("Type '$type' is not supported.");

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Voice\OpenApi\App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use ReflectionException;
 use Symfony\Component\Yaml\Yaml;
 use Voice\OpenApi\Exceptions\OpenApiException;
@@ -36,18 +34,18 @@ class OpenApi extends Command
      */
     public function handle()
     {
-        Config::set('asseco-open-api.bust_cache', $this->option('bust-cache'));
-        Config::set('asseco-open-api.verbose', $this->option('verbose'));
+        config()->set('asseco-open-api.bust_cache', $this->option('bust-cache'));
+        config()->set('asseco-open-api.verbose', $this->option('verbose'));
 
         /**
          * @var $generator SchemaGenerator
          */
-        $generator = App::make(SchemaGenerator::class);
+        $generator = app()->make(SchemaGenerator::class);
         $documentation = $generator->generate();
 
         $yaml = Yaml::dump($documentation, 10);
 
-        $fileName = Config::get('asseco-open-api.file_name');
+        $fileName = config('asseco-open-api.file_name');
 
         $file = fopen($fileName, 'w') or exit('Unable to open file!');
         fwrite($file, $yaml);

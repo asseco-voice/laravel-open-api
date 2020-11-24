@@ -17,14 +17,14 @@ return [
         'openapi' => '3.0.0',
 
         'info' => [
-            'title'       => ucfirst(Config::get('app.name')) . ' API',
+            'title'       => ucfirst(config('app.name')) . ' API',
             'description' => 'Generated with this [awesome package](https://github.com/asseco-voice/laravel-open-api)!',
             'version'     => '0.0.1',
         ],
 
         'servers' => [
             [
-                'url'         => Config::get('app.url'),
+                'url'         => config('app.url'),
                 'description' => 'Default server',
             ],
         ],

@@ -24,7 +24,7 @@ class ModelColumns
     {
         $cacheKey = self::CACHE_PREFIX_DB . get_class($this->model);
 
-        if (Cache::has($cacheKey) && !Config::get('asseco-open-api.bust_cache')) {
+        if (Cache::has($cacheKey) && !config('asseco-open-api.bust_cache')) {
             return Cache::get($cacheKey);
         }
 
