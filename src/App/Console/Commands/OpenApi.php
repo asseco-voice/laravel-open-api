@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Asseco\OpenApi\App\Console\Commands;
 
+use Asseco\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\SchemaGenerator;
 use Illuminate\Console\Command;
 use ReflectionException;
 use Symfony\Component\Yaml\Yaml;
-use Asseco\OpenApi\Exceptions\OpenApiException;
-use Asseco\OpenApi\SchemaGenerator;
 
 class OpenApi extends Command
 {

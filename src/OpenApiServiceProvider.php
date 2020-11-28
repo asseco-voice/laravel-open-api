@@ -2,9 +2,9 @@
 
 namespace Asseco\OpenApi;
 
-use Illuminate\Support\ServiceProvider;
 use Asseco\OpenApi\App\Console\Commands\OpenApi;
 use Asseco\OpenApi\Specification\Document;
+use Illuminate\Support\ServiceProvider;
 
 class OpenApiServiceProvider extends ServiceProvider
 {

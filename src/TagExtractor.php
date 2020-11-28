@@ -2,12 +2,6 @@
 
 namespace Asseco\OpenApi;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
-use Mpociot\Reflection\DocBlock;
-use Mpociot\Reflection\DocBlock\Tag;
-use ReflectionClass;
-use ReflectionException;
 use Asseco\OpenApi\Guessers\GroupGuesser;
 use Asseco\OpenApi\Handlers\AppendHandler;
 use Asseco\OpenApi\Handlers\ModelHandler;
@@ -15,6 +9,12 @@ use Asseco\OpenApi\Handlers\PathHandler;
 use Asseco\OpenApi\Handlers\RequestResponseHandler;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
 use Asseco\OpenApi\Traits\ParsesStringToBoolean;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
+use Mpociot\Reflection\DocBlock;
+use Mpociot\Reflection\DocBlock\Tag;
+use ReflectionClass;
+use ReflectionException;
 
 class TagExtractor
 {
