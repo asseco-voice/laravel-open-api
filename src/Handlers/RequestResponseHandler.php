@@ -1,9 +1,9 @@
 <?php
 
-namespace Voice\OpenApi\Handlers;
+namespace Asseco\OpenApi\Handlers;
 
-use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Specification\Shared\Column;
+use Asseco\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Specification\Shared\Column;
 
 class RequestResponseHandler extends AbstractHandler
 {

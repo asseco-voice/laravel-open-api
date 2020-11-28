@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Components\Parts;
+namespace Asseco\OpenApi\Specification\Components\Parts;
 
-use Voice\OpenApi\Specification\Shared\Schema;
+use Asseco\OpenApi\Specification\Shared\Schema;
 
 class Schemas implements Component
 {

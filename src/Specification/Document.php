@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification;
+namespace Asseco\OpenApi\Specification;
 
 use Illuminate\Support\Facades\Config;
-use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Specification\Components\Components;
-use Voice\OpenApi\Specification\Paths\Paths;
+use Asseco\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Specification\Components\Components;
+use Asseco\OpenApi\Specification\Paths\Paths;
 
 class Document implements Serializable
 {

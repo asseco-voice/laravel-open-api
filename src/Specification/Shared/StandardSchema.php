@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Shared;
+namespace Asseco\OpenApi\Specification\Shared;
 
 class StandardSchema extends Schema
 {

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Paths\Operations;
+namespace Asseco\OpenApi\Specification\Paths\Operations;
 
-use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Specification\Shared\Content\Content;
+use Asseco\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Specification\Shared\Content\Content;
 
 class Response implements Serializable
 {

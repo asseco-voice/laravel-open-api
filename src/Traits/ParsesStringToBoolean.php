@@ -1,8 +1,8 @@
 <?php
 
-namespace Voice\OpenApi\Traits;
+namespace Asseco\OpenApi\Traits;
 
-use Voice\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Exceptions\OpenApiException;
 
 trait ParsesStringToBoolean
 {

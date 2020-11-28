@@ -1,14 +1,14 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
 use Illuminate\Database\Eloquent\Model;
-use Voice\OpenApi\Specification\Paths\Operations\Response;
-use Voice\OpenApi\Specification\Paths\Operations\Responses;
-use Voice\OpenApi\Specification\Shared\Content\Content;
-use Voice\OpenApi\Specification\Shared\Content\JsonSchema;
-use Voice\OpenApi\Specification\Shared\ReferencedSchema;
-use Voice\OpenApi\Specification\Shared\StandardSchema;
+use Asseco\OpenApi\Specification\Paths\Operations\Response;
+use Asseco\OpenApi\Specification\Paths\Operations\Responses;
+use Asseco\OpenApi\Specification\Shared\Content\Content;
+use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
+use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
+use Asseco\OpenApi\Specification\Shared\StandardSchema;
 
 class ResponseGenerator
 {

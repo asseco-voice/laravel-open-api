@@ -20,13 +20,18 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Voice\\OpenApi\\": "src/"
+            "Asseco\\OpenApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Asseco\\OpenApi\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Voice\\OpenApi\\OpenApiServiceProvider"
+                "Asseco\\OpenApi\\OpenApiServiceProvider"
             ]
         }
     }

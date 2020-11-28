@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Paths;
+namespace Asseco\OpenApi\Specification\Paths;
 
-use Voice\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Contracts\Serializable;
 
 class Paths implements Serializable
 {

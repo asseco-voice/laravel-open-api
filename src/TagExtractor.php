@@ -1,6 +1,6 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -8,13 +8,13 @@ use Mpociot\Reflection\DocBlock;
 use Mpociot\Reflection\DocBlock\Tag;
 use ReflectionClass;
 use ReflectionException;
-use Voice\OpenApi\Guessers\GroupGuesser;
-use Voice\OpenApi\Handlers\AppendHandler;
-use Voice\OpenApi\Handlers\ModelHandler;
-use Voice\OpenApi\Handlers\PathHandler;
-use Voice\OpenApi\Handlers\RequestResponseHandler;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
-use Voice\OpenApi\Traits\ParsesStringToBoolean;
+use Asseco\OpenApi\Guessers\GroupGuesser;
+use Asseco\OpenApi\Handlers\AppendHandler;
+use Asseco\OpenApi\Handlers\ModelHandler;
+use Asseco\OpenApi\Handlers\PathHandler;
+use Asseco\OpenApi\Handlers\RequestResponseHandler;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
+use Asseco\OpenApi\Traits\ParsesStringToBoolean;
 
 class TagExtractor
 {

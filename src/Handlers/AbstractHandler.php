@@ -1,8 +1,8 @@
 <?php
 
-namespace Voice\OpenApi\Handlers;
+namespace Asseco\OpenApi\Handlers;
 
-use Voice\OpenApi\Traits\ParsesStringToBoolean;
+use Asseco\OpenApi\Traits\ParsesStringToBoolean;
 
 abstract class AbstractHandler
 {

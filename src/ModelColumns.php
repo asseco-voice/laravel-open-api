@@ -1,6 +1,6 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Voice\OpenApi\Specification\Shared\Column;
+use Asseco\OpenApi\Specification\Shared\Column;
 
 class ModelColumns
 {

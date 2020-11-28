@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Config;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\ArrayType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\BooleanType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\NumberType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\ObjectType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\StringType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\ArrayType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\BooleanType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\NumberType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\ObjectType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\StringType;
 
 return [
 

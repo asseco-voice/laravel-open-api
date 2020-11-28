@@ -1,19 +1,19 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 use ReflectionException;
-use Voice\OpenApi\Guessers\CandidateGuesser;
-use Voice\OpenApi\Guessers\NamespaceGuesser;
-use Voice\OpenApi\Specification\Components\Components;
-use Voice\OpenApi\Specification\Components\Parts\Schemas;
-use Voice\OpenApi\Specification\Document;
-use Voice\OpenApi\Specification\Paths\Operations\Operation;
-use Voice\OpenApi\Specification\Paths\Path;
-use Voice\OpenApi\Specification\Paths\Paths;
+use Asseco\OpenApi\Guessers\CandidateGuesser;
+use Asseco\OpenApi\Guessers\NamespaceGuesser;
+use Asseco\OpenApi\Specification\Components\Components;
+use Asseco\OpenApi\Specification\Components\Parts\Schemas;
+use Asseco\OpenApi\Specification\Document;
+use Asseco\OpenApi\Specification\Paths\Operations\Operation;
+use Asseco\OpenApi\Specification\Paths\Path;
+use Asseco\OpenApi\Specification\Paths\Paths;
 
 class SchemaGenerator
 {

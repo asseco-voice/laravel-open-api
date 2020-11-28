@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Paths\Operations\Parameters;
+namespace Asseco\OpenApi\Specification\Paths\Operations\Parameters;
 
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
 
 class PathParameter implements Parameter
 {

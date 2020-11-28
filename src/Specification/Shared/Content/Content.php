@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Shared\Content;
+namespace Asseco\OpenApi\Specification\Shared\Content;
 
-use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Exceptions\OpenApiException;
 
 class Content implements Serializable
 {

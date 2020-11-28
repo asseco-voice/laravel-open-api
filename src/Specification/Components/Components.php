@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Components;
+namespace Asseco\OpenApi\Specification\Components;
 
-use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Specification\Components\Parts\Component;
-use Voice\OpenApi\Specification\Components\Parts\Schemas;
+use Asseco\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Specification\Components\Parts\Component;
+use Asseco\OpenApi\Specification\Components\Parts\Schemas;
 
 class Components implements Serializable
 {

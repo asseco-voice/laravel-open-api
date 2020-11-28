@@ -1,10 +1,10 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
 use Illuminate\Support\ServiceProvider;
-use Voice\OpenApi\App\Console\Commands\OpenApi;
-use Voice\OpenApi\Specification\Document;
+use Asseco\OpenApi\App\Console\Commands\OpenApi;
+use Asseco\OpenApi\Specification\Document;
 
 class OpenApiServiceProvider extends ServiceProvider
 {
