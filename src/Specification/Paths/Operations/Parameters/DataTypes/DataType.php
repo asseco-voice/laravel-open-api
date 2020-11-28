@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes;
 
-use Illuminate\Support\Facades\Config;
 use Asseco\OpenApi\Contracts\Serializable;
 use Asseco\OpenApi\Exceptions\OpenApiException;
+use Illuminate\Support\Facades\Config;
 
 abstract class DataType implements Serializable
 {

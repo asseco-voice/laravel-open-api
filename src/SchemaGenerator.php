@@ -2,10 +2,6 @@
 
 namespace Asseco\OpenApi;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Routing\RouteCollection;
-use Illuminate\Routing\Router;
-use ReflectionException;
 use Asseco\OpenApi\Guessers\CandidateGuesser;
 use Asseco\OpenApi\Guessers\NamespaceGuesser;
 use Asseco\OpenApi\Specification\Components\Components;
@@ -14,6 +10,10 @@ use Asseco\OpenApi\Specification\Document;
 use Asseco\OpenApi\Specification\Paths\Operations\Operation;
 use Asseco\OpenApi\Specification\Paths\Path;
 use Asseco\OpenApi\Specification\Paths\Paths;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Routing\RouteCollection;
+use Illuminate\Routing\Router;
+use ReflectionException;
 
 class SchemaGenerator
 {

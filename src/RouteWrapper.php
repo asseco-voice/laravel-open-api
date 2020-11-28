@@ -2,12 +2,12 @@
 
 namespace Asseco\OpenApi;
 
-use Closure;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Config;
 use Asseco\OpenApi\Exceptions\OpenApiException;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
+use Closure;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Config;
 
 class RouteWrapper
 {

@@ -2,13 +2,13 @@
 
 namespace Asseco\OpenApi;
 
-use Illuminate\Database\Eloquent\Model;
 use Asseco\OpenApi\Specification\Paths\Operations\Response;
 use Asseco\OpenApi\Specification\Paths\Operations\Responses;
 use Asseco\OpenApi\Specification\Shared\Content\Content;
 use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
 use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
 use Asseco\OpenApi\Specification\Shared\StandardSchema;
+use Illuminate\Database\Eloquent\Model;
 
 class ResponseGenerator
 {
