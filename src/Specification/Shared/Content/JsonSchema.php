@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Shared\Content;
+namespace Asseco\OpenApi\Specification\Shared\Content;
 
-use Voice\OpenApi\Specification\Shared\Schema;
+use Asseco\OpenApi\Specification\Shared\Schema;
 
 class JsonSchema implements ContentSchema
 {

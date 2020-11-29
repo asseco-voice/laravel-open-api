@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Contracts;
+namespace Asseco\OpenApi\Contracts;
 
 interface Serializable
 {

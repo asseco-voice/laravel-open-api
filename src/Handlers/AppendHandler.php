@@ -1,8 +1,8 @@
 <?php
 
-namespace Voice\OpenApi\Handlers;
+namespace Asseco\OpenApi\Handlers;
 
-use Voice\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Exceptions\OpenApiException;
 
 class AppendHandler extends AbstractHandler
 {

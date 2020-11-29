@@ -244,7 +244,7 @@ which will force re-caching.
 ## Config
 
 Publish the configuration with 
-``php artisan vendor:publish --provider="Voice\OpenApi\OpenApiServiceProvider"``.
+``php artisan vendor:publish --provider="Asseco\OpenApi\OpenApiServiceProvider"``.
 
 Configuration requires your minimal engagement, however there are some things which
 package can't assume. 

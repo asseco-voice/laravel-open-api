@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Shared;
+namespace Asseco\OpenApi\Specification\Shared;
 
-use Voice\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Contracts\Serializable;
 
 class Properties implements Serializable
 {

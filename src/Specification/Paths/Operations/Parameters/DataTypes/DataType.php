@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes;
+namespace Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes;
 
+use Asseco\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Exceptions\OpenApiException;
 use Illuminate\Support\Facades\Config;
-use Voice\OpenApi\Contracts\Serializable;
-use Voice\OpenApi\Exceptions\OpenApiException;
 
 abstract class DataType implements Serializable
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Guessers;
+namespace Asseco\OpenApi\Guessers;
 
 use Illuminate\Support\Str;
 

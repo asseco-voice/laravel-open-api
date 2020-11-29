@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes;
+namespace Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes;
 
 class NumberType extends DataType
 {

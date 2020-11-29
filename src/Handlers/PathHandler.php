@@ -1,11 +1,11 @@
 <?php
 
-namespace Voice\OpenApi\Handlers;
+namespace Asseco\OpenApi\Handlers;
 
-use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
+use Asseco\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\DataType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
 class PathHandler extends AbstractHandler
 {

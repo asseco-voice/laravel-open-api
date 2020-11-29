@@ -1,14 +1,14 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
+use Asseco\OpenApi\Specification\Paths\Operations\RequestBody;
+use Asseco\OpenApi\Specification\Shared\Column;
+use Asseco\OpenApi\Specification\Shared\Content\Content;
+use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
+use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
+use Asseco\OpenApi\Specification\Shared\StandardSchema;
 use Illuminate\Database\Eloquent\Model;
-use Voice\OpenApi\Specification\Paths\Operations\RequestBody;
-use Voice\OpenApi\Specification\Shared\Column;
-use Voice\OpenApi\Specification\Shared\Content\Content;
-use Voice\OpenApi\Specification\Shared\Content\JsonSchema;
-use Voice\OpenApi\Specification\Shared\ReferencedSchema;
-use Voice\OpenApi\Specification\Shared\StandardSchema;
 
 class RequestGenerator
 {

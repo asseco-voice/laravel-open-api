@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Exceptions;
+namespace Asseco\OpenApi\Exceptions;
 
 use Exception;
 use Throwable;

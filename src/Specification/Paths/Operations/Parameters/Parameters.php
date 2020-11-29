@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\Specification\Paths\Operations\Parameters;
+namespace Asseco\OpenApi\Specification\Paths\Operations\Parameters;
 
-use Voice\OpenApi\Contracts\Serializable;
+use Asseco\OpenApi\Contracts\Serializable;
 
 class Parameters implements Serializable
 {

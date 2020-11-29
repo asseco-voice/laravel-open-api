@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Voice\OpenApi\App\Console\Commands;
+namespace Asseco\OpenApi\App\Console\Commands;
 
+use Asseco\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\SchemaGenerator;
 use Illuminate\Console\Command;
 use ReflectionException;
 use Symfony\Component\Yaml\Yaml;
-use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\SchemaGenerator;
 
 class OpenApi extends Command
 {

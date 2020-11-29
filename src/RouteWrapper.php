@@ -1,13 +1,13 @@
 <?php
 
-namespace Voice\OpenApi;
+namespace Asseco\OpenApi;
 
+use Asseco\OpenApi\Exceptions\OpenApiException;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 use Closure;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Config;
-use Voice\OpenApi\Exceptions\OpenApiException;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
-use Voice\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 
 class RouteWrapper
 {
