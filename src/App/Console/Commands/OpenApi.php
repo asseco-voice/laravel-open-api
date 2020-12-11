@@ -17,7 +17,7 @@ class OpenApi extends Command
      *
      * @var string
      */
-    protected $signature = 'voice:open-api 
+    protected $signature = 'asseco:open-api 
                                     {--b|bust-cache : Override using cache, will re-cache with new values}';
 
     /**

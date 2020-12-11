@@ -20,7 +20,7 @@ as a Laravel service provider.
 
 ## Usage
 
-Running the command ``php artisan voice:open-api`` will generate a new `.yml`
+Running the command ``php artisan asseco:open-api`` will generate a new `.yml`
 file at ``project_root/open-api.yml``.
 
 What is covered out-of-the-box:
@@ -238,7 +238,7 @@ This will result in following request:
 ## Cache
 
 Models database schema is being cached for performance (1d TTL), 
-if you modify a migration be sure to run ``php artisan voice:open-api --bust-cache``
+if you modify a migration be sure to run ``php artisan asseco:open-api --bust-cache``
 which will force re-caching. 
 
 ## Config
