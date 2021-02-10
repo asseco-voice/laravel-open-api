@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Config;
 return [
 
     /**
+     * Namespace for Laravel models.
+     */
+    'model_namespace' => 'App\\Models\\',
+
+    /**
      * General OpenApi properties to generate.
      */
     'general'                  => [
