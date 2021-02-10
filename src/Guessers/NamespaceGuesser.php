@@ -6,7 +6,7 @@ namespace Asseco\OpenApi\Guessers;
 
 class NamespaceGuesser
 {
-    protected const DEFAULT_NAMESPACE = 'App';
+    protected const SPLIT_BY = 'App';
 
     /**
      * Guess possible namespace from given controller.
@@ -16,12 +16,12 @@ class NamespaceGuesser
      */
     public function __invoke(string $controller): string
     {
-        $split = preg_split('|' . self::DEFAULT_NAMESPACE . '|', $controller);
+        $split = preg_split('|' . self::SPLIT_BY . '|', $controller);
 
         if (count($split) < 2) {
-            return self::DEFAULT_NAMESPACE . '\\';
+            return config('asseco-open-api.model_namespace');
         }
 
-        return $split[0] . self::DEFAULT_NAMESPACE . '\\';
+        return $split[0] . config('asseco-open-api.model_namespace');
     }
 }
