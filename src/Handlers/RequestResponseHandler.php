@@ -16,18 +16,21 @@ class RequestResponseHandler extends AbstractHandler
         $columns = [];
 
         foreach ($this->tags as $tag) {
-            $items = explode(PHP_EOL, $tag);
+            if (preg_match('/"/', $tag)) {
+                preg_match('/"(.*?)"/', $tag, $name);
+                $columns[] = $name[1];
+                continue;
+            }
 
+            $items = explode(PHP_EOL, $tag);
             foreach ($items as $item) {
                 [$item, $child] = $this->parseChildAttributes($item);
-
                 $split = explode(' ', $item, 4);
                 $count = count($split);
 
                 $this->verifyParameters($count);
 
                 [$name, $type, $required, $description] = $this->parseTag($split, $count);
-
                 $column = new Column($name, $type, $required, $description);
                 $column->append($child);
 
