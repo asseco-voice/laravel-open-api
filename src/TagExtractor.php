@@ -2,7 +2,6 @@
 
 namespace Asseco\OpenApi;
 
-use Asseco\OpenApi\Guessers\GroupGuesser;
 use Asseco\OpenApi\Handlers\AppendHandler;
 use Asseco\OpenApi\Handlers\ModelHandler;
 use Asseco\OpenApi\Handlers\PathHandler;
@@ -138,7 +137,7 @@ class TagExtractor
         $methodGroups = $this->getTags($this->methodDocBlock, self::GROUP);
         $controllerGroups = $this->getTags($this->controllerDocBlock, self::GROUP);
 
-        return $methodGroups ?: $controllerGroups ?: [(new GroupGuesser())($candidate)];
+        return $methodGroups ?: $controllerGroups ?: [Guesser::groupName($candidate)];
     }
 
     public function getMethodData(string $candidate)
