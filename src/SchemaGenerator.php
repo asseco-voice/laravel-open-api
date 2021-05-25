@@ -63,11 +63,7 @@ class SchemaGenerator
                 continue;
             }
 
-            [$tagExtractor, $model, $methodData, $pathParameters, $schemaName, $namespace] =
-                $this->initialize($route);
-
-            [$path, $requestSchemas, $responseSchemas] =
-                $this->traverseOperations($route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $namespace);
+            [$path, $requestSchemas, $responseSchemas] = $this->initialize($route);
 
             $paths->append($path);
 
@@ -99,7 +95,13 @@ class SchemaGenerator
 
         $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
 
-        return [$tagExtractor, $model, $methodData, $pathParameters, $schemaName, $namespace];
+        [$path, $requestSchemas, $responseSchemas] =
+            $this->traverseOperations($route, $methodData,
+                $tagExtractor, $schemaName, $model,
+                $pathParameters, $namespace);
+
+
+        return [$path, $requestSchemas, $responseSchemas];
     }
 
     /**
