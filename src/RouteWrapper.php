@@ -7,7 +7,6 @@ use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerTy
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 use Closure;
 use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Config;
 
 class RouteWrapper
 {

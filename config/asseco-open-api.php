@@ -6,7 +6,6 @@ use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerTy
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\NumberType;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\ObjectType;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\StringType;
-use Illuminate\Support\Facades\Config;
 
 return [
 
