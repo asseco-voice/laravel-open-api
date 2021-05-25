@@ -27,6 +27,15 @@ class OpenApi extends Command
      */
     protected $description = 'Generate OpenApi yaml file from app routes.';
 
+    protected SchemaGenerator $generator;
+
+    public function __construct(SchemaGenerator $generator)
+    {
+        parent::__construct();
+
+        $this->generator = $generator;
+    }
+
     /**
      * @return int
      * @throws ReflectionException
@@ -37,11 +46,7 @@ class OpenApi extends Command
         config()->set('asseco-open-api.bust_cache', $this->option('bust-cache'));
         config()->set('asseco-open-api.verbose', $this->option('verbose'));
 
-        /**
-         * @var $generator SchemaGenerator
-         */
-        $generator = app()->make(SchemaGenerator::class);
-        $documentation = $generator->generate();
+        $documentation = $this->generator->generate();
 
         $yaml = Yaml::dump($documentation, 10);
 

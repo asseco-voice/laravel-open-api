@@ -2,8 +2,6 @@
 
 namespace Asseco\OpenApi;
 
-use Asseco\OpenApi\Guessers\CandidateGuesser;
-use Asseco\OpenApi\Guessers\NamespaceGuesser;
 use Asseco\OpenApi\Specification\Components\Components;
 use Asseco\OpenApi\Specification\Components\Parts\Schemas;
 use Asseco\OpenApi\Specification\Document;
@@ -91,8 +89,9 @@ class SchemaGenerator
     {
         $controller = $route->controllerName();
         $method = $route->controllerMethod();
-        $namespace = (new NamespaceGuesser())($controller);
-        $candidate = (new CandidateGuesser())($controller);
+
+        $namespace = Guesser::modelNamespace($controller);
+        $candidate = Guesser::modelName($controller);
 
         $tagExtractor = new TagExtractor($controller, $method);
         $model = $tagExtractor->getModel($namespace, $candidate);

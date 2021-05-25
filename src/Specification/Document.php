@@ -7,7 +7,6 @@ namespace Asseco\OpenApi\Specification;
 use Asseco\OpenApi\Contracts\Serializable;
 use Asseco\OpenApi\Specification\Components\Components;
 use Asseco\OpenApi\Specification\Paths\Paths;
-use Illuminate\Support\Facades\Config;
 
 class Document implements Serializable
 {

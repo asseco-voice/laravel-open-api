@@ -3,7 +3,6 @@
 namespace Asseco\OpenApi\Handlers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Config;
 
 class ModelHandler extends AbstractHandler
 {
