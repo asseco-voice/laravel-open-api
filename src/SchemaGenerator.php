@@ -110,7 +110,6 @@ class SchemaGenerator
                 $tagExtractor, $schemaName, $model,
                 $pathParameters, $namespace);
 
-
         return [$path, $requestSchemas, $responseSchemas];
     }
 
