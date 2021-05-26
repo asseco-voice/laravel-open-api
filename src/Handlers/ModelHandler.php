@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ModelHandler extends AbstractHandler
 {
-    public function handle(string $controller, string $namespace, string $candidate): ?Model
+    public static function handle($tags, string $controller, string $namespace, string $candidate): ?Model
     {
-        $model = $this->getModelFromDocBlock($namespace);
+        $model = self::getModelFromDocBlock($tags, $namespace);
 
         if (class_exists($model)) {
             return new $model;
@@ -29,15 +29,15 @@ class ModelHandler extends AbstractHandler
         return null;
     }
 
-    protected function getModelFromDocBlock(string $namespace): ?string
+    protected static function getModelFromDocBlock($tags, string $namespace): ?string
     {
-        if (count($this->tags) === 0) {
+        if (count($tags) === 0) {
             return null;
         }
 
-        $model = $this->tags[0];
+        $model = $tags[0];
 
-        if (!$this->modelNamespaced($model)) {
+        if (!self::modelNamespaced($model)) {
             return $namespace . $model;
         }
 

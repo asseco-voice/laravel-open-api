@@ -11,22 +11,22 @@ class RequestResponseHandler extends AbstractHandler
      * @return array
      * @throws OpenApiException
      */
-    public function handle(): array
+    public static function handle($tags): array
     {
         $columns = [];
 
-        foreach ($this->tags as $tag) {
+        foreach ($tags as $tag) {
             $items = explode(PHP_EOL, $tag);
 
             foreach ($items as $item) {
-                [$item, $child] = $this->parseChildAttributes($item);
+                [$item, $child] = self::parseChildAttributes($item);
 
                 $split = explode(' ', $item, 4);
                 $count = count($split);
 
-                $this->verifyParameters($count);
+                self::verifyParameters($count);
 
-                [$name, $type, $required, $description] = $this->parseTag($split, $count);
+                [$name, $type, $required, $description] = self::parseTag($split, $count);
 
                 $column = new Column($name, $type, $required, $description);
                 $column->append($child);
@@ -42,7 +42,7 @@ class RequestResponseHandler extends AbstractHandler
      * @param string $item
      * @return array
      */
-    private function parseChildAttributes(string $item): array
+    protected static function parseChildAttributes(string $item): array
     {
         preg_match("|\[(.*)]|", $item, $arrayAttribute);
 
@@ -60,7 +60,7 @@ class RequestResponseHandler extends AbstractHandler
      * @param int $count
      * @throws OpenApiException
      */
-    private function verifyParameters(int $count): void
+    protected static function verifyParameters(int $count): void
     {
         if ($count < 2) {
             throw new OpenApiException('Wrong number of request parameters provided');
@@ -73,12 +73,12 @@ class RequestResponseHandler extends AbstractHandler
      * @return array
      * @throws OpenApiException
      */
-    private function parseTag(array $split, int $count): array
+    protected static function parseTag(array $split, int $count): array
     {
         $name = $split[0];
         $type = $split[1];
-        $required = $this->isRequired($count, $split);
-        $description = $this->getDescription($count, $split);
+        $required = self::isRequired($count, $split);
+        $description = self::getDescription($count, $split);
 
         return [$name, $type, $required, $description];
     }
@@ -89,9 +89,9 @@ class RequestResponseHandler extends AbstractHandler
      * @return bool
      * @throws OpenApiException
      */
-    private function isRequired(int $count, array $split): bool
+    protected static function isRequired(int $count, array $split): bool
     {
-        return ($count >= 3) ? $this->parseBooleanString($split[2]) : true;
+        return ($count >= 3) ? self::parseBooleanString($split[2]) : true;
     }
 
     /**
@@ -99,7 +99,7 @@ class RequestResponseHandler extends AbstractHandler
      * @param array $split
      * @return string
      */
-    private function getDescription(int $count, array $split): string
+    protected static function getDescription(int $count, array $split): string
     {
         return ($count >= 4) ? $split[3] : '';
     }

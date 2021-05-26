@@ -46,7 +46,7 @@ class OpenApi extends Command
         config()->set('asseco-open-api.bust_cache', $this->option('bust-cache'));
         config()->set('asseco-open-api.verbose', $this->option('verbose'));
 
-        $documentation = $this->generator->generate();
+        $documentation = $this->generator->generate($this->output);
 
         $yaml = Yaml::dump($documentation, 10);
 
@@ -56,6 +56,7 @@ class OpenApi extends Command
         fwrite($file, $yaml);
         fclose($file);
 
+        $this->newLine(2);
         $this->info('YML file generated successfully!');
 
         return 0;
