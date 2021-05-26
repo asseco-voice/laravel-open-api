@@ -10,6 +10,7 @@ use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
 use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
 use Asseco\OpenApi\Specification\Shared\StandardSchema;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class ResponseGenerator
 {
@@ -85,7 +86,7 @@ class ResponseGenerator
 
         $appendedColumns = [];
 
-        if ($toAppend) {
+        if ($toAppend && Schema::hasTable($toAppend)) {
             $appendedColumn = new Column('pivot', 'object', true);
 
             $appendedPivotColumns = ModelColumns::pivotColumns($toAppend);
