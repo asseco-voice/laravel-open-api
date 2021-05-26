@@ -10,6 +10,4 @@ class ExceptTag extends AbstractTag
     {
         return 'except';
     }
-
-
 }
