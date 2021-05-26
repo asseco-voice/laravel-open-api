@@ -8,6 +8,7 @@ use Asseco\OpenApi\Specification\Document;
 use Asseco\OpenApi\Specification\Paths\Operations\Operation;
 use Asseco\OpenApi\Specification\Paths\Path;
 use Asseco\OpenApi\Specification\Paths\Paths;
+use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
@@ -26,13 +27,14 @@ class SchemaGenerator
     }
 
     /**
+     * @param OutputStyle $output
      * @return array
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
-    public function generate(): array
+    public function generate(OutputStyle $output): array
     {
-        [$paths, $components] = $this->traverseRoutes();
+        [$paths, $components] = $this->traverseRoutes($output);
 
         $this->document->appendPaths($paths);
         $this->document->appendComponents($components);
@@ -41,14 +43,18 @@ class SchemaGenerator
     }
 
     /**
+     * @param OutputStyle $output
      * @return array
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
-    protected function traverseRoutes(): array
+    protected function traverseRoutes(OutputStyle $output): array
     {
         $paths = new Paths();
         $components = new Components();
+
+        $bar = $output->createProgressBar(count($this->routerRoutes));
+        $bar->start();
 
         foreach ($this->routerRoutes as $routerRoute) {
 
@@ -64,17 +70,17 @@ class SchemaGenerator
                 continue;
             }
 
-            [$tagExtractor, $model, $methodData, $pathParameters, $schemaName, $namespace] =
-                $this->initialize($route);
-
-            [$path, $requestSchemas, $responseSchemas] =
-                $this->traverseOperations($route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $namespace);
+            [$path, $requestSchemas, $responseSchemas] = $this->initialize($route);
 
             $paths->append($path);
 
             $components->append($requestSchemas);
             $components->append($responseSchemas);
+
+            $bar->advance();
         }
+
+        $bar->finish();
 
         return [$paths, $components];
     }
@@ -100,7 +106,12 @@ class SchemaGenerator
 
         $schemaName = $this->schemaName($namespace, $controller, $method, $candidate, $model);
 
-        return [$tagExtractor, $model, $methodData, $pathParameters, $schemaName, $namespace];
+        [$path, $requestSchemas, $responseSchemas] =
+            $this->traverseOperations($route, $methodData,
+                $tagExtractor, $schemaName, $model,
+                $pathParameters, $namespace);
+
+        return [$path, $requestSchemas, $responseSchemas];
     }
 
     /**
