@@ -10,7 +10,6 @@ use Asseco\OpenApi\Specification\Paths\Path;
 use Asseco\OpenApi\Specification\Paths\Paths;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use ReflectionException;

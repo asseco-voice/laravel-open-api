@@ -7,7 +7,6 @@ use Asseco\OpenApi\Specification\Shared\Column;
 use Asseco\OpenApi\Specification\Shared\Content\Content;
 use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
 use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
-use Asseco\OpenApi\Specification\Shared\Schema;
 use Asseco\OpenApi\Specification\Shared\StandardSchema;
 use Illuminate\Database\Eloquent\Model;
 
