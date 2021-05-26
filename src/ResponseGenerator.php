@@ -85,10 +85,10 @@ class ResponseGenerator
 
         $appendedColumns = [];
 
-        foreach ($toAppend as $item) {
+        if ($toAppend) {
             $appendedColumn = new Column('pivot', 'object', true);
 
-            $appendedPivotColumns = ModelColumns::pivotColumns($item);
+            $appendedPivotColumns = ModelColumns::pivotColumns($toAppend);
 
             foreach ($appendedPivotColumns as $child) {
                 $appendedColumn->append($child);

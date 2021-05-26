@@ -118,7 +118,7 @@ class TagExtractor
     {
         $tags = PivotTag::getFrom($this->methodDocBlock);
 
-        return $tags ? explode(' ', $tags[0]) : [];
+        return $tags ? $tags[0] : null;
     }
 
     /**
