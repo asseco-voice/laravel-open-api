@@ -32,10 +32,19 @@ class ModelColumns
 
     public static function pivotColumns(string $table): array
     {
-        return self::getColumnAttributes($table);
+        $cacheKey = self::CACHE_PREFIX_DB . $table;
+
+        if (Cache::has($cacheKey) && !config('asseco-open-api.bust_cache')) {
+            return Cache::get($cacheKey);
+        }
+
+        $modelColumns = self::getColumnAttributes($table);
+        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
+
+        return $modelColumns;
     }
 
-    protected static function getColumnAttributes($table)
+    protected static function getColumnAttributes($table): array
     {
         $columns = Schema::getColumnListing($table);
         $modelColumns = [];
