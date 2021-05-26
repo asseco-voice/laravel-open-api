@@ -8,26 +8,35 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use PhpParser\Node\Expr\AssignOp\Mod;
 
 class ModelColumns
 {
     protected const CACHE_PREFIX_DB = 'open_api_db_schema_';
-    private Model $model;
 
-    public function __construct(Model $model)
+    public static function modelColumns(Model $model): array
     {
-        $this->model = $model;
-    }
-
-    public function modelColumns(): array
-    {
-        $cacheKey = self::CACHE_PREFIX_DB . get_class($this->model);
+        $cacheKey = self::CACHE_PREFIX_DB . get_class($model);
 
         if (Cache::has($cacheKey) && !config('asseco-open-api.bust_cache')) {
             return Cache::get($cacheKey);
         }
 
-        $table = $this->model->getTable();
+        $table = $model->getTable();
+
+        $modelColumns = self::getColumnAttributes($table);
+        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
+
+        return $modelColumns;
+    }
+
+    public static function pivotColumns(string $table): array
+    {
+        return self::getColumnAttributes($table);
+    }
+
+    protected static function getColumnAttributes($table)
+    {
         $columns = Schema::getColumnListing($table);
         $modelColumns = [];
 
@@ -36,19 +45,17 @@ class ModelColumns
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
         try {
             foreach ($columns as $column) {
-                $type = $this->remapColumnTypes(Schema::getColumnType($table, $column));
+                $type = self::remapColumnTypes(Schema::getColumnType($table, $column));
                 $modelColumns[] = new Column($column, $type, true);
             }
         } catch (Exception $e) {
             echo print_r($e->getMessage(), true) . "\n";
         }
 
-        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
-
         return $modelColumns;
     }
 
-    protected function remapColumnTypes($columnType)
+    protected static function remapColumnTypes($columnType)
     {
         switch ($columnType) {
             case 'int':

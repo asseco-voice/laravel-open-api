@@ -7,6 +7,7 @@ use Asseco\OpenApi\Specification\Shared\Column;
 use Asseco\OpenApi\Specification\Shared\Content\Content;
 use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
 use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
+use Asseco\OpenApi\Specification\Shared\Schema;
 use Asseco\OpenApi\Specification\Shared\StandardSchema;
 use Illuminate\Database\Eloquent\Model;
 
@@ -58,11 +59,11 @@ class RequestGenerator
         $appendedColumns = $this->getColumnsToAppend($namespace);
 
         if ($model) {
-            $modelColumns = new ModelColumns($model);
+            $modelColumns = ModelColumns::modelColumns($model);
 
             $except = $this->tagExtractor->getExceptAttributes();
 
-            return $this->extractRequestData($model, $modelColumns->modelColumns(), $except, $appendedColumns);
+            return $this->extractRequestData($model, $modelColumns, $except, $appendedColumns);
         }
 
         return [];
@@ -77,8 +78,8 @@ class RequestGenerator
         foreach ($toAppend as $item) {
             $appendedColumn = new Column($item['key'], 'object', true);
 
-            $appendedModelColumns = new ModelColumns($item['model']);
-            $appendedModelRequestData = $this->extractRequestData($item['model'], $appendedModelColumns->modelColumns(), []);
+            $appendedModelColumns = ModelColumns::modelColumns($item['model']);
+            $appendedModelRequestData = $this->extractRequestData($item['model'], $appendedModelColumns, []);
 
             foreach ($appendedModelRequestData as $child) {
                 $appendedColumn->append($child);

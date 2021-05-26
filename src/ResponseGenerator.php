@@ -4,6 +4,7 @@ namespace Asseco\OpenApi;
 
 use Asseco\OpenApi\Specification\Paths\Operations\Response;
 use Asseco\OpenApi\Specification\Paths\Operations\Responses;
+use Asseco\OpenApi\Specification\Shared\Column;
 use Asseco\OpenApi\Specification\Shared\Content\Content;
 use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
 use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
@@ -67,22 +68,51 @@ class ResponseGenerator
             return $methodResponseColumns;
         }
 
-        if ($model) {
-            $modelColumns = new ModelColumns($model);
+        $appendedColumns = $this->getColumnsToAppend();
 
-            return $this->extractResponseData($model, $modelColumns->modelColumns());
+        if ($model) {
+            $modelColumns = ModelColumns::modelColumns($model);
+
+            return $this->extractResponseData($model, $modelColumns, $appendedColumns);
         }
 
         return [];
     }
 
-    protected function extractResponseData(Model $model, array $columns): array
+    protected function getColumnsToAppend(): array
+    {
+        $toAppend = $this->tagExtractor->getPivotAttributes();
+
+        $appendedColumns = [];
+
+        foreach ($toAppend as $item) {
+            $appendedColumn = new Column('pivot', 'object', true);
+
+            $appendedPivotColumns = ModelColumns::pivotColumns($item);
+
+            foreach ($appendedPivotColumns as $child) {
+                $appendedColumn->append($child);
+            }
+
+            $appendedColumns[] = $appendedColumn;
+        }
+
+        return $appendedColumns;
+    }
+
+    protected function extractResponseData(Model $model, array $columns, array $append = []): array
     {
         $hidden = $model->getHidden();
 
         foreach ($columns as $column => $type) {
             if (in_array($column, $hidden)) {
                 unset($columns[$column]);
+            }
+        }
+
+        if ($append) {
+            foreach ($append as $item) {
+                $columns[] = $item;
             }
         }
 
