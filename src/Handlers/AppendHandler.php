@@ -6,11 +6,11 @@ use Asseco\OpenApi\Exceptions\OpenApiException;
 
 class AppendHandler extends AbstractHandler
 {
-    public function handle(string $namespace): array
+    public static function handle($tags, string $namespace): array
     {
         return array_map(function ($tag) use ($namespace) {
-            return $this->parseTag($tag, $namespace);
-        }, $this->tags);
+            return self::parseTag($tag, $namespace);
+        }, $tags);
     }
 
     /**
@@ -19,20 +19,20 @@ class AppendHandler extends AbstractHandler
      * @return array
      * @throws OpenApiException
      */
-    protected function parseTag($tag, $namespace): array
+    protected static function parseTag($tag, $namespace): array
     {
         $split = explode(' ', $tag);
 
-        $this->verifyParameters(count($split));
+        self::verifyParameters(count($split));
 
         $key = $split[0];
         $model = $split[1];
 
-        if (!$this->modelNamespaced($model)) {
+        if (!self::modelNamespaced($model)) {
             $model = $namespace . $model;
         }
 
-        $this->verifyModelExists($model);
+        self::verifyModelExists($model);
 
         return [
             'key'   => $key,
@@ -44,7 +44,7 @@ class AppendHandler extends AbstractHandler
      * @param array $count
      * @throws OpenApiException
      */
-    protected function verifyParameters(int $count): void
+    protected static function verifyParameters(int $count): void
     {
         if ($count != 2) {
             throw new OpenApiException('Append parameters need to have exactly 2 parts.');
@@ -55,7 +55,7 @@ class AppendHandler extends AbstractHandler
      * @param string $model
      * @throws OpenApiException
      */
-    protected function verifyModelExists(string $model): void
+    protected static function verifyModelExists(string $model): void
     {
         if (!class_exists($model)) {
             throw new OpenApiException("Appended class doesn't exist.");

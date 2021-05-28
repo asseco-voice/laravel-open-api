@@ -14,11 +14,11 @@ class PathHandler extends AbstractHandler
      * @return Parameters|null
      * @throws OpenApiException
      */
-    public function handle(array $pathParameters): ?Parameters
+    public static function handle($tags, array $pathParameters): ?Parameters
     {
         $parameters = new Parameters();
 
-        if (!$this->tags) {
+        if (!$tags) {
             if (!$pathParameters) {
                 return null;
             }
@@ -30,15 +30,15 @@ class PathHandler extends AbstractHandler
             return $parameters;
         }
 
-        foreach ($this->tags as $methodParameter) {
+        foreach ($tags as $methodParameter) {
             $split = explode(' ', $methodParameter, 3);
             $count = count($split);
 
-            $this->verifyParameters($count);
+            self::verifyParameters($count);
 
-            [$name, $type, $description] = $this->parseTag($split, $count);
+            [$name, $type, $description] = self::parseTag($split, $count);
 
-            $parameter = $this->createParameter($name, $type, $description);
+            $parameter = self::createParameter($name, $type, $description);
 
             $parameters->append($parameter);
         }
@@ -50,7 +50,7 @@ class PathHandler extends AbstractHandler
      * @param int $count
      * @throws OpenApiException
      */
-    private function verifyParameters(int $count): void
+    protected static function verifyParameters(int $count): void
     {
         if ($count < 2) {
             throw new OpenApiException('Wrong number of path parameters provided');
@@ -63,7 +63,7 @@ class PathHandler extends AbstractHandler
      * @return array
      * @throws OpenApiException
      */
-    private function parseTag(array $split, int $count): array
+    protected static function parseTag(array $split, int $count): array
     {
         $name = $split[0];
         $type = DataType::getMappedClass($split[1]);
@@ -78,7 +78,7 @@ class PathHandler extends AbstractHandler
      * @param $description
      * @return PathParameter
      */
-    private function createParameter($name, $type, $description): PathParameter
+    protected static function createParameter($name, $type, $description): PathParameter
     {
         $parameter = new PathParameter($name, $type);
         $parameter->addDescription($description);

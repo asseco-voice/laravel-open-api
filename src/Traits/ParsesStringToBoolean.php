@@ -11,7 +11,7 @@ trait ParsesStringToBoolean
      * @return bool
      * @throws OpenApiException
      */
-    protected function parseBooleanString(string $required): bool
+    protected static function parseBooleanString(string $required): bool
     {
         if ($required === 'true' || $required === '1') {
             return true;
