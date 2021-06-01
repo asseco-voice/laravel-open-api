@@ -193,6 +193,16 @@ name type required description
 name type required description
 ```
 
+In case you want an arbitrary string as a request/response, it can be achieved 
+by using double quotes when setting request/response parameters. This way, all other parameters will
+be ignored and only the string inside double quotes will be returned.
+
+Example:
+
+```
+@response "example"
+```
+
 #### Response specific
 
 Responses will by default be marked as multiple (indicating collection output, not a single model)
@@ -206,6 +216,25 @@ of what type are the array values:
 
 ```
 @response attribute array[string] true Some description
+```
+
+It is also possible to directly append a pivot table to the response, even if it has no model associated with it.
+
+```
+@pivot table_name
+```
+
+For example, if the table was appended to the ``User`` model, the following response will be returned:
+
+```
+{
+    "name": "string"
+    "email": "string"
+    "pivot": {
+      "user_id": 0
+      "example_id": 0
+    }
+}
 ```
 
 #### Request specific
