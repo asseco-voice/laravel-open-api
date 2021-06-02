@@ -58,11 +58,11 @@ class RequestGenerator
         $appendedColumns = $this->getColumnsToAppend($namespace);
 
         if ($model) {
-            $modelColumns = new ModelColumns($model);
+            $modelColumns = ModelColumns::get($model);
 
             $except = $this->tagExtractor->getExceptAttributes();
 
-            return $this->extractRequestData($model, $modelColumns->modelColumns(), $except, $appendedColumns);
+            return $this->extractRequestData($model, $modelColumns, $except, $appendedColumns);
         }
 
         return [];
@@ -77,8 +77,8 @@ class RequestGenerator
         foreach ($toAppend as $item) {
             $appendedColumn = new Column($item['key'], 'object', true);
 
-            $appendedModelColumns = new ModelColumns($item['model']);
-            $appendedModelRequestData = $this->extractRequestData($item['model'], $appendedModelColumns->modelColumns(), []);
+            $appendedModelColumns = ModelColumns::get($item['model']);
+            $appendedModelRequestData = $this->extractRequestData($item['model'], $appendedModelColumns, []);
 
             foreach ($appendedModelRequestData as $child) {
                 $appendedColumn->append($child);
@@ -111,10 +111,8 @@ class RequestGenerator
             $columns = [];
         }
 
-        if ($append) {
-            foreach ($append as $item) {
-                $columns[] = $item;
-            }
+        foreach ($append as $item) {
+            $columns[] = $item;
         }
 
         return $columns;

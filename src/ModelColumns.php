@@ -12,43 +12,60 @@ use Illuminate\Support\Facades\Schema;
 class ModelColumns
 {
     protected const CACHE_PREFIX_DB = 'open_api_db_schema_';
-    private Model $model;
+    protected const TTL = 60 * 60 * 24;
 
-    public function __construct(Model $model)
+    public static function get(Model $model): array
     {
-        $this->model = $model;
-    }
-
-    public function modelColumns(): array
-    {
-        $cacheKey = self::CACHE_PREFIX_DB . get_class($this->model);
+        $cacheKey = self::CACHE_PREFIX_DB . get_class($model);
 
         if (Cache::has($cacheKey) && !config('asseco-open-api.bust_cache')) {
             return Cache::get($cacheKey);
         }
 
-        $table = $this->model->getTable();
+        $table = $model->getTable();
+
+        $columns = self::getColumnAttributes($table);
+        Cache::put($cacheKey, $columns, self::TTL);
+
+        return $columns;
+    }
+
+    public static function getPivot(string $table): array
+    {
+        $cacheKey = self::CACHE_PREFIX_DB . $table;
+
+        if (Cache::has($cacheKey) && !config('asseco-open-api.bust_cache')) {
+            return Cache::get($cacheKey);
+        }
+
+        $columns = self::getColumnAttributes($table);
+        Cache::put($cacheKey, $columns, self::TTL);
+
+        return $columns;
+    }
+
+    protected static function getColumnAttributes($table): array
+    {
         $columns = Schema::getColumnListing($table);
         $modelColumns = [];
 
         // having 'enum' in table definition will throw Doctrine error because it is not defined in their types.
         // Registering it manually.
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
         try {
             foreach ($columns as $column) {
-                $type = $this->remapColumnTypes(Schema::getColumnType($table, $column));
+                $type = self::remapColumnTypes(Schema::getColumnType($table, $column));
                 $modelColumns[] = new Column($column, $type, true);
             }
         } catch (Exception $e) {
             echo print_r($e->getMessage(), true) . "\n";
         }
 
-        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
-
         return $modelColumns;
     }
 
-    protected function remapColumnTypes($columnType)
+    protected static function remapColumnTypes($columnType)
     {
         switch ($columnType) {
             case 'int':

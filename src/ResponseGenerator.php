@@ -4,11 +4,13 @@ namespace Asseco\OpenApi;
 
 use Asseco\OpenApi\Specification\Paths\Operations\Response;
 use Asseco\OpenApi\Specification\Paths\Operations\Responses;
+use Asseco\OpenApi\Specification\Shared\Column;
 use Asseco\OpenApi\Specification\Shared\Content\Content;
 use Asseco\OpenApi\Specification\Shared\Content\JsonSchema;
 use Asseco\OpenApi\Specification\Shared\ReferencedSchema;
 use Asseco\OpenApi\Specification\Shared\StandardSchema;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 
 class ResponseGenerator
 {
@@ -67,16 +69,41 @@ class ResponseGenerator
             return $methodResponseColumns;
         }
 
-        if ($model) {
-            $modelColumns = new ModelColumns($model);
+        $appendedColumns = $this->getColumnsToAppend();
 
-            return $this->extractResponseData($model, $modelColumns->modelColumns());
+        if ($model) {
+            $modelColumns = ModelColumns::get($model);
+
+            return $this->extractResponseData($model, $modelColumns, $appendedColumns);
         }
 
         return [];
     }
 
-    protected function extractResponseData(Model $model, array $columns): array
+    protected function getColumnsToAppend(): array
+    {
+        $toAppend = $this->tagExtractor->getPivotAttributes();
+
+        $appendedColumns = [];
+
+        if (!$toAppend || !Schema::hasTable($toAppend)) {
+            return $appendedColumns;
+        }
+
+        $appendedColumn = new Column('pivot', 'object', true);
+
+        $appendedPivotColumns = ModelColumns::getPivot($toAppend);
+
+        foreach ($appendedPivotColumns as $child) {
+            $appendedColumn->append($child);
+        }
+
+        $appendedColumns[] = $appendedColumn;
+
+        return $appendedColumns;
+    }
+
+    protected function extractResponseData(Model $model, array $columns, array $append = []): array
     {
         $hidden = $model->getHidden();
 
@@ -84,6 +111,10 @@ class ResponseGenerator
             if (in_array($column, $hidden)) {
                 unset($columns[$column]);
             }
+        }
+
+        foreach ($append as $item) {
+            $columns[] = $item;
         }
 
         return $columns;

@@ -10,11 +10,12 @@ use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 class PathHandler extends AbstractHandler
 {
     /**
+     * @param array $tags
      * @param array $pathParameters
      * @return Parameters|null
      * @throws OpenApiException
      */
-    public static function handle($tags, array $pathParameters): ?Parameters
+    public static function handle(array $tags, array $pathParameters): ?Parameters
     {
         $parameters = new Parameters();
 

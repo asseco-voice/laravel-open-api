@@ -19,6 +19,12 @@ class Properties implements Serializable
     {
         [$properties, $required] = $this->parseColumns();
 
+        // When simple value is returned, it will have 'example' as
+        // a top level array instead of nested object values.
+        if (array_key_exists('example', $properties)) {
+            return $properties;
+        }
+
         return [
             'properties' => $properties,
             'required'   => $required,
@@ -31,6 +37,15 @@ class Properties implements Serializable
         $required = [];
 
         foreach ($this->modelColumns as $column) {
+            if (is_string($column)) {
+                $columnValues = [
+                    'type'    => 'string',
+                    'example' => $column,
+                ];
+                $properties = array_merge_recursive($properties, $columnValues);
+                continue;
+            }
+
             $columnValues = [
                 $column->name => [
                     'type'        => $column->type,

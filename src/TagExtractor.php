@@ -13,6 +13,7 @@ use Asseco\OpenApi\Tags\GroupTag;
 use Asseco\OpenApi\Tags\ModelTag;
 use Asseco\OpenApi\Tags\MultipleTag;
 use Asseco\OpenApi\Tags\PathTag;
+use Asseco\OpenApi\Tags\PivotTag;
 use Asseco\OpenApi\Tags\RequestTag;
 use Asseco\OpenApi\Tags\ResponseTag;
 use Asseco\OpenApi\Traits\ParsesStringToBoolean;
@@ -111,6 +112,13 @@ class TagExtractor
         $tags = AppendTag::getFrom($this->methodDocBlock);
 
         return AppendHandler::handle($tags, $namespace);
+    }
+
+    public function getPivotAttributes()
+    {
+        $tags = PivotTag::getFrom($this->methodDocBlock);
+
+        return $tags ? $tags[0] : null;
     }
 
     /**
