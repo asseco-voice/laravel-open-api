@@ -17,7 +17,6 @@ class RequestResponseHandler extends AbstractHandler
         $columns = [];
 
         foreach ($tags as $tag) {
-
             $matchInQuotes = self::matchInQuotes($tag);
 
             if (!empty($matchInQuotes)) {

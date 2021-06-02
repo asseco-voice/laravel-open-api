@@ -95,7 +95,6 @@ class RequestGenerator
         $fillable = $model->getFillable();
         $guarded = $model->getGuarded();
 
-
         if (!empty($fillable)) {
             foreach ($columns as $key => $column) {
                 if (!in_array($column->name, $fillable) || in_array($column->name, $except)) {
