@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ModelHandler extends AbstractHandler
 {
-    public static function handle($tags, string $controller, string $namespace, string $candidate): ?Model
+    public static function handle(array $tags, string $controller, string $namespace, string $candidate): ?Model
     {
         $model = self::getModelFromDocBlock($tags, $namespace);
 
@@ -29,7 +29,7 @@ class ModelHandler extends AbstractHandler
         return null;
     }
 
-    protected static function getModelFromDocBlock($tags, string $namespace): ?string
+    protected static function getModelFromDocBlock(array $tags, string $namespace): ?string
     {
         if (count($tags) === 0) {
             return null;

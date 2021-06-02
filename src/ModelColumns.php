@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\Schema;
 class ModelColumns
 {
     protected const CACHE_PREFIX_DB = 'open_api_db_schema_';
+    protected const TTL = 60 * 60 * 24;
 
-    public static function modelColumns(Model $model): array
+    public static function get(Model $model): array
     {
         $cacheKey = self::CACHE_PREFIX_DB . get_class($model);
 
@@ -23,13 +24,13 @@ class ModelColumns
 
         $table = $model->getTable();
 
-        $modelColumns = self::getColumnAttributes($table);
-        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
+        $columns = self::getColumnAttributes($table);
+        Cache::put($cacheKey, $columns, self::TTL);
 
-        return $modelColumns;
+        return $columns;
     }
 
-    public static function pivotColumns(string $table): array
+    public static function getPivot(string $table): array
     {
         $cacheKey = self::CACHE_PREFIX_DB . $table;
 
@@ -37,10 +38,10 @@ class ModelColumns
             return Cache::get($cacheKey);
         }
 
-        $modelColumns = self::getColumnAttributes($table);
-        Cache::put($cacheKey, $modelColumns, 60 * 60 * 24);
+        $columns = self::getColumnAttributes($table);
+        Cache::put($cacheKey, $columns, self::TTL);
 
-        return $modelColumns;
+        return $columns;
     }
 
     protected static function getColumnAttributes($table): array
@@ -51,6 +52,7 @@ class ModelColumns
         // having 'enum' in table definition will throw Doctrine error because it is not defined in their types.
         // Registering it manually.
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
         try {
             foreach ($columns as $column) {
                 $type = self::remapColumnTypes(Schema::getColumnType($table, $column));

@@ -8,17 +8,20 @@ use Asseco\OpenApi\Specification\Shared\Column;
 class RequestResponseHandler extends AbstractHandler
 {
     /**
+     * @param array $tags
      * @return array
      * @throws OpenApiException
      */
-    public static function handle($tags): array
+    public static function handle(array $tags): array
     {
         $columns = [];
 
         foreach ($tags as $tag) {
-            if (preg_match('/"/', $tag)) {
-                preg_match('/"(.*?)"/', $tag, $name);
-                $columns[] = $name[1];
+
+            $matchInQuotes = self::matchInQuotes($tag);
+
+            if (!empty($matchInQuotes)) {
+                $columns[] = $matchInQuotes[1];
                 continue;
             }
 
@@ -42,6 +45,19 @@ class RequestResponseHandler extends AbstractHandler
         }
 
         return $columns;
+    }
+
+    /**
+     * Covering the case in the response when a simple string should be returned.
+     *
+     * @param $tag
+     * @return false|int
+     */
+    protected static function matchInQuotes($tag)
+    {
+        preg_match('/"(.*?)"/', $tag, $matchInQuotes);
+
+        return $matchInQuotes;
     }
 
     /**

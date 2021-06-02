@@ -72,7 +72,7 @@ class ResponseGenerator
         $appendedColumns = $this->getColumnsToAppend();
 
         if ($model) {
-            $modelColumns = ModelColumns::modelColumns($model);
+            $modelColumns = ModelColumns::get($model);
 
             return $this->extractResponseData($model, $modelColumns, $appendedColumns);
         }
@@ -86,17 +86,19 @@ class ResponseGenerator
 
         $appendedColumns = [];
 
-        if ($toAppend && Schema::hasTable($toAppend)) {
-            $appendedColumn = new Column('pivot', 'object', true);
-
-            $appendedPivotColumns = ModelColumns::pivotColumns($toAppend);
-
-            foreach ($appendedPivotColumns as $child) {
-                $appendedColumn->append($child);
-            }
-
-            $appendedColumns[] = $appendedColumn;
+        if (!$toAppend || !Schema::hasTable($toAppend)) {
+            return $appendedColumns;
         }
+
+        $appendedColumn = new Column('pivot', 'object', true);
+
+        $appendedPivotColumns = ModelColumns::getPivot($toAppend);
+
+        foreach ($appendedPivotColumns as $child) {
+            $appendedColumn->append($child);
+        }
+
+        $appendedColumns[] = $appendedColumn;
 
         return $appendedColumns;
     }
@@ -111,10 +113,8 @@ class ResponseGenerator
             }
         }
 
-        if ($append) {
-            foreach ($append as $item) {
-                $columns[] = $item;
-            }
+        foreach ($append as $item) {
+            $columns[] = $item;
         }
 
         return $columns;

@@ -6,7 +6,7 @@ use Asseco\OpenApi\Exceptions\OpenApiException;
 
 class AppendHandler extends AbstractHandler
 {
-    public static function handle($tags, string $namespace): array
+    public static function handle(array $tags, string $namespace): array
     {
         return array_map(function ($tag) use ($namespace) {
             return self::parseTag($tag, $namespace);
