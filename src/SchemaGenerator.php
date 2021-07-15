@@ -108,7 +108,7 @@ class SchemaGenerator
         [$path, $requestSchemas, $responseSchemas] =
             $this->traverseOperations($route, $methodData,
                 $tagExtractor, $schemaName, $model,
-                $pathParameters, $namespace);
+                $pathParameters, $candidate, $namespace);
 
         return [$path, $requestSchemas, $responseSchemas];
     }
@@ -124,13 +124,16 @@ class SchemaGenerator
      * @return array
      * @throws Exceptions\OpenApiException
      */
-    protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, string $namespace): array
+    protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $candidate, string $namespace): array
     {
         $path = new Path($route->path());
         $requestSchemas = new Schemas();
         $responseSchemas = new Schemas();
 
         foreach ($route->operations() as $routeOperation) {
+            $methodData = array_merge($methodData, [
+                'operationId' => $tagExtractor->getOperationId($candidate, $routeOperation)
+            ]);
             $operation = new Operation($methodData, $routeOperation);
 
             [$responseSchema, $responses] =
