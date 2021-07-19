@@ -26,9 +26,7 @@ class OperationIdHandler extends AbstractHandler
 
         self::verifyParameters(count($split));
 
-        $operationId = $split[0];
-
-        return $operationId;
+        return $split[0];
     }
 
     /**
