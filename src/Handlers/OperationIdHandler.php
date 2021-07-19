@@ -42,20 +42,20 @@ class OperationIdHandler extends AbstractHandler
         }
     }
 
-
     /**
      * @param string $method
      * @param string $operation
      * @param string $candidate
      * @return string
      */
-    protected static function generateOperationId(string $method, string $operation, string $candidate) : string
+    protected static function generateOperationId(string $method, string $operation, string $candidate): string
     {
         switch ($operation) {
             case 'get':
                 if ($method == 'index') {
                     return 'getAll' . Str::plural($candidate);
                 }
+
                 return 'get' . $candidate . 'ByPrimaryKey';
             case 'post':
                 return 'post' . $candidate;

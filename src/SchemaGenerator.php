@@ -132,7 +132,7 @@ class SchemaGenerator
 
         foreach ($route->operations() as $routeOperation) {
             $methodData = array_merge($methodData, [
-                'operationId' => $tagExtractor->getOperationId($candidate, $routeOperation)
+                'operationId' => $tagExtractor->getOperationId($candidate, $routeOperation),
             ]);
             $operation = new Operation($methodData, $routeOperation);
 
