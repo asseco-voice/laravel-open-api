@@ -70,7 +70,7 @@ class RequestGenerator
 
     protected function getColumnsToAppend(string $namespace): array
     {
-        $toAppend = $this->tagExtractor->getAppendAttributes($namespace);
+        $toAppend = $this->tagExtractor->getRequestAppendAttributes($namespace);
 
         $appendedColumns = [];
 

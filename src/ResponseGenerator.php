@@ -47,9 +47,9 @@ class ResponseGenerator
         return $responses;
     }
 
-    public function createSchema(?Model $model): ?StandardSchema
+    public function createSchema(string $namespace, ?Model $model): ?StandardSchema
     {
-        $responseColumns = $this->getResponseColumns($model);
+        $responseColumns = $this->getResponseColumns($namespace, $model);
 
         if (empty($responseColumns)) {
             return null;
@@ -61,7 +61,7 @@ class ResponseGenerator
         return $schema;
     }
 
-    protected function getResponseColumns(?Model $model): array
+    protected function getResponseColumns(string $namespace, ?Model $model): array
     {
         $methodResponseColumns = $this->tagExtractor->getResponse();
 
@@ -69,7 +69,7 @@ class ResponseGenerator
             return $methodResponseColumns;
         }
 
-        $appendedColumns = $this->getColumnsToAppend();
+        $appendedColumns = $this->getColumnsToAppend($namespace);
 
         if ($model) {
             $modelColumns = ModelColumns::get($model);
@@ -80,19 +80,32 @@ class ResponseGenerator
         return [];
     }
 
-    protected function getColumnsToAppend(): array
+    protected function getColumnsToAppend(string $namespace): array
     {
-        $toAppend = $this->tagExtractor->getPivotAttributes();
+        $modelsToAppend = $this->tagExtractor->getResponseAppendAttributes($namespace);
+        $pivotToAppend = $this->tagExtractor->getPivotAttributes();
 
         $appendedColumns = [];
 
-        if (!$toAppend || !Schema::hasTable($toAppend)) {
+        foreach ($modelsToAppend as $item) {
+            $appendedColumn = new Column($item['key'], 'object', true);
+
+            $appendedModelColumns = ModelColumns::get($item['model']);
+            $appendedModelRequestData = $this->extractResponseData($item['model'], $appendedModelColumns, []);
+
+            foreach ($appendedModelRequestData as $child) {
+                $appendedColumn->append($child);
+            }
+
+            $appendedColumns[] = $appendedColumn;
+        }
+
+        if (!$pivotToAppend || !Schema::hasTable($pivotToAppend)) {
             return $appendedColumns;
         }
 
         $appendedColumn = new Column('pivot', 'object', true);
-
-        $appendedPivotColumns = ModelColumns::getPivot($toAppend);
+        $appendedPivotColumns = ModelColumns::getPivot($pivotToAppend);
 
         foreach ($appendedPivotColumns as $child) {
             $appendedColumn->append($child);
