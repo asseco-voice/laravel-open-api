@@ -8,7 +8,8 @@ use Asseco\OpenApi\Handlers\OperationIdHandler;
 use Asseco\OpenApi\Handlers\PathHandler;
 use Asseco\OpenApi\Handlers\RequestResponseHandler;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
-use Asseco\OpenApi\Tags\AppendTag;
+use Asseco\OpenApi\Tags\RequestAppendTag;
+use Asseco\OpenApi\Tags\ResponseAppendTag;
 use Asseco\OpenApi\Tags\ExceptTag;
 use Asseco\OpenApi\Tags\GroupTag;
 use Asseco\OpenApi\Tags\ModelTag;
@@ -109,9 +110,16 @@ class TagExtractor
         return $tags ? explode(' ', $tags[0]) : [];
     }
 
-    public function getAppendAttributes(string $namespace)
+    public function getRequestAppendAttributes(string $namespace)
     {
-        $tags = AppendTag::getFrom($this->methodDocBlock);
+        $tags = RequestAppendTag::getFrom($this->methodDocBlock);
+
+        return AppendHandler::handle($tags, $namespace);
+    }
+
+    public function getResponseAppendAttributes(string $namespace)
+    {
+        $tags = ResponseAppendTag::getFrom($this->methodDocBlock);
 
         return AppendHandler::handle($tags, $namespace);
     }

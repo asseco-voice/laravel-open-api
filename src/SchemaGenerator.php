@@ -137,7 +137,7 @@ class SchemaGenerator
             $operation = new Operation($methodData, $routeOperation);
 
             [$responseSchema, $responses] =
-                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model);
+                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model, $namespace);
 
             $requestGenerator = new RequestGenerator($tagExtractor, 'Request_' . $schemaName);
             $requestSchema = $requestGenerator->createSchema($namespace, $model);
@@ -185,11 +185,11 @@ class SchemaGenerator
         return str_replace(['\\', ' '], '', $input);
     }
 
-    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model): array
+    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model, string $namespace): array
     {
         $responseGenerator = new ResponseGenerator($extractor, 'Response_' . $schemaName);
 
-        $responseSchema = $responseGenerator->createSchema($model);
+        $responseSchema = $responseGenerator->createSchema($namespace, $model);
         $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters, !empty($responseSchema));
 
         return [$responseSchema, $responses];
