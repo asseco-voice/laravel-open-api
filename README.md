@@ -159,6 +159,18 @@ Examples:
 It is not possible to set path parameter ``required`` property. It is automatically set to true because
 OpenApi doesn't support optional path parameters (even though Laravel does).
 
+### Operation ID
+
+By default, ``operationId`` will be generated for each route, based on the HTTP method
+and the name of the model. In case you want to override the default generated one, you
+can use ``@operationId``.
+
+Example:
+
+```
+@operationId operation_id
+```
+
 ### Request/response parameters
 
 By default, request/response parameter(s) will be [extracted from model](#models).
@@ -204,6 +216,31 @@ Example:
 @response "example"
 ```
 
+You can include additional input/output models alongside original model with `@requestAppend key Class` or 
+`@responseAppend key Class` in your method doc block. This will append given ``Class`` properties on already existing model using the `key` as a key.
+
+I.e. having original model ``User`` (with properties name, email) you want to append `Post` model (with properties
+title, description) to it as a list of inputs.
+
+```
+@model User // <-- not needed if it is UserController or you already specified model on the controller
+
+@requestAppend posts Post
+``` 
+
+This will result in following request:
+
+```
+{
+    "name": "string"
+    "email": "string"
+    "posts": {
+        "title": "string"
+        "description": "string"
+    }
+}
+```
+
 #### Response specific
 
 Responses will by default be marked as multiple (indicating collection output, not a single model)
@@ -236,33 +273,6 @@ response will be returned:
     "pivot": {
       "user_id": 0
       "example_id": 0
-    }
-}
-```
-
-#### Request specific
-
-You can include additional input models alongside original model with `@append key Class` in your method 
-doc block. This will append given ``Class`` properties on already existing model using the `key` as a key. 
-
-I.e. having original model ``User`` (with properties name, email) you want to append `Post` model (with properties
-title, description) to it as a list of inputs. 
-
-```
-@model User // <-- not needed if it is UserController or you already specified model on the controller
-
-@appends posts Post
-``` 
-
-This will result in following request:
-
-```
-{
-    "name": "string"
-    "email": "string"
-    "posts": {
-        "title": "string"
-        "description": "string"
     }
 }
 ```

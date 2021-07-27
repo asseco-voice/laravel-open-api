@@ -4,17 +4,20 @@ namespace Asseco\OpenApi;
 
 use Asseco\OpenApi\Handlers\AppendHandler;
 use Asseco\OpenApi\Handlers\ModelHandler;
+use Asseco\OpenApi\Handlers\OperationIdHandler;
 use Asseco\OpenApi\Handlers\PathHandler;
 use Asseco\OpenApi\Handlers\RequestResponseHandler;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\Parameters;
-use Asseco\OpenApi\Tags\AppendTag;
 use Asseco\OpenApi\Tags\ExceptTag;
 use Asseco\OpenApi\Tags\GroupTag;
 use Asseco\OpenApi\Tags\ModelTag;
 use Asseco\OpenApi\Tags\MultipleTag;
+use Asseco\OpenApi\Tags\OperationIdTag;
 use Asseco\OpenApi\Tags\PathTag;
 use Asseco\OpenApi\Tags\PivotTag;
+use Asseco\OpenApi\Tags\RequestAppendTag;
 use Asseco\OpenApi\Tags\RequestTag;
+use Asseco\OpenApi\Tags\ResponseAppendTag;
 use Asseco\OpenApi\Tags\ResponseTag;
 use Asseco\OpenApi\Traits\ParsesStringToBoolean;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +33,7 @@ class TagExtractor
     protected const CACHE_PREFIX_CONTROLLER = 'open_api_controller_';
 
     protected string $controller;
-    protected string $method;
+    public string $method;
 
     protected DocBlock $controllerDocBlock;
     protected DocBlock $methodDocBlock;
@@ -107,9 +110,16 @@ class TagExtractor
         return $tags ? explode(' ', $tags[0]) : [];
     }
 
-    public function getAppendAttributes(string $namespace)
+    public function getRequestAppendAttributes(string $namespace)
     {
-        $tags = AppendTag::getFrom($this->methodDocBlock);
+        $tags = RequestAppendTag::getFrom($this->methodDocBlock);
+
+        return AppendHandler::handle($tags, $namespace);
+    }
+
+    public function getResponseAppendAttributes(string $namespace)
+    {
+        $tags = ResponseAppendTag::getFrom($this->methodDocBlock);
 
         return AppendHandler::handle($tags, $namespace);
     }
@@ -139,6 +149,13 @@ class TagExtractor
         $controllerGroups = GroupTag::getFrom($this->controllerDocBlock);
 
         return $methodGroups ?: $controllerGroups ?: [Guesser::groupName($candidate)];
+    }
+
+    public function getOperationId(string $candidate, string $operation)
+    {
+        $tags = OperationIdTag::getFrom($this->methodDocBlock);
+
+        return OperationIdHandler::handle($tags, $candidate, $this->method, $operation);
     }
 
     public function getMethodData(string $candidate)
