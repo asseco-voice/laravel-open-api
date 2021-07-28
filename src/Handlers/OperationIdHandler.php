@@ -63,5 +63,4 @@ class OperationIdHandler extends AbstractHandler
                 return $method . $candidate;
         }
     }
-
 }
