@@ -48,21 +48,20 @@ class OperationIdHandler extends AbstractHandler
      */
     protected static function generateOperationId(string $method, string $operation, string $candidate): string
     {
-        switch ($operation) {
-            case 'get':
-                if ($method == 'index') {
-                    return 'getAll' . Str::plural($candidate);
-                }
-
-                return 'get' . $candidate . 'ByPrimaryKey';
-            case 'post':
-                return 'post' . $candidate;
-            case 'put':
-            case 'patch':
-            case 'destroy':
-                return $operation . $candidate . 'ByPrimaryKey';
-            default:
+        switch ($method) {
+            case 'index':
+                return 'getAll' . Str::plural($candidate);
+            case 'store':
+                return 'create' . $candidate;
+            case 'show':
+                return 'get' . $candidate;
+            case 'update':
                 return $operation . $candidate;
+            case 'destroy':
+                return 'delete' . $candidate;
+            default:
+                return $method . $candidate;
         }
     }
+
 }
