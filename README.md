@@ -162,13 +162,13 @@ OpenApi doesn't support optional path parameters (even though Laravel does).
 ### Operation ID
 
 By default, ``operationId`` will be generated for each route, based on the HTTP method
-and the name of the model. In case you want to override the default generated one, you
-can use ``@operationId``.
+and the name of the model. In case you want to specify the model name instead of 
+using the assumed one, you can use ``@operationId``.
 
 Example:
 
 ```
-@operationId operation_id
+@operationId model_name
 ```
 
 ### Request/response parameters

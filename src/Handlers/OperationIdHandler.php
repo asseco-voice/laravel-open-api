@@ -12,10 +12,10 @@ class OperationIdHandler extends AbstractHandler
      * @param string $candidate
      * @param string $method
      * @param string $operation
-     * @return mixed|string
+     * @return string
      * @throws OpenApiException
      */
-    public static function handle(array $tags, string $candidate, string $method, string $operation)
+    public static function handle(array $tags, string $candidate, string $method, string $operation): string
     {
         if (!$tags) {
             return self::generateOperationId($method, $operation, $candidate);
@@ -26,7 +26,7 @@ class OperationIdHandler extends AbstractHandler
 
         self::verifyParameters(count($split));
 
-        return $split[0];
+        return self::generateOperationId($method, $operation, $split[0]);
     }
 
     /**
