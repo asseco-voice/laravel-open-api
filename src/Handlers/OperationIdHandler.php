@@ -3,6 +3,7 @@
 namespace Asseco\OpenApi\Handlers;
 
 use Asseco\OpenApi\Exceptions\OpenApiException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class OperationIdHandler extends AbstractHandler
@@ -26,7 +27,7 @@ class OperationIdHandler extends AbstractHandler
 
         self::verifyParameters(count($split));
 
-        return self::generateOperationId($method, $operation, $split[0]);
+        return self::generateOperationId($method, $operation, Arr::get($split, '0', $candidate));
     }
 
     /**
