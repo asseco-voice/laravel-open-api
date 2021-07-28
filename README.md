@@ -161,14 +161,23 @@ OpenApi doesn't support optional path parameters (even though Laravel does).
 
 ### Operation ID
 
-By default, ``operationId`` will be generated for each route, based on the HTTP method
-and the name of the model. In case you want to specify the model name instead of 
-using the assumed one, you can use ``@operationId``.
+By default, ``operationId`` will be generated for each route, based on the controller/HTTP method
+mapping and the name of the model. If you want to override the default, you can use ``@operationId``
+to provide a different suffix to the operation ID (which will replace what would be an auto-generated model).
+
+Prepended controller/HTTP method will stay intact because of possible conflicts when using update routes
+which map to both PUT and PATCH verbs. 
 
 Example:
 
 ```
-@operationId model_name
+// Provided for an show() method:
+@operationId suffix
+// this will output getSuffix
+
+// Provided for an update() method:
+@operationId suffix
+// this will output putSuffix and patchSuffix
 ```
 
 ### Request/response parameters
