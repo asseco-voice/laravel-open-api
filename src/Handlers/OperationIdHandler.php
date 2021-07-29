@@ -18,8 +18,10 @@ class OperationIdHandler extends AbstractHandler
      */
     public static function handle(array $tags, string $candidate, string $method, string $operation): string
     {
+        $serviceName = config('asseco-open-api.prepend_service_name') ? Str::studly(config('app.name')) : "";
+
         if (!$tags) {
-            return self::generateOperationId($method, $operation, $candidate);
+            return $serviceName . self::generateOperationId($method, $operation, $candidate);
         }
 
         $tag = $tags[0];
@@ -27,7 +29,7 @@ class OperationIdHandler extends AbstractHandler
 
         self::verifyParameters(count($split));
 
-        return self::generateOperationId($method, $operation, Arr::get($split, '0', $candidate));
+        return $serviceName . self::generateOperationId($method, $operation, Arr::get($split, '0', $candidate));
     }
 
     /**
@@ -49,21 +51,19 @@ class OperationIdHandler extends AbstractHandler
      */
     protected static function generateOperationId(string $method, string $operation, string $candidate): string
     {
-        $serviceName = config('asseco-open-api.prepend_service_name') ? Str::studly(config('app.name')) : "";
-
         switch ($method) {
             case 'index':
-                return $serviceName . 'GetAll' . Str::plural($candidate);
+                return 'GetAll' . Str::plural($candidate);
             case 'store':
-                return $serviceName . 'Create' . $candidate;
+                return 'Create' . $candidate;
             case 'show':
-                return $serviceName . 'Get' . $candidate;
+                return 'Get' . $candidate;
             case 'update':
-                return $serviceName . ucfirst($operation) . $candidate;
+                return ucfirst($operation) . $candidate;
             case 'destroy':
-                return $serviceName . 'Delete' . $candidate;
+                return 'Delete' . $candidate;
             default:
-                return $serviceName . ucfirst($method) . $candidate;
+                return ucfirst($method) . $candidate;
         }
     }
 }
