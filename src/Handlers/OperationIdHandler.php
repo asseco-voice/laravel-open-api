@@ -18,7 +18,7 @@ class OperationIdHandler extends AbstractHandler
      */
     public static function handle(array $tags, string $candidate, string $method, string $operation): string
     {
-        $serviceName = config('asseco-open-api.prepend_service_name') ? Str::studly(config('app.name')) : "";
+        $serviceName = config('asseco-open-api.prepend_service_name') ? Str::studly(config('app.name')) : '';
 
         if (!$tags) {
             return $serviceName . self::generateOperationId($method, $operation, $candidate);
