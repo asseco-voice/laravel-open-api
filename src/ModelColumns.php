@@ -55,8 +55,9 @@ class ModelColumns
 
         try {
             foreach ($columns as $column) {
+                $required = DB::connection()->getDoctrineColumn($table, $column)->getNotnull();
                 $type = self::remapColumnTypes(Schema::getColumnType($table, $column));
-                $modelColumns[] = new Column($column, $type, true);
+                $modelColumns[] = new Column($column, $type, $required);
             }
         } catch (Exception $e) {
             echo print_r($e->getMessage(), true) . "\n";

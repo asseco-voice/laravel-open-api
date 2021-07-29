@@ -49,19 +49,21 @@ class OperationIdHandler extends AbstractHandler
      */
     protected static function generateOperationId(string $method, string $operation, string $candidate): string
     {
+        $serviceName = config('asseco-open-api.prepend_service_name') ? Str::studly(config('app.name')) : "";
+
         switch ($method) {
             case 'index':
-                return 'getAll' . Str::plural($candidate);
+                return $serviceName . 'GetAll' . Str::plural($candidate);
             case 'store':
-                return 'create' . $candidate;
+                return $serviceName . 'Create' . $candidate;
             case 'show':
-                return 'get' . $candidate;
+                return $serviceName . 'Get' . $candidate;
             case 'update':
-                return $operation . $candidate;
+                return $serviceName . ucfirst($operation) . $candidate;
             case 'destroy':
-                return 'delete' . $candidate;
+                return $serviceName . 'Delete' . $candidate;
             default:
-                return $method . $candidate;
+                return $serviceName . ucfirst($method) . $candidate;
         }
     }
 }

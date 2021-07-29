@@ -12,7 +12,7 @@ return [
     /**
      * Namespace for Laravel models.
      */
-    'model_namespace' => 'App\\Models\\',
+    'model_namespace'          => 'App\\Models\\',
 
     /**
      * General OpenApi properties to generate.
@@ -84,4 +84,9 @@ return [
      * Get additional command output (for debugging purposes). Command flag, not to be used manually.
      */
     'verbose'    => false,
+
+    /**
+     * Prepend service name to operationId.
+     */
+    'prepend_service_name' => true,
 ];
