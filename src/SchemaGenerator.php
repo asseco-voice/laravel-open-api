@@ -12,6 +12,7 @@ use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use ReflectionException;
 
 class SchemaGenerator
@@ -139,7 +140,7 @@ class SchemaGenerator
             [$responseSchema, $responses] =
                 $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model, $namespace);
 
-            $requestGenerator = new RequestGenerator($tagExtractor, 'Request_' . $schemaName);
+            $requestGenerator = new RequestGenerator($tagExtractor, Str::studly(config('app.name')) . '_request_' . $schemaName);
             $requestSchema = $requestGenerator->createSchema($namespace, $model);
 
             $requestBody = null;
@@ -187,7 +188,7 @@ class SchemaGenerator
 
     protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model, string $namespace): array
     {
-        $responseGenerator = new ResponseGenerator($extractor, 'Response_' . $schemaName);
+        $responseGenerator = new ResponseGenerator($extractor, Str::studly(config('app.name')) . '_response_' . $schemaName);
 
         $responseSchema = $responseGenerator->createSchema($namespace, $model);
         $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters, !empty($responseSchema));
