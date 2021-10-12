@@ -7,8 +7,9 @@ use Asseco\OpenApi\Exceptions\OpenApiException;
 trait ParsesStringToBoolean
 {
     /**
-     * @param string $required
+     * @param  string  $required
      * @return bool
+     *
      * @throws OpenApiException
      */
     protected static function parseBooleanString(string $required): bool

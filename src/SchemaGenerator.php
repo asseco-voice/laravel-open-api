@@ -12,6 +12,7 @@ use Illuminate\Console\OutputStyle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use ReflectionException;
 
 class SchemaGenerator
@@ -26,8 +27,9 @@ class SchemaGenerator
     }
 
     /**
-     * @param OutputStyle $output
+     * @param  OutputStyle  $output
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
@@ -42,8 +44,9 @@ class SchemaGenerator
     }
 
     /**
-     * @param OutputStyle $output
+     * @param  OutputStyle  $output
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
@@ -85,8 +88,9 @@ class SchemaGenerator
     }
 
     /**
-     * @param RouteWrapper $route
+     * @param  RouteWrapper  $route
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
@@ -114,18 +118,21 @@ class SchemaGenerator
     }
 
     /**
-     * @param RouteWrapper $route
+     * @param  RouteWrapper  $route
      * @param $methodData
      * @param $tagExtractor
      * @param $schemaName
      * @param $model
      * @param $pathParameters
-     * @param string $namespace
+     * @param $candidate
+     * @param  string  $namespace
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      */
     protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $candidate, string $namespace): array
     {
+        $appName = Str::studly(config('app.name'));
         $path = new Path($route->path());
         $requestSchemas = new Schemas();
         $responseSchemas = new Schemas();
@@ -137,9 +144,9 @@ class SchemaGenerator
             $operation = new Operation($methodData, $routeOperation);
 
             [$responseSchema, $responses] =
-                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model, $namespace);
+                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model, $namespace, $appName);
 
-            $requestGenerator = new RequestGenerator($tagExtractor, 'Request_' . $schemaName);
+            $requestGenerator = new RequestGenerator($tagExtractor, $appName . '_Request_' . $schemaName);
             $requestSchema = $requestGenerator->createSchema($namespace, $model);
 
             $requestBody = null;
@@ -185,9 +192,9 @@ class SchemaGenerator
         return str_replace(['\\', ' '], '', $input);
     }
 
-    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model, string $namespace): array
+    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model, string $namespace, string $appName): array
     {
-        $responseGenerator = new ResponseGenerator($extractor, 'Response_' . $schemaName);
+        $responseGenerator = new ResponseGenerator($extractor, $appName . '_Response_' . $schemaName);
 
         $responseSchema = $responseGenerator->createSchema($namespace, $model);
         $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters, !empty($responseSchema));

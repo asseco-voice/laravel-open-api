@@ -32,7 +32,8 @@ class Components implements Serializable
     }
 
     /**
-     * @param Component $component
+     * @param  Component  $component
+     *
      * @throws OpenApiException
      */
     public function append(?Component $component): void

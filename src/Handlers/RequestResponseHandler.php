@@ -8,8 +8,9 @@ use Asseco\OpenApi\Specification\Shared\Column;
 class RequestResponseHandler extends AbstractHandler
 {
     /**
-     * @param array $tags
+     * @param  array  $tags
      * @return array
+     *
      * @throws OpenApiException
      */
     public static function handle(array $tags): array
@@ -60,7 +61,7 @@ class RequestResponseHandler extends AbstractHandler
     }
 
     /**
-     * @param string $item
+     * @param  string  $item
      * @return array
      */
     protected static function parseChildAttributes(string $item): array
@@ -78,7 +79,8 @@ class RequestResponseHandler extends AbstractHandler
     }
 
     /**
-     * @param int $count
+     * @param  int  $count
+     *
      * @throws OpenApiException
      */
     protected static function verifyParameters(int $count): void
@@ -89,9 +91,10 @@ class RequestResponseHandler extends AbstractHandler
     }
 
     /**
-     * @param bool $split
-     * @param int $count
+     * @param  bool  $split
+     * @param  int  $count
      * @return array
+     *
      * @throws OpenApiException
      */
     protected static function parseTag(array $split, int $count): array
@@ -105,9 +108,10 @@ class RequestResponseHandler extends AbstractHandler
     }
 
     /**
-     * @param int $count
-     * @param array $split
+     * @param  int  $count
+     * @param  array  $split
      * @return bool
+     *
      * @throws OpenApiException
      */
     protected static function isRequired(int $count, array $split): bool
@@ -116,8 +120,8 @@ class RequestResponseHandler extends AbstractHandler
     }
 
     /**
-     * @param int $count
-     * @param array $split
+     * @param  int  $count
+     * @param  array  $split
      * @return string
      */
     protected static function getDescription(int $count, array $split): string

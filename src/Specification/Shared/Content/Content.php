@@ -30,7 +30,8 @@ class Content implements Serializable
     }
 
     /**
-     * @param ContentSchema $content
+     * @param  ContentSchema  $content
+     *
      * @throws OpenApiException
      */
     public function append(ContentSchema $content): void

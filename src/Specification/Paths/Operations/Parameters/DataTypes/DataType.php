@@ -17,8 +17,9 @@ abstract class DataType implements Serializable
     }
 
     /**
-     * @param string $type
+     * @param  string  $type
      * @return static
+     *
      * @throws OpenApiException
      */
     public static function getMappedClass(string $type): self

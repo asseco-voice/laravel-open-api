@@ -9,11 +9,12 @@ use Illuminate\Support\Str;
 class OperationIdHandler extends AbstractHandler
 {
     /**
-     * @param array $tags
-     * @param string $candidate
-     * @param string $method
-     * @param string $operation
+     * @param  array  $tags
+     * @param  string  $candidate
+     * @param  string  $method
+     * @param  string  $operation
      * @return string
+     *
      * @throws OpenApiException
      */
     public static function handle(array $tags, string $candidate, string $method, string $operation): string
@@ -33,7 +34,8 @@ class OperationIdHandler extends AbstractHandler
     }
 
     /**
-     * @param int $count
+     * @param  int  $count
+     *
      * @throws OpenApiException
      */
     protected static function verifyParameters(int $count)
@@ -44,9 +46,9 @@ class OperationIdHandler extends AbstractHandler
     }
 
     /**
-     * @param string $method
-     * @param string $operation
-     * @param string $candidate
+     * @param  string  $method
+     * @param  string  $operation
+     * @param  string  $candidate
      * @return string
      */
     protected static function generateOperationId(string $method, string $operation, string $candidate): string

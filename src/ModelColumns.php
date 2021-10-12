@@ -72,6 +72,7 @@ class ModelColumns
             case 'int':
             case 'bigint':
                 return 'integer';
+            case 'time':
             case 'datetime':
             case 'date':
             case 'text':
