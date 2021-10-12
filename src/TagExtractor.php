@@ -40,8 +40,10 @@ class TagExtractor
 
     /**
      * ReflectionExtractor constructor.
-     * @param string $controller
-     * @param string $method
+     *
+     * @param  string  $controller
+     * @param  string  $method
+     *
      * @throws ReflectionException
      */
     public function __construct(string $controller, string $method)
@@ -83,6 +85,7 @@ class TagExtractor
 
     /**
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      */
     public function getRequest()
@@ -94,6 +97,7 @@ class TagExtractor
 
     /**
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      */
     public function getResponse()
@@ -132,8 +136,9 @@ class TagExtractor
     }
 
     /**
-     * @param array $routeParameters
+     * @param  array  $routeParameters
      * @return Parameters|null
+     *
      * @throws Exceptions\OpenApiException
      */
     public function getPathParameters(array $routeParameters): ?Parameters

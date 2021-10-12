@@ -20,9 +20,11 @@ class Operation implements Serializable
 
     /**
      * Operation constructor.
-     * @param array $methodData
-     * @param string $operation
-     * @param array $options
+     *
+     * @param  array  $methodData
+     * @param  string  $operation
+     * @param  array  $options
+     *
      * @throws OpenApiException
      */
     public function __construct(array $methodData, string $operation)

@@ -38,6 +38,7 @@ class OpenApi extends Command
 
     /**
      * @return int
+     *
      * @throws ReflectionException
      * @throws OpenApiException
      */

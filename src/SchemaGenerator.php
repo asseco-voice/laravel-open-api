@@ -27,8 +27,9 @@ class SchemaGenerator
     }
 
     /**
-     * @param OutputStyle $output
+     * @param  OutputStyle  $output
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
@@ -43,8 +44,9 @@ class SchemaGenerator
     }
 
     /**
-     * @param OutputStyle $output
+     * @param  OutputStyle  $output
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
@@ -86,8 +88,9 @@ class SchemaGenerator
     }
 
     /**
-     * @param RouteWrapper $route
+     * @param  RouteWrapper  $route
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      * @throws ReflectionException
      */
@@ -115,15 +118,16 @@ class SchemaGenerator
     }
 
     /**
-     * @param RouteWrapper $route
+     * @param  RouteWrapper  $route
      * @param $methodData
      * @param $tagExtractor
      * @param $schemaName
      * @param $model
      * @param $pathParameters
      * @param $candidate
-     * @param string $namespace
+     * @param  string  $namespace
      * @return array
+     *
      * @throws Exceptions\OpenApiException
      */
     protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $candidate, string $namespace): array

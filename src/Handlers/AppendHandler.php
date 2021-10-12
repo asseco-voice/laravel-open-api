@@ -17,6 +17,7 @@ class AppendHandler extends AbstractHandler
      * @param $tag
      * @param $namespace
      * @return array
+     *
      * @throws OpenApiException
      */
     protected static function parseTag($tag, $namespace): array
@@ -41,7 +42,8 @@ class AppendHandler extends AbstractHandler
     }
 
     /**
-     * @param array $count
+     * @param  array  $count
+     *
      * @throws OpenApiException
      */
     protected static function verifyParameters(int $count): void
@@ -52,7 +54,8 @@ class AppendHandler extends AbstractHandler
     }
 
     /**
-     * @param string $model
+     * @param  string  $model
+     *
      * @throws OpenApiException
      */
     protected static function verifyModelExists(string $model): void

@@ -20,7 +20,9 @@ class RouteWrapper
 
     /**
      * RouteWrapper constructor.
-     * @param Route $route
+     *
+     * @param  Route  $route
+     *
      * @throws OpenApiException
      */
     public function __construct(Route $route)
@@ -48,6 +50,7 @@ class RouteWrapper
 
     /**
      * @return string
+     *
      * @throws OpenApiException
      */
     public function controllerName(): string
@@ -63,6 +66,7 @@ class RouteWrapper
 
     /**
      * @return string
+     *
      * @throws OpenApiException
      */
     public function controllerMethod(): string
@@ -78,6 +82,7 @@ class RouteWrapper
 
     /**
      * @return array
+     *
      * @throws OpenApiException
      */
     protected function explodeAction(): array
@@ -100,6 +105,7 @@ class RouteWrapper
 
     /**
      * @return array
+     *
      * @throws OpenApiException
      */
     public function getPathParameters(): array

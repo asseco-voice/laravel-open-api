@@ -10,9 +10,10 @@ use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 class PathHandler extends AbstractHandler
 {
     /**
-     * @param array $tags
-     * @param array $pathParameters
+     * @param  array  $tags
+     * @param  array  $pathParameters
      * @return Parameters|null
+     *
      * @throws OpenApiException
      */
     public static function handle(array $tags, array $pathParameters): ?Parameters
@@ -48,7 +49,8 @@ class PathHandler extends AbstractHandler
     }
 
     /**
-     * @param int $count
+     * @param  int  $count
+     *
      * @throws OpenApiException
      */
     protected static function verifyParameters(int $count): void
@@ -59,9 +61,10 @@ class PathHandler extends AbstractHandler
     }
 
     /**
-     * @param bool $split
-     * @param int $count
+     * @param  bool  $split
+     * @param  int  $count
      * @return array
+     *
      * @throws OpenApiException
      */
     protected static function parseTag(array $split, int $count): array
