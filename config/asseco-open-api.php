@@ -89,4 +89,9 @@ return [
      * Prepend service name to operationId.
      */
     'prepend_service_name' => true,
+
+    /**
+     * Set ID path parameters to string instead of integer.
+     */
+    'service_uses_uuid' => true,
 ];

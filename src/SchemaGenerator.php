@@ -121,12 +121,14 @@ class SchemaGenerator
      * @param $schemaName
      * @param $model
      * @param $pathParameters
+     * @param $candidate
      * @param string $namespace
      * @return array
      * @throws Exceptions\OpenApiException
      */
     protected function traverseOperations(RouteWrapper $route, $methodData, $tagExtractor, $schemaName, $model, $pathParameters, $candidate, string $namespace): array
     {
+        $appName = Str::studly(config('app.name'));
         $path = new Path($route->path());
         $requestSchemas = new Schemas();
         $responseSchemas = new Schemas();
@@ -138,9 +140,9 @@ class SchemaGenerator
             $operation = new Operation($methodData, $routeOperation);
 
             [$responseSchema, $responses] =
-                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model, $namespace);
+                $this->generateResponses($tagExtractor, $schemaName, $routeOperation, $route->hasPathParameters(), $model, $namespace, $appName);
 
-            $requestGenerator = new RequestGenerator($tagExtractor, Str::studly(config('app.name')) . '_request_' . $schemaName);
+            $requestGenerator = new RequestGenerator($tagExtractor, $appName . '_Request_' . $schemaName);
             $requestSchema = $requestGenerator->createSchema($namespace, $model);
 
             $requestBody = null;
@@ -186,9 +188,9 @@ class SchemaGenerator
         return str_replace(['\\', ' '], '', $input);
     }
 
-    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model, string $namespace): array
+    protected function generateResponses(TagExtractor $extractor, string $schemaName, string $routeOperation, bool $routeHasPathParameters, ?Model $model, string $namespace, string $appName): array
     {
-        $responseGenerator = new ResponseGenerator($extractor, Str::studly(config('app.name')) . '_response_' . $schemaName);
+        $responseGenerator = new ResponseGenerator($extractor, $appName . '_Response_' . $schemaName);
 
         $responseSchema = $responseGenerator->createSchema($namespace, $model);
         $responses = $responseGenerator->generate($routeOperation, $routeHasPathParameters, !empty($responseSchema));

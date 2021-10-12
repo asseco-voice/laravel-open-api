@@ -4,6 +4,7 @@ namespace Asseco\OpenApi;
 
 use Asseco\OpenApi\Exceptions\OpenApiException;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\IntegerType;
+use Asseco\OpenApi\Specification\Paths\Operations\Parameters\DataTypes\StringType;
 use Asseco\OpenApi\Specification\Paths\Operations\Parameters\PathParameter;
 use Closure;
 use Illuminate\Routing\Route;
@@ -116,7 +117,7 @@ class RouteWrapper
         $parameters = [];
         foreach ($matches[1] as $match) {
             $name = str_replace('?', '', $match);
-            $type = new IntegerType();
+            $type = config('asseco-open-api.service_uses_uuid') ? new StringType() : new IntegerType();
             $description = 'Path parameter';
 
             $parameter = new PathParameter($name, $type);
