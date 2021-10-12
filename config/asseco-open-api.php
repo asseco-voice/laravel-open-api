@@ -93,5 +93,5 @@ return [
     /**
      * Set ID path parameters to string instead of integer.
      */
-    'service_uses_uuid' => true,
+    'service_uses_uuid' => false,
 ];

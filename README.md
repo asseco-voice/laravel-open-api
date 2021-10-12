@@ -137,9 +137,9 @@ which will not be included in request data.
 
 ### Path parameters
 
-By default, path parameter(s) will be set as string (assuming most model IDs are UUIDs). 
-In case you want to use integer IDs, this can be changed in ``asseco-open-api`` config file by 
-setting ``service_uses_uuid`` to false.
+By default, path parameter(s) will be set as integer (assuming most of the path parameters are model IDs).
+In case you want to use UUIDs, this can be changed in ``asseco-open-api`` config file by
+setting ``service_uses_uuid`` to true.
 
 Override them by including the following in the method doc block:
 
