@@ -61,6 +61,7 @@ return [
         // Exact match by controller full namespace
         'controller_name' => [
             'Clockwork\Support\Laravel\ClockworkController',
+            'Illuminate\Routing\RedirectController',
         ],
     ],
 

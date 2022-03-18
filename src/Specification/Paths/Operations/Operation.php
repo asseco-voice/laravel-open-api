@@ -23,7 +23,6 @@ class Operation implements Serializable
      *
      * @param  array  $methodData
      * @param  string  $operation
-     * @param  array  $options
      *
      * @throws OpenApiException
      */

@@ -76,6 +76,7 @@ class ModelColumns
             case 'datetime':
             case 'date':
             case 'text':
+            case 'guid':
                 return 'string';
             case 'float':
                 return 'number';
