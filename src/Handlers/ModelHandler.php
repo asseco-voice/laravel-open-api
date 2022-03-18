@@ -20,9 +20,8 @@ class ModelHandler extends AbstractHandler
             return new $mapping[$controller];
         }
 
-        if (class_exists($namespace . $candidate)) {
-            $class = $namespace . $candidate;
-
+        $class = $namespace . $candidate;
+        if (class_exists($class) && is_subclass_of($class, Model::class)) {
             return new $class;
         }
 
