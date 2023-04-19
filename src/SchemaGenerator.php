@@ -59,7 +59,6 @@ class SchemaGenerator
         $bar->start();
 
         foreach ($this->routerRoutes as $routerRoute) {
-
             // Testing purposes only
 //            $routeName = $routerRoute->getName();
 //            if (!$routeName || !(preg_match('/custom-field\.remote\.store/', $routeName))) {
