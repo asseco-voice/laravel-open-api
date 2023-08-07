@@ -77,9 +77,9 @@ class PathHandler extends AbstractHandler
     }
 
     /**
-     * @param $name
-     * @param $type
-     * @param $description
+     * @param  $name
+     * @param  $type
+     * @param  $description
      * @return PathParameter
      */
     protected static function createParameter($name, $type, $description): PathParameter

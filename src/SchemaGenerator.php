@@ -59,7 +59,6 @@ class SchemaGenerator
         $bar->start();
 
         foreach ($this->routerRoutes as $routerRoute) {
-
             // Testing purposes only
 //            $routeName = $routerRoute->getName();
 //            if (!$routeName || !(preg_match('/custom-field\.remote\.store/', $routeName))) {
@@ -119,12 +118,12 @@ class SchemaGenerator
 
     /**
      * @param  RouteWrapper  $route
-     * @param $methodData
-     * @param $tagExtractor
-     * @param $schemaName
-     * @param $model
-     * @param $pathParameters
-     * @param $candidate
+     * @param  $methodData
+     * @param  $tagExtractor
+     * @param  $schemaName
+     * @param  $model
+     * @param  $pathParameters
+     * @param  $candidate
      * @param  string  $namespace
      * @return array
      *
