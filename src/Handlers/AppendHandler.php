@@ -14,8 +14,8 @@ class AppendHandler extends AbstractHandler
     }
 
     /**
-     * @param $tag
-     * @param $namespace
+     * @param  $tag
+     * @param  $namespace
      * @return array
      *
      * @throws OpenApiException

@@ -161,7 +161,7 @@ class RouteWrapper
         $byName = $this->excludeRules['route_name'];
 
         foreach ($byName as $name) {
-            if ($this->route->getName() && (preg_match('/' . $name . '/', $this->route->getName()))) {
+            if ($this->route->getName() && preg_match('/' . $name . '/', $this->route->getName())) {
                 if ($this->verbose) {
                     echo "Excluding route by name: '{$this->route->getName()}'\n";
                 }

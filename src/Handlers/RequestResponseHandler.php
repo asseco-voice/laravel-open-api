@@ -50,7 +50,7 @@ class RequestResponseHandler extends AbstractHandler
     /**
      * Covering the case in the response when a simple string should be returned.
      *
-     * @param $tag
+     * @param  $tag
      * @return false|int
      */
     protected static function matchInQuotes($tag)

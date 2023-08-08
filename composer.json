@@ -8,16 +8,16 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.0",
-        "laravel/framework": "^9.0",
+        "php": "^8.1",
+        "laravel/framework": "^10.0",
         "symfony/yaml": "^6.0",
         "mpociot/reflection-docblock": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^10.0",
         "mockery/mockery": "^1.4.4",
         "fakerphp/faker": "^1.9.1",
-        "orchestra/testbench": "^7.4"
+        "orchestra/testbench": "^8.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
