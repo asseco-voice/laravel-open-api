@@ -12,23 +12,23 @@ return [
     /**
      * Namespace for Laravel models.
      */
-    'model_namespace'          => 'App\\Models\\',
+    'model_namespace' => 'App\\Models\\',
 
     /**
      * General OpenApi properties to generate.
      */
-    'general'                  => [
+    'general' => [
         'openapi' => '3.0.0',
 
         'info' => [
-            'title'       => ucfirst(config('app.name')) . ' API',
+            'title' => ucfirst(config('app.name')) . ' API',
             'description' => 'Generated with this [awesome package](https://github.com/asseco-voice/laravel-open-api)!',
-            'version'     => '0.0.1',
+            'version' => '0.0.1',
         ],
 
         'servers' => [
             [
-                'url'         => config('app.url'),
+                'url' => config('app.url'),
                 'description' => 'Default server',
             ],
         ],
@@ -48,14 +48,14 @@ return [
     /**
      * Name of generated file.
      */
-    'file_name'                => 'open-api.yml',
+    'file_name' => 'open-api.yml',
 
     /**
      * Rules for excluding certain rules.
      */
-    'exclude'                  => [
+    'exclude' => [
         // Partial match. Using 'index' will match '*index*'.
-        'route_name'      => [
+        'route_name' => [
             'horizon',
         ],
         // Exact match by controller full namespace
@@ -68,12 +68,12 @@ return [
     'global_headers' => '',
 
     'data_types' => [
-        'string'  => StringType::class,
-        'number'  => NumberType::class,
+        'string' => StringType::class,
+        'number' => NumberType::class,
         'integer' => IntegerType::class,
         'boolean' => BooleanType::class,
-        'array'   => ArrayType::class,
-        'object'  => ObjectType::class,
+        'array' => ArrayType::class,
+        'object' => ObjectType::class,
     ],
 
     /**
@@ -84,7 +84,7 @@ return [
     /**
      * Get additional command output (for debugging purposes). Command flag, not to be used manually.
      */
-    'verbose'    => false,
+    'verbose' => false,
 
     /**
      * Prepend service name to operationId.

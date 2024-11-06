@@ -27,7 +27,7 @@ class Properties implements Serializable
 
         return [
             'properties' => $properties,
-            'required'   => $required,
+            'required' => $required,
         ];
     }
 
@@ -39,7 +39,7 @@ class Properties implements Serializable
         foreach ($this->modelColumns as $column) {
             if (is_string($column)) {
                 $columnValues = [
-                    'type'    => 'string',
+                    'type' => 'string',
                     'example' => $column,
                 ];
                 $properties = array_merge_recursive($properties, $columnValues);
@@ -48,7 +48,7 @@ class Properties implements Serializable
 
             $columnValues = [
                 $column->name => [
-                    'type'        => $column->type,
+                    'type' => $column->type,
                     'description' => $column->description,
                     //'format' => 'map something',
                 ],
