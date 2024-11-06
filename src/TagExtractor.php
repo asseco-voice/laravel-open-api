@@ -168,9 +168,9 @@ class TagExtractor
         $groups = $this->getGroup($candidate);
 
         return [
-            'summary'     => $this->methodDocBlock->getShortDescription(),
+            'summary' => $this->methodDocBlock->getShortDescription(),
             'description' => $this->methodDocBlock->getLongDescription()->getContents(),
-            'tags'        => $groups,
+            'tags' => $groups,
         ];
     }
 
