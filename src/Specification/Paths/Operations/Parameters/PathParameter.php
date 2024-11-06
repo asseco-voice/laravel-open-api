@@ -28,10 +28,10 @@ class PathParameter implements Parameter
     public function toSchema(): array
     {
         $schema = [
-            'in'          => 'path',
-            'name'        => $this->name,
-            'schema'      => $this->dataType->toSchema(),
-            'required'    => true, // OpenApi doesn't support optional path parameters like Laravel does
+            'in' => 'path',
+            'name' => $this->name,
+            'schema' => $this->dataType->toSchema(),
+            'required' => true, // OpenApi doesn't support optional path parameters like Laravel does
             'description' => $this->description,
         ];
 

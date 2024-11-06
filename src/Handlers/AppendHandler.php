@@ -36,7 +36,7 @@ class AppendHandler extends AbstractHandler
         self::verifyModelExists($model);
 
         return [
-            'key'   => $key,
+            'key' => $key,
             'model' => new $model,
         ];
     }
