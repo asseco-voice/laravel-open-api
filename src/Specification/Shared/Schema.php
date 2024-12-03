@@ -43,7 +43,7 @@ abstract class Schema implements Serializable
     protected function generateMultipleSchema(array $items): array
     {
         return [
-            'type'  => 'array',
+            'type' => 'array',
             'items' => $items,
         ];
     }
